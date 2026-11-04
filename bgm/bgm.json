@@ -1,0 +1,449 @@
+{
+ "title": {
+  "file": "title.mp3",
+  "title": "용성지방의 노래 (타이틀)",
+  "loopStart": 0,
+  "loopEnd": 57.6,
+  "loop": true
+ },
+ "town": {
+  "file": "town.mp3",
+  "title": "소색마을",
+  "loopStart": 0,
+  "loopEnd": 51.84,
+  "loop": true
+ },
+ "route": {
+  "file": "route.mp3",
+  "title": "들길을 따라 (필드)",
+  "loopStart": 0,
+  "loopEnd": 38.88,
+  "loop": true
+ },
+ "battle_wild": {
+  "file": "battle_wild.mp3",
+  "title": "야생 남켓몬이 나타났다! (자진모리)",
+  "loopStart": 3.192,
+  "loopEnd": 35.112,
+  "loop": true
+ },
+ "battle_gym": {
+  "file": "battle_gym.mp3",
+  "title": "관장 대결 (휘모리)",
+  "loopStart": 2.56,
+  "loopEnd": 33.28,
+  "loop": true
+ },
+ "battle_legend": {
+  "file": "battle_legend.mp3",
+  "title": "산군이 깨어난다 (전설 배틀, 엇모리)",
+  "loopStart": 3.2,
+  "loopEnd": 41.6,
+  "loop": true
+ },
+ "victory": {
+  "file": "victory.mp3",
+  "title": "승리!",
+  "loopStart": 2.24,
+  "loopEnd": 23.36,
+  "loop": true
+ },
+ "awaken": {
+  "file": "awaken.mp3",
+  "title": "신명 각성",
+  "loopStart": 0,
+  "loopEnd": 6.0,
+  "loop": false
+ },
+ "ojakgyo": {
+  "file": "ojakgyo.mp3",
+  "title": "오작교 (칠석 밤)",
+  "loopStart": 0,
+  "loopEnd": 30.24,
+  "loop": true
+ },
+ "city": {
+  "file": "city.mp3",
+  "title": "다홍시티 (굿거리)",
+  "loopStart": 0,
+  "loopEnd": 46.08,
+  "loop": true,
+  "desc": "시내·광한루원. 장날처럼 흥겨운 굿거리"
+ },
+ "center": {
+  "file": "center.mp3",
+  "title": "남켓몬센터 (세마치)",
+  "loopStart": 0,
+  "loopEnd": 37.44,
+  "loop": true,
+  "desc": "회복하는 곳. 포근한 가야금"
+ },
+ "trainer": {
+  "file": "trainer.mp3",
+  "title": "트레이너 배틀 (자진모리)",
+  "loopStart": 3.0,
+  "loopEnd": 33.0,
+  "loop": true,
+  "desc": "도로·배움터 트레이너와 승부"
+ },
+ "rival": {
+  "file": "rival.mp3",
+  "title": "라이벌 한결 (휘모리)",
+  "loopStart": 1.2,
+  "loopEnd": 34.8,
+  "loop": true,
+  "desc": "한결이 나타날 때·한결과 승부"
+ },
+ "academy": {
+  "file": "academy.mp3",
+  "title": "덕과 아카데미 (굿거리)",
+  "loopStart": 0,
+  "loopEnd": 48.0,
+  "loop": true,
+  "desc": "교실·연구소. 산뜻한 공부 시간"
+ },
+ "eyes": {
+  "file": "eyes.mp3",
+  "title": "눈이 마주쳤다!",
+  "loopStart": 1.04,
+  "loopEnd": 26.0,
+  "loop": true,
+  "desc": "트레이너가 다가올 때 짧은 반복"
+ },
+ "evolution": {
+  "file": "evolution.mp3",
+  "title": "어라…? 모습이…! (진화)",
+  "loopStart": 0,
+  "loopEnd": 31.68,
+  "loop": true,
+  "desc": "진화하는 동안 반복"
+ },
+ "victory_wild": {
+  "file": "victory_wild.mp3",
+  "title": "야생 승리!",
+  "loopStart": 2.52,
+  "loopEnd": 32.76,
+  "loop": true,
+  "desc": "야생 남켓몬을 이긴 뒤"
+ },
+ "jg_heal": {
+  "file": "jg_heal.mp3",
+  "title": "회복",
+  "loopStart": 0,
+  "loopEnd": 2.4,
+  "loop": false
+ },
+ "jg_item": {
+  "file": "jg_item.mp3",
+  "title": "물건을 얻었다!",
+  "loopStart": 0,
+  "loopEnd": 1.5,
+  "loop": false
+ },
+ "jg_keyitem": {
+  "file": "jg_keyitem.mp3",
+  "title": "중요한 물건을 얻었다!",
+  "loopStart": 0,
+  "loopEnd": 2.6,
+  "loop": false
+ },
+ "jg_levelup": {
+  "file": "jg_levelup.mp3",
+  "title": "레벨이 올랐다!",
+  "loopStart": 0,
+  "loopEnd": 1.0,
+  "loop": false
+ },
+ "jg_caught": {
+  "file": "jg_caught.mp3",
+  "title": "잡았다!",
+  "loopStart": 0,
+  "loopEnd": 3.0,
+  "loop": false
+ },
+ "jg_evolved": {
+  "file": "jg_evolved.mp3",
+  "title": "진화했다!",
+  "loopStart": 0,
+  "loopEnd": 3.2,
+  "loop": false
+ },
+ "jg_dex": {
+  "file": "jg_dex.mp3",
+  "title": "남켓몬 도감을 받았다!",
+  "loopStart": 0,
+  "loopEnd": 2.6,
+  "loop": false
+ },
+ "gym": {
+  "file": "gym.mp3",
+  "title": "다홍 배움터 (놀이터)",
+  "loopStart": 0,
+  "loopEnd": 20.48,
+  "loop": true,
+  "desc": "배움터 안. 놀이터처럼 통통 튀는 곡"
+ },
+ "festival": {
+  "file": "festival.mp3",
+  "title": "춘향제 (풍물 굿거리)",
+  "loopStart": 0,
+  "loopEnd": 38.4,
+  "loop": true,
+  "desc": "춘향제 마당. 흥겨운 풍물"
+ },
+ "bondi": {
+  "file": "bondi.mp3",
+  "title": "본디대로 (본디회)",
+  "loopStart": 0,
+  "loopEnd": 16.32,
+  "loop": true,
+  "desc": "본디회가 나타날 때"
+ },
+ "jg_badge": {
+  "file": "jg_badge.mp3",
+  "title": "어사패를 받았다!",
+  "loopStart": 0,
+  "loopEnd": 4.2,
+  "loop": false
+ },
+ "jjok": {
+  "file": "jjok.mp3",
+  "title": "쪽빛마을 (세마치)",
+  "loopStart": 0,
+  "loopEnd": 43.2,
+  "loop": true,
+  "desc": "쪽빛마을·사매 들판. 바람 같은 대금"
+ },
+ "gym2": {
+  "file": "gym2.mp3",
+  "title": "쪽빛 배움터 (숲속 아틀리에)",
+  "loopStart": 0,
+  "loopEnd": 17.28,
+  "loop": true,
+  "desc": "쪽빛 배움터 안. 반짝이는 가야금 왈츠"
+ },
+ "garam": {
+  "file": "garam.mp3",
+  "title": "가람 (옛 기찻길의 바람)",
+  "loopStart": 0,
+  "loopEnd": 15.36,
+  "loop": true,
+  "desc": "도령 가람이 나타날 때"
+ },
+ "galmae": {
+  "file": "galmae.mp3",
+  "title": "갈매마을 (중중모리)",
+  "loopStart": 0,
+  "loopEnd": 38.4,
+  "loop": true,
+  "desc": "갈매마을·덕과 아카데미. 처음 떠난 학교 마을로 돌아온 길"
+ },
+ "bisaek": {
+  "file": "bisaek.mp3",
+  "title": "비색마을 (중중모리)",
+  "loopStart": 0,
+  "loopEnd": 42.24,
+  "loop": true,
+  "desc": "비색마을·금지. 요천이 섬진강을 만나는 물가"
+ },
+ "gym3": {
+  "file": "gym3.mp3",
+  "title": "비색 배움터 (요리 교실)",
+  "loopStart": 0,
+  "loopEnd": 19.2,
+  "loop": true,
+  "desc": "비색 배움터 안. 빵 굽는 냄새, 통통 튀는 가야금"
+ },
+ "songhwa": {
+  "file": "songhwa.mp3",
+  "title": "송화마을 (세마치)",
+  "loopStart": 0,
+  "loopEnd": 19.2,
+  "loop": true,
+  "desc": "송화마을·송동. 솔숲 사이 봄바람, 섬진강 건너 곡성"
+ },
+ "juhong": {
+  "file": "juhong.mp3",
+  "title": "주홍마을 (중모리)",
+  "loopStart": 0,
+  "loopEnd": 46.08,
+  "loop": true,
+  "desc": "주홍마을·주천. 지리산 자락, 구룡계곡 물소리"
+ },
+ "gym4": {
+  "file": "gym4.mp3",
+  "title": "주홍 배움터 (별과 비)",
+  "loopStart": 0,
+  "loopEnd": 21.76,
+  "loop": true,
+  "desc": "주홍 배움터 안. 지붕 틈으로 별, 오늘 밤은 비"
+ },
+ "gamcheong": {
+  "file": "gamcheong.mp3",
+  "title": "감청마을 (굿거리)",
+  "loopStart": 0,
+  "loopEnd": 38.4,
+  "loop": true,
+  "desc": "감청마을·산곡동. 교룡산 아래 짙은 남색 마을"
+ },
+ "gym5": {
+  "file": "gym5.mp3",
+  "title": "감청 배움터 (빛 실험)",
+  "loopStart": 0,
+  "loopEnd": 19.2,
+  "loop": true,
+  "desc": "감청 배움터 과학실. 보글보글 실험, 레이저 빛"
+ },
+ "hideout": {
+  "file": "hideout.mp3",
+  "title": "본디회 은신처",
+  "loopStart": 0,
+  "loopEnd": 24.32,
+  "loop": true,
+  "desc": "교룡산성 옛 군량 창고 지하. 봉인 항아리 사이"
+ },
+ "ssukbit": {
+  "file": "ssukbit.mp3",
+  "title": "쑥빛시티 (중중모리)",
+  "loopStart": 0,
+  "loopEnd": 36.48,
+  "loop": true,
+  "desc": "쑥빛시티·운봉. 높은 고원 들판, 동편제의 고장"
+ },
+ "gym6": {
+  "file": "gym6.mp3",
+  "title": "쑥빛 배움터 (보건실)",
+  "loopStart": 0,
+  "loopEnd": 20.48,
+  "loop": true,
+  "desc": "쑥빛 배움터 보건실. 포근한 침대, 보랏빛 방울"
+ },
+ "inwol": {
+  "file": "inwol.mp3",
+  "title": "인월장터 (자진모리)",
+  "loopStart": 0,
+  "loopEnd": 26.88,
+  "loop": true,
+  "desc": "인월장터. 람천과 풍천이 만나는 지리산 길목의 장터"
+ },
+ "misaek": {
+  "file": "misaek.mp3",
+  "title": "미색마을 (중모리)",
+  "loopStart": 0,
+  "loopEnd": 44.16,
+  "loop": true,
+  "desc": "미색마을·아영 흥부마을. 박이 열린 초가와 제비 둥지"
+ },
+ "jaedan": {
+  "file": "jaedan.mp3",
+  "title": "금박재단",
+  "loopStart": 0,
+  "loopEnd": 11.52,
+  "loop": true,
+  "desc": "금박재단 이사장이 나타날 때. 반들반들 매끈하고 속이 검은"
+ },
+ "wolbaek": {
+  "file": "wolbaek.mp3",
+  "title": "월백마을 (진양조풍)",
+  "loopStart": 0,
+  "loopEnd": 28.8,
+  "loop": true,
+  "desc": "월백마을·산내. 지리산 깊은 골짜기와 들판 가운데 절"
+ },
+ "banya": {
+  "file": "banya.mp3",
+  "title": "반야봉",
+  "loopStart": 0,
+  "loopEnd": 24.96,
+  "loop": true,
+  "desc": "반야봉 정상. 구름바다 위 넓은 하늘과 해넘이"
+ },
+ "ojak": {
+  "file": "ojak.mp3",
+  "title": "오작",
+  "loopStart": 0,
+  "loopEnd": 14.08,
+  "loop": true,
+  "desc": "오작 전설이 깨어날 때"
+ },
+ "route13": {
+  "file": "route13.mp3",
+  "title": "13번도로 여원치 (굿거리)",
+  "loopStart": 0,
+  "loopEnd": 30.72,
+  "loop": true,
+  "desc": "13번도로. 이백 들판에서 여원치 고개를 넘어 운봉으로 가는 길"
+ },
+ "baraebong": {
+  "file": "baraebong.mp3",
+  "title": "바래봉 (세마치풍)",
+  "loopStart": 0,
+  "loopEnd": 23.04,
+  "loop": true,
+  "desc": "바래봉. 산철쭉 꽃밭 사이 갈지자 길과 둥근 꼭대기"
+ },
+ "gym8": {
+  "file": "gym8.mp3",
+  "title": "갈매 배움터 (밤의 교실)",
+  "loopStart": 0,
+  "loopEnd": 21.76,
+  "loop": true,
+  "desc": "갈매 배움터. 불 꺼진 마루 교실, 청사초롱 불빛, 살금살금 암행 수업"
+ },
+ "chuldu": {
+  "file": "chuldu.mp3",
+  "title": "암행어사 출두",
+  "loopStart": 0,
+  "loopEnd": 16.64,
+  "loop": true,
+  "desc": "만복사의 밤. 마패를 높이 들자 사방에서 출두요! 하는 소리"
+ },
+ "champroad": {
+  "file": "champroad.mp3",
+  "title": "만행산 (챔피언로드)",
+  "loopStart": 0,
+  "loopEnd": 19.2,
+  "loop": true,
+  "desc": "17번도로 홍살문 너머 만행산. 숲길과 바위굴을 지나 오방고원으로"
+ },
+ "obang": {
+  "file": "obang.mp3",
+  "title": "오방고원",
+  "loopStart": 0,
+  "loopEnd": 25.6,
+  "loop": true,
+  "desc": "오방고원. 다섯 빛 깃발이 펄럭이는 덕과 아카데미 리그 앞"
+ },
+ "league": {
+  "file": "league.mp3",
+  "title": "덕과 아카데미 리그 (산지기 방)",
+  "loopStart": 0,
+  "loopEnd": 25.6,
+  "loop": true,
+  "desc": "오방고원 리그 전당. 다섯 빛 방을 차례로 지나는 졸업 시험"
+ },
+ "battle_champ": {
+  "file": "battle_champ.mp3",
+  "title": "챔피언 미스터 황 (휘모리)",
+  "loopStart": 1.04,
+  "loopEnd": 26.0,
+  "loop": true,
+  "desc": "오방고원 가운데 방, 교장 선생님과 마지막 승부"
+ },
+ "hof": {
+  "file": "hof.mp3",
+  "title": "명예의 전당",
+  "loopStart": 0,
+  "loopEnd": 15.36,
+  "loop": true,
+  "desc": "리그를 이긴 트레이너와 남켓몬을 기록하는 방"
+ },
+ "gym7": {
+  "file": "gym7.mp3",
+  "title": "미색 배움터 (강철 공작실)",
+  "loopStart": 0,
+  "loopEnd": 20.48,
+  "loop": true,
+  "desc": "미색 배움터. 화로·모루·담금물 물길, 톱니바퀴 손잡이로 놓는 철다리"
+ }
+}

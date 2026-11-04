@@ -1,0 +1,29 @@
+{
+ "w": 16,
+ "h": 16,
+ "keys": [
+  "namket",
+  "silk",
+  "ok",
+  "gift",
+  "net",
+  "dusk",
+  "quick",
+  "heal",
+  "timer",
+  "repeat",
+  "nest"
+ ],
+ "frames": [
+  "closed",
+  "tilt_l",
+  "tilt_r",
+  "open",
+  "spin0",
+  "spin1",
+  "spin2",
+  "spin3",
+  "dim",
+  "burst"
+ ]
+}

@@ -1,0 +1,21 @@
+{
+ "w": 16,
+ "h": 16,
+ "t": {
+  "excl": 0,
+  "quest": 1,
+  "dots": 2,
+  "heart": 3,
+  "itemball": 4,
+  "shadow": 5,
+  "sparkle0": 6,
+  "sparkle1": 7,
+  "jebikko0": 8,
+  "jebikko1": 9,
+  "ball_icon": 10,
+  "ball_icon_empty": 11,
+  "ball_icon_faint": 12,
+  "arrow0": 13,
+  "arrow1": 14
+ }
+}

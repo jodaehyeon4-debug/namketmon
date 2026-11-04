@@ -1,0 +1,27 @@
+{
+ "w": 16,
+ "h": 24,
+ "frames": [
+  "down0",
+  "down1",
+  "down2",
+  "up0",
+  "up1",
+  "up2",
+  "left0",
+  "left1",
+  "left2"
+ ],
+ "keys": [
+  "gl_chanhyang",
+  "gl_miyeong",
+  "gl_suhyeon",
+  "gl_sinha",
+  "gl_gisu",
+  "gl_yeosim",
+  "gl_heeju",
+  "gl_jobaksa2",
+  "gl_yeongran",
+  "gl_mrhwang"
+ ]
+}

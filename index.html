@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="남켓몬 용성지방 — 덕과초등학교 비공식 교육용 팬게임">
+<title>남켓몬 용성지방</title>
+<style>
+/* 레이아웃: 휴대용 게임기 한 대 — 위는 게임 화면, 아래는 (터치 기기일 때) 십자키·A·B 패드. 한 가지 어두운 기기 색으로 고정 */
+:root {
+  --body: #17161d;        /* 기기 몸체 */
+  --shell: #232230;       /* 화면 테두리 */
+  --bezel: #0c0c12;
+  --ink: #e9e4d6;         /* 안내 글자 */
+  --mute: #8a8698;
+  --dan: #d0463a;         /* 단청 붉은빛 (A 버튼) */
+  --cheong: #3a62c8;      /* 청사 (B 버튼) */
+  --key: #2e2c3c;
+  --font-ui: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--body); color: var(--ink); font-family: var(--font-ui); overflow: hidden; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+#wrap { height: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 8px; }
+#scr { position: relative; padding: 6px; background: var(--shell); border-radius: 10px; box-shadow: inset 0 0 0 2px var(--bezel), 0 8px 24px rgba(0,0,0,.45); max-width: 100%; box-sizing: border-box; }
+#screen { display: block; image-rendering: pixelated; image-rendering: crisp-edges; background: #000; border-radius: 3px; max-width: 100%; }
+#hint { font-size: 12px; color: var(--mute); letter-spacing: .02em; text-align: center; line-height: 1.6; }
+#hint b { color: var(--ink); font-weight: 600; background: var(--key); border-radius: 4px; padding: 1px 6px; margin: 0 2px; }
+#pad { display: none; width: min(100%, 520px); justify-content: space-between; align-items: center; padding-block: 4px 10px; }
+body.touch #pad { display: flex; }
+body.touch #wrap { justify-content: flex-start; padding-block: 18px 8px; }
+body.touch #hint { display: none; }
+#dpad { position: relative; width: 132px; height: 132px; touch-action: none; }
+#dpad i { position: absolute; background: var(--key); box-shadow: inset 0 -3px 0 rgba(0,0,0,.35); }
+#dpad .h { left: 0; top: 44px; width: 132px; height: 44px; border-radius: 8px; }
+#dpad .v { left: 44px; top: 0; width: 44px; height: 132px; border-radius: 8px; }
+#dpad .c { left: 56px; top: 56px; width: 20px; height: 20px; border-radius: 50%; background: var(--bezel); box-shadow: none; }
+#dpad.on-up .v { box-shadow: inset 0 3px 0 rgba(255,255,255,.12), inset 0 -3px 0 rgba(0,0,0,.35); }
+.mid { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.pill { font: 600 11px var(--font-ui); color: var(--mute); background: var(--key); border: 0; border-radius: 12px; padding: 7px 14px; letter-spacing: .06em; touch-action: none; }
+.ab { position: relative; width: 140px; height: 120px; }
+.btn { position: absolute; width: 60px; height: 60px; border-radius: 50%; border: 0; font: 700 18px var(--font-ui); color: #fff; box-shadow: inset 0 -4px 0 rgba(0,0,0,.35); touch-action: none; }
+.btn.a { right: 0; top: 10px; background: var(--dan); }
+.btn.b { left: 6px; top: 52px; background: var(--cheong); }
+.btn:active, .pill:active, .btn.down, .pill.down { filter: brightness(1.25); transform: translateY(1px); }
+#namebox { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); background: var(--shell); padding: 12px; border-radius: 8px; display: flex; gap: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+#namebox input { font: 16px var(--font-ui); width: 9em; padding: 6px 8px; border-radius: 6px; border: 2px solid var(--key); background: var(--bezel); color: var(--ink); }
+#namebox button { font: 600 14px var(--font-ui); border: 0; border-radius: 6px; padding: 6px 14px; background: var(--dan); color: #fff; }
+button:focus-visible, input:focus-visible { outline: 2px solid #f0c040; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="scr">
+    <canvas id="screen" width="256" height="192" aria-label="남켓몬 게임 화면"></canvas>
+  </div>
+  <div id="hint"><b>방향키</b> 이동 · <b>Z</b> 결정 · <b>X</b> 취소 / 누른 채 달리기 · <b>C</b> 또는 <b>Enter</b> 메뉴</div>
+  <div id="pad">
+    <div id="dpad" aria-label="방향 패드"><i class="h"></i><i class="v"></i><i class="c"></i></div>
+    <div class="mid"><button class="pill" data-k="menu" type="button">메뉴</button></div>
+    <div class="ab"><button class="btn b" data-k="b" type="button">B</button><button class="btn a" data-k="a" type="button">A</button></div>
+  </div>
+</div>
+<script>
+(() => {
+  const coarse = matchMedia("(pointer: coarse)").matches || ("ontouchstart" in window && innerWidth < 900);
+  if (coarse) document.body.classList.add("touch");
+})();
+</script>
+<script src="js/data.js"></script>
+<script src="js/mapdata.js"></script>
+<script src="js/core.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/shiny_data.js"></script>
+<script src="js/shiny.js"></script>
+<script src="js/world.js"></script>
+<script src="js/battle.js"></script>
+<script src="js/menus.js"></script>
+<script src="js/pcbox.js"></script>
+<script src="js/maps.js"></script>
+<script src="js/namekb.js"></script>
+<script src="js/trainers.js"></script>
+<script src="js/chapter1.js"></script>
+<script src="js/route2.js"></script>
+<script src="js/chapter2.js"></script>
+<script src="js/chapter3.js"></script>
+<script src="js/chapter4.js"></script>
+<script src="js/chapter5.js"></script>
+<script src="js/gyms.js"></script>
+<script src="js/field.js"></script>
+<script src="js/chapter6.js"></script>
+<script src="js/chapter7.js"></script>
+<script src="js/chapter8.js"></script>
+<script src="js/chapter9.js"></script>
+<script src="js/chapter10.js"></script>
+<script src="js/chapter11.js"></script>
+<script src="js/chapter12.js"></script>
+<script src="js/chapter13.js"></script>
+<script src="js/chapter14.js"></script>
+<script src="js/chapter15.js"></script>
+<script src="js/chapter16.js"></script>
+<script src="js/chapter17.js"></script>
+<script src="js/hearts.js"></script>
+<script src="js/chapter18.js"></script>
+<script src="js/chapter19.js"></script>
+<script src="js/chapter20.js"></script>
+<script src="js/chapter21.js"></script>
+<script src="js/gyms_v227.js"></script>
+<script src="js/relayout.js"></script>
+<script src="js/explore_v230.js"></script>
+<script src="js/chapter22.js"></script>
+<script src="js/chapter23.js"></script>
+<script src="js/chapter24.js"></script>
+<script src="js/chapter25.js"></script>
+<script src="js/chapter26.js"></script>
+<script src="js/chapter27.js"></script>
+<script src="js/chapter28.js"></script>
+<script src="js/chapter29.js"></script>
+<script src="js/fix_v240.js"></script>
+<script src="js/items_v241.js"></script>
+<script src="js/place_v241.js"></script>
+<script src="js/fix_v242.js"></script>
+<script src="js/surf_v243.js"></script>
+<script src="js/caves_v244.js"></script>
+<script src="js/fix_v247.js"></script>
+<script src="js/townlv_v245.js"></script>
+<script src="js/intro.js"></script>
+<script src="js/pad.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
