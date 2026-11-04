@@ -22,14 +22,19 @@ function J(w, t) { const p = JS[t]; if (t === "으로") { const c = w.charCodeAt
 
 // ---- 화면 맞춤 (정수 배율) ----
 function fit() {
-  const wrap = $("wrap"), pad = $("pad");
-  const touch = document.body.classList.contains("touch");
-  const availW = Math.min(innerWidth - 32, (wrap.clientWidth || innerWidth) - 32) - 12;
-  const availH = innerHeight - (touch ? (pad.offsetHeight || 150) + 18 : 40) - 30;
-  let k = Math.floor(Math.min(availW / SW, availH / SH));
-  let w, h;
-  if (k >= 1) { w = SW * k; h = SH * k; } else { const f = Math.min(availW / SW, availH / SH); w = Math.floor(SW * f); h = Math.floor(SH * f); }
-  cv.style.width = w + "px"; cv.style.height = h + "px";
+  // v2.48 태블릿: 기기 화소 단위로 정수배(고해상도 화면에서 더 크게, 도트는 고르게) · 가로로 들면 조작 단추를 양옆으로 · 단추 크기도 화면에 맞춤
+  const B = document.body, touch = B.classList.contains("touch"), dpr = Math.min(3, window.devicePixelRatio || 1);
+  const W = innerWidth, H = innerHeight;
+  const cs = touch ? Math.max(1, Math.min(1.15, Math.min(W, H) / 560)) : 1;
+  document.documentElement.style.setProperty("--cs", cs.toFixed(3));
+  const scale = (aw, ah) => { const f = Math.min(aw / SW, ah / SH), kd = Math.floor(f * dpr); if (kd < 1) return Math.max(0.2, f);
+    const k = kd / dpr; return touch && dpr >= 2 && f > k * 1.12 ? Math.floor(f * 100) / 100 : k; };   // 레티나 태블릿은 빈칸이 많이 남으면 꽉 채움
+  const below = scale(W - 44, H - (touch ? 132 * cs + 32 : 40) - 30);
+  const sideW = 140 * cs + 22, side = touch && W > H ? scale(W - 2 * sideW, H - 28) : 0;
+  const useSide = side > below * 1.06;
+  B.classList.toggle("side", useSide);
+  const k = useSide ? side : below;
+  cv.style.width = SW * k + "px"; cv.style.height = SH * k + "px";
 }
 addEventListener("resize", fit);
 

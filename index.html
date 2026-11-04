@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="description" content="남켓몬 용성지방 — 덕과초등학교 비공식 교육용 팬게임">
+<meta name="theme-color" content="#17161d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="남켓몬">
 <title>남켓몬 용성지방</title>
 <style>
 /* 레이아웃: 휴대용 게임기 한 대 — 위는 게임 화면, 아래는 (터치 기기일 때) 십자키·A·B 패드. 한 가지 어두운 기기 색으로 고정 */
@@ -19,7 +27,7 @@
   --font-ui: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
   color-scheme: dark;
 }
-html, body { height: 100%; }
+html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }   /* v2.48 태블릿: 당겨서 새로고침·튕김 막기 */
 body { background: var(--body); color: var(--ink); font-family: var(--font-ui); overflow: hidden; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
 #wrap { height: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 8px; }
@@ -27,22 +35,33 @@ body { background: var(--body); color: var(--ink); font-family: var(--font-ui); 
 #screen { display: block; image-rendering: pixelated; image-rendering: crisp-edges; background: #000; border-radius: 3px; max-width: 100%; }
 #hint { font-size: 12px; color: var(--mute); letter-spacing: .02em; text-align: center; line-height: 1.6; }
 #hint b { color: var(--ink); font-weight: 600; background: var(--key); border-radius: 4px; padding: 1px 6px; margin: 0 2px; }
-#pad { display: none; width: min(100%, 520px); justify-content: space-between; align-items: center; padding-block: 4px 10px; }
+#pad { display: none; width: min(100%, calc(520px * var(--cs, 1))); justify-content: space-between; align-items: center; padding-block: 4px 10px; }
 body.touch #pad { display: flex; }
 body.touch #wrap { justify-content: flex-start; padding-block: 18px 8px; }
 body.touch #hint { display: none; }
-#dpad { position: relative; width: 132px; height: 132px; touch-action: none; }
+body.touch { touch-action: none; -webkit-touch-callout: none; }   /* v2.48 두 손가락 확대·길게 눌러 선택 막기 */
+#screen { touch-action: none; }
+#dpad { position: relative; width: calc(132px * var(--cs, 1)); height: calc(132px * var(--cs, 1)); touch-action: none; }
 #dpad i { position: absolute; background: var(--key); box-shadow: inset 0 -3px 0 rgba(0,0,0,.35); }
-#dpad .h { left: 0; top: 44px; width: 132px; height: 44px; border-radius: 8px; }
-#dpad .v { left: 44px; top: 0; width: 44px; height: 132px; border-radius: 8px; }
-#dpad .c { left: 56px; top: 56px; width: 20px; height: 20px; border-radius: 50%; background: var(--bezel); box-shadow: none; }
+#dpad .h { left: 0; top: calc(44px * var(--cs, 1)); width: calc(132px * var(--cs, 1)); height: calc(44px * var(--cs, 1)); border-radius: 8px; }
+#dpad .v { left: calc(44px * var(--cs, 1)); top: 0; width: calc(44px * var(--cs, 1)); height: calc(132px * var(--cs, 1)); border-radius: 8px; }
+#dpad .c { left: calc(56px * var(--cs, 1)); top: calc(56px * var(--cs, 1)); width: calc(20px * var(--cs, 1)); height: calc(20px * var(--cs, 1)); border-radius: 50%; background: var(--bezel); box-shadow: none; }
 #dpad.on-up .v { box-shadow: inset 0 3px 0 rgba(255,255,255,.12), inset 0 -3px 0 rgba(0,0,0,.35); }
 .mid { display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .pill { font: 600 11px var(--font-ui); color: var(--mute); background: var(--key); border: 0; border-radius: 12px; padding: 7px 14px; letter-spacing: .06em; touch-action: none; }
-.ab { position: relative; width: 140px; height: 120px; }
-.btn { position: absolute; width: 60px; height: 60px; border-radius: 50%; border: 0; font: 700 18px var(--font-ui); color: #fff; box-shadow: inset 0 -4px 0 rgba(0,0,0,.35); touch-action: none; }
-.btn.a { right: 0; top: 10px; background: var(--dan); }
-.btn.b { left: 6px; top: 52px; background: var(--cheong); }
+.ab { position: relative; width: calc(140px * var(--cs, 1)); height: calc(120px * var(--cs, 1)); }
+.btn { position: absolute; width: calc(60px * var(--cs, 1)); height: calc(60px * var(--cs, 1)); border-radius: 50%; border: 0; font: 700 18px var(--font-ui); color: #fff; box-shadow: inset 0 -4px 0 rgba(0,0,0,.35); touch-action: none; }
+.btn.a { right: 0; top: calc(10px * var(--cs, 1)); background: var(--dan); }
+.btn.b { left: calc(6px * var(--cs, 1)); top: calc(52px * var(--cs, 1)); background: var(--cheong); }
+.btn { font-size: calc(18px * var(--cs, 1)); }
+.pill { font-size: calc(11px * var(--cs, 1)); padding: calc(7px * var(--cs, 1)) calc(14px * var(--cs, 1)); }
+/* v2.48 가로로 든 태블릿: 십자키는 왼쪽 아래, 메뉴·A·B는 오른쪽 아래(엄지 자리), 화면은 가운데 크게 */
+body.touch.side #wrap { justify-content: center; padding-block: 8px; }
+body.touch.side #pad { position: fixed; inset: 0; width: auto; display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: 1fr auto auto; align-items: end;
+  padding: 12px max(14px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px)); pointer-events: none; }
+body.touch.side #dpad { grid-column: 1; grid-row: 2 / 4; pointer-events: auto; }
+body.touch.side .mid { grid-column: 3; grid-row: 2; pointer-events: auto; margin-bottom: 12px; flex-direction: row; justify-content: flex-end; }
+body.touch.side .ab { grid-column: 3; grid-row: 3; pointer-events: auto; }
 .btn:active, .pill:active, .btn.down, .pill.down { filter: brightness(1.25); transform: translateY(1px); }
 #namebox { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); background: var(--shell); padding: 12px; border-radius: 8px; display: flex; gap: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
 #namebox input { font: 16px var(--font-ui); width: 9em; padding: 6px 8px; border-radius: 6px; border: 2px solid var(--key); background: var(--bezel); color: var(--ink); }
@@ -58,7 +77,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid #f0c040; outline-
   <div id="hint"><b>방향키</b> 이동 · <b>Z</b> 결정 · <b>X</b> 취소 / 누른 채 달리기 · <b>C</b> 또는 <b>Enter</b> 메뉴</div>
   <div id="pad">
     <div id="dpad" aria-label="방향 패드"><i class="h"></i><i class="v"></i><i class="c"></i></div>
-    <div class="mid"><button class="pill" data-k="menu" type="button">메뉴</button></div>
+    <div class="mid"><button class="pill" data-k="menu" type="button">메뉴</button><button class="pill" id="fsbtn" type="button" hidden>전체 화면</button></div>
     <div class="ab"><button class="btn b" data-k="b" type="button">B</button><button class="btn a" data-k="a" type="button">A</button></div>
   </div>
 </div>
@@ -129,6 +148,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid #f0c040; outline-
 <script src="js/townlv_v245.js"></script>
 <script src="js/intro.js"></script>
 <script src="js/pad.js"></script>
+<script src="js/touch_v248.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

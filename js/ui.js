@@ -9,12 +9,18 @@ class TextBox {
     const inner = this.o.w - 22;
     this.pages = String(text).split("\f").map(p => Font.wrap(p, inner));
     this.pg = 0; this.top = 0; this.n = [0, 0]; this.scroll = 0; this.state = "type"; this.waitT = 0; this.done = false;
+    this.shownT = 0; this.needT = this.readNeed(this.pages[0].slice(0, 2));
     this.promise = new Promise(r => this.res = r);
   }
   get lines() { return this.pages[this.pg]; }
+  // v2.48 대화 다 읽기(사용자: "대화를 막 틱틱틱 하면서 넘기는 경우가 많으므로, 답답하더라도 대화를 전부 읽을 수 있게"):
+  //   한 화면(두 줄)이 뜬 뒤 글자 수만큼(한 글자 0.11초, 0.6~4.5초) 지나야 A·B로 넘어감 — 그 전엔 눌러도 안 넘어가고 ▼도 안 보임
+  readNeed(lines) { const c = lines.reduce((a, t) => a + (t ? String(t).replace(/\s/g, "").length : 0), 0); return Math.round(Math.max(0.6, Math.min(4.5, c * 0.11)) * 60); }
+  get readOk() { return window.NK_READ_LOCK === false || this.shownT >= this.needT; }
   update(focus) {
     if (this.done && this.o.keep) return;
     if (!focus && !this.o.keep) return;
+    if (focus) this.shownT++;
     const L = this.lines;
     if (this.state === "type") {
       const fast = Input.is("a") || Input.is("b");
@@ -26,13 +32,14 @@ class TextBox {
     } else if (this.state === "wait") {
       this.waitT++;
       const auto = this.o.auto && this.waitT * 16.7 >= this.o.auto;
-      if (Input.ok() || Input.cancel() || auto) {
+      if (((Input.ok() || Input.cancel()) && this.readOk) || auto) {
         if (!auto) sfx("cursor");
         this.next();
       }
     } else if (this.state === "scroll") {
       this.scroll += 4;
-      if (this.scroll >= 16) { this.scroll = 0; this.top++; this.n = [this.n[1], 0]; this.n[0] = (this.lines[this.top] || "").length; this.state = "type"; }
+      if (this.scroll >= 16) { this.scroll = 0; this.top++; this.n = [this.n[1], 0]; this.n[0] = (this.lines[this.top] || "").length; this.state = "type";
+        this.shownT = 0; this.needT = this.readNeed([this.lines[this.top + 1]]); }
     }
   }
   endLines() {
@@ -44,7 +51,7 @@ class TextBox {
   next() {
     const L = this.lines;
     if (this.top + 2 < L.length) { this.state = "scroll"; this.scroll = 0; return; }
-    if (this.pg + 1 < this.pages.length) { this.pg++; this.top = 0; this.n = [0, 0]; this.state = "type"; return; }
+    if (this.pg + 1 < this.pages.length) { this.pg++; this.top = 0; this.n = [0, 0]; this.state = "type"; this.shownT = 0; this.needT = this.readNeed(this.lines.slice(0, 2)); return; }
     this.state = "end"; this.done = true;
     if (!this.o.keep) Scenes.pop(this);
     this.res();
@@ -61,7 +68,7 @@ class TextBox {
       Font.draw(g, s, tx, ty + i * 16 - this.scroll, { col, sh, n: Math.floor(n) });
     }
     g.restore();
-    if (this.state === "wait" && !this.o.auto && !this.o.noArrow) downArrow(x + w - 16, y + h - 13);
+    if (this.state === "wait" && !this.o.auto && !this.o.noArrow && this.readOk) downArrow(x + w - 16, y + h - 13);
   }
 }
 function say(text, opt = {}) {
