@@ -98,10 +98,10 @@ const GYM8_KIDS = [
 ];
 // 체육관 트레이너(시선 배틀) — 어둠 속에 서 있어 가까이 가야 보임
 const G8TR = { cls: "갈매반 친구", L: [
-  ["seonu", "선우", "kid_m", [["neogulmi", 40], ["salkwaengmi", 40]], "불 꺼진 교실은\n내 놀이터야!", "불 좀 켜 줘……!", "초롱 두 개를 다 켜면\n그 칸이 환해져!"],
-  ["yunseo", "윤서", "kid_f", [["malgupju", 41]], "어둠 속에서\n날 찾아냈구나!", "들켰다~", "책상 서랍도\n꼼꼼히 살펴봐!"],
-  ["geonho", "건호", "student", [["takrankkuk", 41], ["bangmangdochae", 41]], "암행어사는 몰래 살핀대.\n나도 몰래 기다렸지!", "몰래 진 건 아니야……", "'사목'은 암행어사가 지킬\n규칙을 적은 책이래."],
-  ["chaea", "채아", "kid_f", [["gujeongwang", 42], ["salkwaengbeom", 42]], "선생님 앞 마지막 관문!\n쉽게는 못 지나가!", "선생님, 저 졌어요~", "조박사님 첫 남켓몬은\n상대 모습으로 둔갑해!"]] };
+  ["seonu", "선우", "kid_m", [["neogulmi", 43], ["salkwaengmi", 43]], "불 꺼진 교실은\n내 놀이터야!", "불 좀 켜 줘……!", "초롱 두 개를 다 켜면\n그 칸이 환해져!"],
+  ["yunseo", "윤서", "kid_f", [["malgupju", 44]], "어둠 속에서\n날 찾아냈구나!", "들켰다~", "책상 서랍도\n꼼꼼히 살펴봐!"],
+  ["geonho", "건호", "student", [["takrankkuk", 44], ["bangmangdochae", 44]], "암행어사는 몰래 살핀대.\n나도 몰래 기다렸지!", "몰래 진 건 아니야……", "'사목'은 암행어사가 지킬\n규칙을 적은 책이래."],
+  ["chaea", "채아", "kid_f", [["gujeongwang", 45], ["salkwaengbeom", 45]], "선생님 앞 마지막 관문!\n쉽게는 못 지나가!", "선생님, 저 졌어요~", "조박사님 첫 남켓몬은\n상대 모습으로 둔갑해!"]] };
 const G8TR_HEART = ["어두울수록 작은 불빛이\n더 잘 보이더라.", null, null, "조박사님은 우리가 틀려도\n'괜찮아, 다시!' 하셔.\f그래서 우리 반은\n틀리는 걸 안 무서워해."];
 
 // ---- 지킴이 조박사 ----
@@ -111,15 +111,17 @@ const G8TR_HEART = ["어두울수록 작은 불빛이\n더 잘 보이더라.", n
 const JOBAKSA8 = { id: "leader_jobaksa", cls: "지킴이", name: "조박사", spr: "gl_jobaksa2", type: "악", indoor: true, bg: "indoor", base: 120, music: "eyes", bgm: "battle_gym",
   intro: "조박사: 깜깜한 교실, 잘 헤쳐 왔네!\f유척, 사목, 마패……\n오늘 교구는 다 찾았지?\f자, 마지막 수업이다.\n봐 달라고? 음 그건 안 돼!\f약속했잖아.\n제대로 붙는 거야!",
   lose: "조박사: ……와.\n선생님이 졌다.\f처음 볼을 고르던 날이\n엊그제 같은데.",
-  team: [["dungabi", 42, { ab: "imposter", mv: ["transform"] }],
-         ["dochaedong", 42, { mv: ["geumnawara", "confuseray", "payback", "leer"] }],
-         ["salkwaengbeom", 43, { mv: ["brickbreak", "bite", "taunt", "leer"] }],
-         ["ssogalbeom", 43, { mv: ["aquacutter", "bite", "scaryface", "leer"] }],
-         ["heukdam", 45, { mv: ["darkpulse", "rockthrow", "snarl", "harden"], item: "jujube" }]] };
+  // v2.56 레벨 다시 맞춤: 다섯(54·54·55·55·58, 도채동은 최종 진화 방망도채로) · 실력자 AI(깊이 3) · 경옥고 1개 · 타고난 힘 26
+  iv: 26, items: ["hyperpotion"], smart: 3,   // 마지막 지킴이: "봐 달라고? 음 그건 안 돼!" — 산지기처럼 다 씀
+  team: [["dungabi", 54, { ab: "imposter", mv: ["transform"] }],
+         ["bangmangdochae", 54, { mv: ["shadowball", "darkpulse", "confuseray", "swordsdance"] }],
+         ["salkwaengbeom", 55, { mv: ["brickbreak", "crunch", "taunt", "leer"] }],
+         ["ssogalbeom", 55, { mv: ["aquacutter", "crunch", "scaryface", "leer"] }],
+         ["heukdam", 58, { mv: ["darkpulse", "rockslide", "snarl", "harden"], item: "mogwa" }]] };
 const JB_HINT = [
   "조박사: 다시 왔네! 좋아, 그래야지.\f악 타입은 격투·벌레·페어리에 약해.\n에스퍼 기술은 아예 안 통하고.",
   "조박사: 첫 번째 둔갑이는\n네 남켓몬 모습으로 둔갑해.\f똑같은 둘이 붙으면?\n……먼저 움직이는 쪽이 유리하겠지?",
-  "조박사: 마지막 흑담은 악·바위야.\f격투가 아주 잘 들고\n물·풀·땅·강철·페어리도 잘 들어.\f대추를 지녔으니까\n한 번에 몰아붙여 봐!",
+  "조박사: 마지막 흑담은 악·바위야.\f격투가 아주 잘 들고\n물·풀·땅·강철·페어리도 잘 들어.\f모과를 지녔고, 선생님도 경옥고를\n하나 챙겼다. 한 번에 몰아붙여 봐!",
 ];
 async function jobaksaTalk(a) {
   if (hasBadge(8)) {
@@ -371,6 +373,11 @@ async function jbReturnEvent() {
     face(J, P);
   }
   await say("조박사: 어사패…… 일곱 개!\n여기까지 왔구나.");
+  if (G.flag("bs_vote_done")) {   // v2.59 비색마을 투표
+    await say("조박사: 그리고 비색마을 투표 이야기,\n선생님 다 들었다!");
+    await say("조박사: 4월의 엽서를 보여 주고\n마을 사람들이랑 함께 지켰다며?\f……선생님이 가르친 것보다\n더 잘했네.");
+    await say("조박사: 그 '투표 지시서',\n선생님 장부의 빠진 한 장이야.\f잘 가지고 있어.\n곧 쓸 날이 와.");
+  }
   await say("조박사: 희주 선생님 수업도\n들었네?\f'천천히 해도 괜찮아요'\n……그 말 들었지?\f그 말 듣고 나면 이상하게\n더 힘이 난다니까.");
   await say("조박사: 약속대로 일곱 개.\f이제 선생님 수업을\n들어 볼 차례야.");
   await say("조박사: 아, 선생님 배움터는\n불을 다 꺼 놨어.\f오늘 수업 주제가 '암행'이거든.");

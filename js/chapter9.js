@@ -65,10 +65,10 @@ async function mokgiMasterTalk() {
 // =====================================================================
 const BS_GRUNT1 = { id: "bondi_bs1", cls: "본디회", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 솔뫼 행수님이 그러셨다!\n사람 없는 산이 진짜 산이라고!", lose: "단원: 크윽……\n곰이 길을 잃으면 어쩌려고……",
-  team: [["neodeolba", 40, { mv: ["rockslide", "stompingtantrum", "sandstorm", "leer"] }], ["bagureong", 41, { mv: ["breakingswipe", "powergem", "harden", "growl"] }]] };
+  team: [["neodeolba", 44, { mv: ["rockslide", "stompingtantrum", "sandstorm", "leer"] }], ["bagureong", 45, { mv: ["breakingswipe", "powergem", "harden", "growl"] }]] };
 const BS_GRUNT2 = { id: "bondi_bs2", cls: "본디회", name: "단원", spr: "grunt_f", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 미르니는 이무기 소의\n아이야!\f등산객 소리에 놀라\n숨어 버리잖아!", lose: "단원: ……항아리가 무거워졌어.",
-  team: [["mokdongi", 40, { mv: ["shadowball", "astonish", "harden", "growl"] }], ["chamsutjang", 40, { mv: ["firepunch", "rocktomb", "harden", "ember"] }]] };
+  team: [["mokdongi", 44, { mv: ["shadowball", "astonish", "harden", "growl"] }], ["chamsutjang", 44, { mv: ["firepunch", "rocktomb", "harden", "ember"] }]] };
 async function baemsaEvent() {
   const P = World.player, G1 = act("bs_g1"), G2 = act("bs_g2"), J1 = act("bs_jar1"), J2 = act("bs_jar2"), R = act("bs_ranger");
   if (!G1) return;

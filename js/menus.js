@@ -254,7 +254,7 @@ class Bag extends Modal {
         if (!canApply(id, G.party[t], mi)) { await say("써도 효과가 없을 것 같다."); return; }
         Bag.lastP = this.p; this.done({ item: id, target: t, move: mi }); return;
       }
-      const opts = it.p === "key" ? (["townmap", "expshare", "watch", "oldrod", "gong", "jjy_card"].includes(id) ? (id === "jjy_card" ? ["읽다", "그만두다"] : ["쓰다", "그만두다"]) : ["그만두다"]) : canHold(id) ? ["쓰다", "지니게 하다", "버리다", "그만두다"] : ["쓰다", "버리다", "그만두다"];
+      const opts = it.p === "key" ? (["townmap", "expshare", "watch", "oldrod", "gong", "jjy_card"].includes(id) ? (id === "jjy_card" ? ["읽다", "그만두다"] : ["쓰다", "그만두다"]) : it.read ? ["읽다", "그만두다"] : ["그만두다"]) : canHold(id) ? ["쓰다", "지니게 하다", "버리다", "그만두다"] : ["쓰다", "버리다", "그만두다"];
       const v = await menu({ items: opts, x: 160, y: 96 - (opts.length > 3 ? 16 : 0), w: 94 });
       const k = opts[v];
       if (k === "쓰다" || k === "읽다") { await fieldUse(id); if (typeof FIELD_PENDING !== "undefined" && FIELD_PENDING) { Bag.lastP = this.p; this.done(null); return; } }
@@ -378,6 +378,7 @@ async function fieldUse(id) {
     G.take(id); sfx("heal_hp"); await say("동아줄을 붙잡았다!\n쑤욱 끌려 올라간다!"); await World.warp(d.escape, "fade"); return; }
   if (id === "townmap") { await show(new TownMap()); return; }
   if (id === "jjy_card") { await jjyCardRead(); return; }       // v2.12 4월의 엽서
+  if (it.read) { await it.read(); return; }                    // v2.59 정표: 이야기 읽기
   if (id === "watch") { await useWatch(); return; }
   if (id === "oldrod") { fieldLater(useRod); return; }          // v2.0 낚시: 가방을 닫고 바로
   if (id === "gong") { fieldLater(useGong); return; }           // v2.0 겨루기 징
@@ -624,8 +625,9 @@ class Options extends Modal {
   constructor() { super(); this.i = 0; this.opaque = true; }
   get rows() { const o = Save.opt; return [
     ["글자 속도", ["느림", "보통", "빠름"], "speed"], ["대화 다 읽기", ["켜기", "끄기"], "readlock", true], ["배틀 애니메이션", ["켜기", "끄기"], "anim", true], ["배틀 방식", ["교체", "계속"], "style"],
+    ["트레이너 실력", ["실전", "보통"], "real", true],   // v2.58
     ["늘 달리기", ["켜기", "끄기"], "autorun", true], ["배경 음악", null, "music"], ["효과음", null, "sfx"], ["창 테두리", FRAMES.map(f => f.name), "frame"], ["자동 리포트", ["켜기", "끄기"], "autosave", true], ["닫기"]]; }
-  get lh() { const n = this.rows.length; return n > 9 ? 13 : n > 8 ? 14 : 15; }   // v2.51 줄이 열 개(대화 다 읽기 더함) → 제목·도움말 칸을 줄여 13칸 간격
+  get lh() { const n = this.rows.length; return n > 10 ? 14 : n > 9 ? 13 : n > 8 ? 14 : 15; }   // v2.58 열한 줄(트레이너 실력): 아래 도움말 칸을 빼고 큰 칸에 14칸 간격   // v2.51 줄이 열 개(대화 다 읽기 더함) → 제목·도움말 칸을 줄여 13칸 간격
   get y0() { return 30; }
   update(f) {
     if (!f) return; const R = this.rows, o = Save.opt;
@@ -643,14 +645,14 @@ class Options extends Modal {
   draw() {
     bgPattern("#5a7a5a", "#648464");
     frame(8, 3, 240, 21); Font.draw(g, "설정", 128, 5, { align: "center" });
-    frame(8, 25, 240, 137);
-    const o = Save.opt;
+    const o = Save.opt, big = this.rows.length > 10;
+    frame(8, 25, 240, big ? 163 : 137, big ? o.frame : undefined);      // v2.58 줄이 많으면 큰 칸 하나(창 테두리 미리보기도 이 칸으로)
     this.rows.forEach((r, k) => { const y = this.y0 + k * this.lh; Font.draw(g, r[0], 24, y); if (k === this.i) cursor(14, y + 3);
       if (!r[2]) return;
       let v; if (r[1]) v = r[1][r[3] ? (o[r[2]] ? 0 : 1) : o[r[2]]]; else v = "■".repeat(Math.round(o[r[2]] * 10)) + "□".repeat(10 - Math.round(o[r[2]] * 10));
       if (!r[1]) { for (let i = 0; i < 10; i++) rect(150 + i * 8, y + 4, 6, 8, i < Math.round(o[r[2]] * 10) ? "#d04030" : "#c8c8c0"); }
       else Font.draw(g, "◀ " + v + " ▶", 238, y, { align: "right", col: "#d04030", sh: TXT.rsh }); });
-    frame(8, 164, 240, 26, o.frame); Font.draw(g, "Z: 결정  X: 취소·달리기  C/Enter: 메뉴", 128, 170, { align: "center", font: "g9" });
+    if (!big) { frame(8, 164, 240, 26, o.frame); Font.draw(g, "Z: 결정  X: 취소·달리기  C/Enter: 메뉴", 128, 170, { align: "center", font: "g9" }); }
   }
 }
 

@@ -60,10 +60,10 @@ async function garam3Event() {
 // =====================================================================
 const SB_GRUNT1 = { id: "bondi_sb1", cls: "본디회", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 비켜라!\n소리꾀의 노래는 항아리 속에서\f영원히 남을 거다!", lose: "단원: 크윽……\n노래가 멈추면 안 되는데……",
-  team: [["heukdoni", 31, { mv: ["headbutt", "bite", "tailwhip", "takedown"] }], ["dochaedong", 32, { mv: ["bite", "astonish", "confuseray", "payback"] }]] };
+  team: [["heukdoni", 35, { mv: ["headbutt", "bite", "tailwhip", "takedown"] }], ["dochaedong", 36, { mv: ["bite", "astonish", "confuseray", "payback"] }]] };
 const SB_GRUNT2 = { id: "bondi_sb2", cls: "본디회", name: "단원", spr: "grunt_f", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 소리 어른께서 그러셨어!\n소리가 사라지는 게 무섭다고!", lose: "단원: 어, 어른……\n어떡하죠……",
-  team: [["taoryong", 33, { mv: ["flamecharge", "bite", "smokescreen", "ember"] }], ["gwangdaeseot", 32, { mv: ["megadrain", "stunspore", "headbutt", "growth"] }]] };
+  team: [["taoryong", 37, { mv: ["flamecharge", "bite", "smokescreen", "ember"] }], ["gwangdaeseot", 36, { mv: ["megadrain", "stunspore", "headbutt", "growth"] }]] };
 async function ssukEvent() {
   const P = World.player, S1 = act("sb_g1"), S2 = act("sb_g2"), S3 = act("sb_g3"), O = act("sb_sori"), Y = act("sb_yeosim"), B = act("sb_boreum"), J = act("sb_jar");
   if (!S1) return;
@@ -128,7 +128,7 @@ async function ssukEvent() {
   G.healAll(); await Audio2.jingle("jg_heal"); await say("남켓몬들이 기운을 되찾았다!");
   await say("여심: 배움터에서 기다릴게요.\f보건실이라 조금 신기한\n방일 거예요.\f잘가요~ ^____________________^");
   if (Y) { await walkPath(Y, 11, 12); sfx("exit"); Y.hidden = true; }
-  if (B) { face(B, P); await say("보름: 나는 할아버지 소리,\n꼭 한 번 들어 볼 거야.\f국악당 앞에서 기다릴래!"); await walkTo(B, 21, 11); B.dir = "up"; }
+  if (B) { face(B, P); if (typeof jpFan === "function") await jpFan(); await say("보름: 나는 할아버지 소리,\n꼭 한 번 들어 볼 거야.\f국악당 앞에서 기다릴래!"); await walkTo(B, 21, 11); B.dir = "up"; }   // v2.59 정표 ④ 소리 부채
   G.flag("ssuk_event_done", true);
   zoneBgm();
 }
@@ -155,17 +155,17 @@ const GYM6_KIDS = [
   { id: "g6k1", n: 1, x: 13, y: 17, dir: "left", spr: "kid_f",
     hint: "수아: 문제판을 읽고\n답의 번호가 적힌 매트에 서 봐.\f맞으면 다음 방으로 슝~!",
     after: "수아: 여심 선생님은\n아픈 데를 먼저 물어보셔.",
-    tr: { id: "gym6_sua", cls: "보건반 짝꿍", name: "수아", spr: "kid_f", base: 20, team: [["kkumnoru", 32]],
+    tr: { id: "gym6_sua", cls: "보건반 짝꿍", name: "수아", spr: "kid_f", base: 20, team: [["kkumnoru", 35]],
       intro: "수아: 순간이동 배틀!\n……은 아니고 그냥 배틀!", lose: "수아: 어지러워……" } },
   { id: "g6k2", n: 2, x: 13, y: 12, dir: "left", spr: "kid_m",
     hint: "건우: 이번 문제는 보건실 상식!\f여심 선생님이 맨날\n알려 주시는 거야.",
     after: "건우: 다치면 숨기지 말고\n바로 말하래.",
-    tr: { id: "gym6_geonu", cls: "보건반 짝꿍", name: "건우", spr: "kid_m", base: 20, team: [["seureumi", 31], ["sojjeokmi", 31]],
+    tr: { id: "gym6_geonu", cls: "보건반 짝꿍", name: "건우", spr: "kid_m", base: 20, team: [["seureumi", 34], ["sojjeokmi", 34]],
       intro: "건우: 보건부장의\n실력을 보여 주지!", lose: "건우: 반창고 좀……" } },
   { id: "g6k3", n: 3, x: 13, y: 7, dir: "left", spr: "kid_f",
     hint: "나윤: 마지막은 타입 상성!\f에스퍼한테 센 건 뭘까?\n벌레? 격투? 독?",
     after: "나윤: 여심 선생님이 '괜찮아용~'\n하시면 진짜 괜찮아져.",
-    tr: { id: "gym6_nayun", cls: "보건반 짝꿍", name: "나윤", spr: "kid_f", base: 20, team: [["yeonbangul", 32], ["sorikkoe", 33]],
+    tr: { id: "gym6_nayun", cls: "보건반 짝꿍", name: "나윤", spr: "kid_f", base: 20, team: [["yeonbangul", 35], ["sorikkoe", 36]],
       intro: "나윤: 연방울아,\n향기로 진정시켜 줘!", lose: "나윤: 내가 진정됐네……" } },
 ];
 function g6Glow(x, y) { G6_GLOW = { x, y, t: 18 }; }
@@ -226,12 +226,15 @@ async function gym6KidTalk(k) {
 const YEOSIM6 = { id: "leader_yeosim", cls: "지킴이", name: "여심", spr: "gl_yeosim", type: "에스퍼", indoor: true, bg: "indoor", base: 120, music: "eyes", bgm: "battle_gym",
   intro: "여심: 어서 와요~\n매트, 어지럽진 않았어요?\f배틀 전에 하나만요.\n어디 아픈 데는 없죠?\f……좋아요.\n그럼 우리 시작해 볼까요?",
   lose: "여심: 어머, 졌네요~\f그래도 남켓몬들 표정을 보니\n다들 괜찮아 보여요.\f……괜찮아용~",
-  team: [["kkumnoru", 33, { mv: ["confusion", "calmmind", "charm", "tackle"] }],
-         ["yeonbangul", 34, { mv: ["psybeam", "megadrain", "stunspore", "synthesis"] }],
-         ["seonrok", 35, { mv: ["psybeam", "dazzlinggleam", "charm", "healbell"], item: "jujube" }]] };
+  // v2.56 레벨 다시 맞춤: 넷(43·44·44·47, 모두 진화 끝) · 실력자 AI · 경옥고 1개 · 타고난 힘 22
+  iv: 22, items: ["hyperpotion"],
+  team: [["eopseureong", 43, { ab: "multiscale", mv: ["psychicnoise", "sludgebomb", "calmmind", "healbell"] }],
+         ["yeonbangul", 44, { mv: ["psybeam", "gigadrain", "stunspore", "synthesis"] }],
+         ["sorikkoe", 44, { mv: ["psychicnoise", "airslash", "sing", "growl"] }],
+         ["seonrok", 47, { mv: ["psyshock", "dazzlinggleam", "yawn", "calmmind"], item: "mogwa" }]] };
 const YS_HINT = [
   "여심: 또 왔네요~ 반가워요.\f에스퍼는 벌레·고스트·악에 약해요.\n구룡계곡 밤에 말굽쥬가 나와요.",
-  "여심: 꿈노루는 명상으로\n점점 세져요.\f오래 끌지 말고\n먼저 쓰러뜨려 봐요.",
+  "여심: 업스렁은 독·에스퍼라서\n땅·고스트·악이 잘 들어요.\f소리꾀의 노래에 잠들면 곤란하니\n잠깨는약을 챙겨 와요~",
   "여심: 선록은 에스퍼·페어리라서\n격투는 거의 안 들어요.\f고스트나 강철 기술이\n잘 들어요. ……힌트 너무 줬나? ^^;;",
 ];
 async function yeosimTalk(a) {

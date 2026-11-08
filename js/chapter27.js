@@ -65,10 +65,10 @@ const GYM7_KIDS = [
 ];
 // 체육관 트레이너(시선 배틀)
 const M7TR = { cls: "미색반 친구", L: [
-  ["junu", "준우", "kid_m", [["yeopjeoni", 36], ["namujjo", 36]], "화로 불보다 뜨거운\n내 배틀 받아라!", "앗, 뜨거!", "칠판 문제부터 읽고\n손잡이를 당겨!"],
-  ["seoa", "서아", "kid_f", [["chamjipwang", 37]], "땅땅! 모루 소리\n들리지?", "망치를 놓쳤다……", "희주 선생님 첫 남켓몬은\n옛날 돈 엽전이래!"],
-  ["minho", "민호", "student", [["ttanggul", 37], ["jangsuppul", 37]], "물길 건너기 전에\n나랑 한판!", "다리에서 미끄러졌다……", "땅 기술은 강철한테\n아주 잘 들어!"],
-  ["yuna", "유나", "kid_f", [["jipgeppul", 38], ["yeopjeoni", 38]], "선생님 앞 마지막 관문!\n쉽게는 못 건너!", "선생님, 저 졌어요~", "워낭왕은 전기·강철.\n땅 기술이 아주 아주 잘 들어!"]] };
+  ["junu", "준우", "kid_m", [["yeopjeoni", 39], ["namujjo", 39]], "화로 불보다 뜨거운\n내 배틀 받아라!", "앗, 뜨거!", "칠판 문제부터 읽고\n손잡이를 당겨!"],
+  ["seoa", "서아", "kid_f", [["chamjipwang", 40]], "땅땅! 모루 소리\n들리지?", "망치를 놓쳤다……", "희주 선생님 첫 남켓몬은\n옛날 돈 엽전이래!"],
+  ["minho", "민호", "student", [["ttanggul", 40], ["jangsuppul", 40]], "물길 건너기 전에\n나랑 한판!", "다리에서 미끄러졌다……", "땅 기술은 강철한테\n아주 잘 들어!"],
+  ["yuna", "유나", "kid_f", [["jipgeppul", 41], ["yeopjeoni", 41]], "선생님 앞 마지막 관문!\n쉽게는 못 건너!", "선생님, 저 졌어요~", "워낭왕은 전기·강철.\n땅 기술이 아주 아주 잘 들어!"]] };
 const M7TR_HEART = ["쇠도 처음엔 무른 덩어리래.\f두드리고 또 두드려야\n모양이 생긴대.", null, null, "희주 선생님은 아파도\n수업은 꼭 끝까지 하셔.\f대신 우리한텐 늘\n'천천히 해도 괜찮아요' 하시고."];
 
 // ---- 지킴이 희주 ----
@@ -79,14 +79,16 @@ const M7TR_HEART = ["쇠도 처음엔 무른 덩어리래.\f두드리고 또 두
 const HEEJU7 = { id: "leader_heeju", cls: "지킴이", name: "희주", spr: "gl_heeju", type: "강철", indoor: true, bg: "indoor", base: 120, music: "eyes", bgm: "battle_gym",
   intro: "희주: 물길을 셋이나 건너왔네요.\n정말 잘했어요.\f달구고, 두드리고, 식히고……\n오늘 수업의 마지막은 배틀이에요.\f천천히 해도 괜찮아요.\n대신 끝까지 같이 가요!",
   lose: "희주: ……와.\n정말 단단해졌네요.\f선생님이 졌어요.\n천천히 해도 괜찮다고 했는데,\f벌써 이렇게 컸네요.",
-  team: [["yeopjeoni", 36, { mv: ["spark", "metalsound", "irondefense", "rapidspin"] }],
-         ["ttanggul", 37, { mv: ["metalclaw", "mudshot", "sandtomb", "sandattack"] }],
-         ["chamjipwang", 37, { mv: ["bubblebeam", "metalclaw", "protect", "leer"] }],
-         ["wonangwang", 39, { mv: ["flashcannon", "spark", "thunderwave", "metalsound"], item: "jujube" }]] };
+  // v2.56 레벨 다시 맞춤: 14번도로·인월 야생이 Lv37~42라 예전 팀(36~39)은 길가 남켓몬보다 낮았음 → 넷(48·49·50·52, 첫째는 엽전이 최종 진화 역마령) · 경옥고 1개 · 타고난 힘 24
+  iv: 24, items: ["hyperpotion"],
+  team: [["eosapae", 48, { ab: "mapae", mv: ["flashcannon", "extrasensory", "irondefense", "metalsound"] }],
+         ["ttanggul", 49, { mv: ["ironhead", "earthquake", "sandtomb", "sandattack"] }],
+         ["chamjipwang", 50, { mv: ["razorshell", "ironhead", "protect", "swordsdance"] }],
+         ["wonangwang", 52, { mv: ["flashcannon", "thunderbolt", "thunderwave", "metalsound"], item: "mogwa" }]] };
 const HJ7_HINT = [
   "희주: 또 와 줬네요. 고마워요.\f강철은 불꽃·격투·땅에 약해요.\n독 기술은 아예 안 통하고요.",
-  "희주: 첫 엽전이는 철벽으로\n단단해져요.\f단단해지기 전에\n센 기술로 먼저 쓰러뜨려 봐요.",
-  "희주: 마지막 워낭왕은\n전기·강철이에요.\f땅 기술이 아주 아주 잘 들어요.\n대추를 지녔으니 한 번에 몰아붙여요!",
+  "희주: 첫 역마령은 강철·에스퍼예요.\n엽전이가 다 자란 모습이죠.\f불꽃·땅·고스트·악이 잘 들고\n독 기술은 아예 안 통해요.",
+  "희주: 마지막 워낭왕은\n전기·강철이에요.\f땅 기술이 아주 아주 잘 들어요.\n모과를 지녔으니 한 번에 몰아붙여요!",
 ];
 async function heejuTalk7(a) {
   if (hasBadge(7)) {
@@ -109,6 +111,7 @@ async function heejuTalk7(a) {
   await getItem("tm91");
   await say("희주: 기술머신91 '러스터캐논'.\f몸의 빛을 한곳에 모아 쏘는\n강철 기술이에요.");
   await say("희주: 미색마을의 부탁은 하나예요.\f돌아올 자리를 남겨 두세요.\n제비에게도, 친구에게도.\f……그리고 나 자신에게도요.");
+  if (typeof jpSeed === "function") await jpSeed();   // v2.59 정표 ⑤ 제비 박씨
   await say("희주: 자, 오늘 수업은\n여기까지예요.");
   await say("희주가 안경을 벗어\n카디건 주머니에 넣었다.");
   a.spr = "heeju";

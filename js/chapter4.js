@@ -37,7 +37,7 @@ if (MV.gigadrain && !ITEMS.tm19) ITEMS.tm19 = { n: "기술머신19", p: "tm", pr
 const BANGSAM3 = { id: "bondi_bangsam3", cls: "본디회 단원", name: "방삼", spr: "grunt_m", base: 40, music: "bondi", bgm: "trainer",
   intro: "방삼: 에헴! 이 몸이 본디회의\n방삼이시다!\f단지 머리에서 항아리를 빼려면\n힘을 모아야 해. 너부터 치우고!",
   lose: "방삼: 끄아악!\n이번에도 졌다……!",
-  team: [["darijak", 18, { mv: ["quickattack", "tackle", "featherdance", "tailwind"] }], ["neogulmi", 19, { mv: ["scratch", "payback", "tailwhip", "block"] }]] };   // 개그 배틀: 가볍게(셋 Lv21 풀도 대부분 이김)
+  team: [["darijak", 23, { mv: ["quickattack", "tackle", "featherdance", "tailwind"] }], ["neogulmi", 24, { mv: ["scratch", "payback", "tailwhip", "block"] }]] };   // 개그 배틀: 가볍게(셋 Lv21 풀도 대부분 이김)
 async function bangsamDanjiEvent() {
   const P = World.player, B1 = act("bangsam3"), B2 = act("danji3");
   if (!B1 || !B2) return;
@@ -71,14 +71,14 @@ const YEOUL1 = { id: "yeoul1", cls: "본디회 행수", name: "여울", spr: "ye
   lose: "여울: ……센 물살이네, 너.",
   // 설정집 팀(쏘가미·털집게·메기장)을 Lv21–22로, 가장 센 물 기술(아쿠아커터·셸블레이드·물의파동)은 빼고. 져도 이야기는 이어짐(불꽃 스타팅이 물 셋을 만남)
   // bal_gym(셋, 상처약 2): 풀 Lv22 100% · 불꽃 Lv23 37%·24 63% · 물 Lv23 80%·24 97%
-  team: [["ssogami", 21, { mv: ["aquajet", "flipturn", "scaryface", "leer"] }],
-         ["teoljipge", 21, { mv: ["bubblebeam", "visegrip", "protect", "growl"] }],
-         ["megijang", 22, { mv: ["mudshot", "watergun", "mudsport", "tickle"] }]] };
+  team: [["ssogami", 26, { mv: ["aquajet", "flipturn", "scaryface", "leer"] }],
+         ["teoljipge", 26, { mv: ["bubblebeam", "visegrip", "protect", "growl"] }],
+         ["megijang", 27, { mv: ["mudshot", "watergun", "mudsport", "tickle"] }]] };
 const AGENT1 = { id: "agent_bisaek", cls: "금박재단", name: "요원", spr: "agent", base: 50, music: "bondi", bgm: "trainer", canLose: true,
   loseText: "요원: 업무 방해는\n여기까지입니다.",
   intro: "요원: 업무 방해로 간주합니다.\n절차대로 처리하겠습니다.",
   lose: "요원: ……보고서에\n적어 두겠습니다.",
-  team: [["yeopjeoni", 20, { mv: ["chargebeam", "rapidspin", "metalsound", "tackle"] }], ["neogulmi", 21, { mv: ["scratch", "payback", "tailwhip", "block"] }]] };
+  team: [["yeopjeoni", 23, { mv: ["chargebeam", "rapidspin", "metalsound", "tackle"] }], ["neogulmi", 24, { mv: ["scratch", "payback", "tailwhip", "block"] }]] };
 async function seomjinEvent() {
   const P = World.player, Y = act("yeoul_f"), A1 = act("agent1_b"), A2 = act("agent2_b"), S = act("suhyeon_f");
   if (!Y || !A1 || !A2 || !S) return;
@@ -172,17 +172,17 @@ const GYM3_KIDS = [
   { id: "g3k1", n: 1, x: 8, y: 16, dir: "left", spr: "kid_f",
     hint: "다인: 수업판 문제를 맞히면\n문이 열려!\f아까 섬진강 둑에서\n무슨 일이 있었는지 기억나?",
     after: "다인: 수현 선생님은 우리가 다투면\n먼저 밥부터 먹이셔.\f배부르면 화가\n반으로 준대!",
-    tr: { id: "gym3_dain", cls: "요리반 짝꿍", name: "다인", spr: "kid_f", base: 20, team: [["bakari", 20], ["mudangkong", 20]],
+    tr: { id: "gym3_dain", cls: "요리반 짝꿍", name: "다인", spr: "kid_f", base: 20, team: [["bakari", 23], ["mudangkong", 23]],
       intro: "다인: 반죽은 손으로 꾹꾹!\n배틀도 꾹꾹!", lose: "다인: 으앗,\n반죽이 다 터졌다!" } },
   { id: "g3k2", n: 2, x: 10, y: 11, dir: "up", spr: "kid_m",
     hint: "유찬: 이번 문제는 남원 생태도감!\f광대섯을 잡았다면\n도감에서 ▶를 눌러 봐.",
     after: "유찬: 버섯은 예쁘다고 먹으면 안 돼.\n선생님이 백 번은 말씀하셨어!",
-    tr: { id: "gym3_yuchan", cls: "요리반 짝꿍", name: "유찬", spr: "kid_m", base: 20, team: [["seotkongi", 20], ["gwangdaeseot", 21]],
+    tr: { id: "gym3_yuchan", cls: "요리반 짝꿍", name: "유찬", spr: "kid_m", base: 20, team: [["seotkongi", 23], ["gwangdaeseot", 24]],
       intro: "유찬: 버섯 남켓몬의 매력을\n알려 주지!", lose: "유찬: 내 버섯들이\n시들시들……" } },
   { id: "g3k3", n: 3, x: 4, y: 6, dir: "left", spr: "kid_f",
     hint: "소은: 마지막은 타입 상성!\f수현 선생님 남켓몬은\n모두 풀 타입이야.\f풀은 물이랑 땅에는 강한데……\n무엇에 약할까?",
     after: "소은: 선생님 호루라기 소리가 나면\n다들 줄을 딱 맞춰 서!",
-    tr: { id: "gym3_soeun", cls: "요리반 짝꿍", name: "소은", spr: "kid_f", base: 20, team: [["bakari", 21], ["heosuni", 21]],
+    tr: { id: "gym3_soeun", cls: "요리반 짝꿍", name: "소은", spr: "kid_f", base: 20, team: [["bakari", 24], ["heosuni", 24]],
       intro: "소은: 풀 타입은 질긴 거 알지?\n끝까지 버틴다!", lose: "소은: 버티는 것도\n한계가 있구나……" } },
 ];
 async function gym3Quiz(n) {
@@ -240,13 +240,19 @@ const SUHYEON = { id: "leader_suhyeon", cls: "지킴이", name: "수현", spr: "
   lose: "수현: 잘했어요.\f빵도 배틀도 기다릴 줄 알아야\n잘 부풀거든요.\f오늘 정말 잘 기다렸어요.",
   // bal_gym(상처약 2, 둘째·셋째 = 4·5번도로에서 잡히는 벌레·비행·독, 물 스타팅은 쪽빛 기술머신09 베놈쇼크):
   //   셋(Lv24·25) 풀 90·98% · 불꽃 100% · 물 78·75% / 둘 풀 50·60% · 불꽃 100% · 물 30·35%. 처음 안(씨기관총·씨뿌리기·독가루, 에이스 거품광선)은 셋이어도 물 20~70%
-  team: [["bakari", 22, { mv: ["magicalleaf", "megadrain", "growl", "absorb"] }],
-         ["gwangdaeseot", 23, { mv: ["megadrain", "acid", "stunspore", "sweetscent"] }],
-         ["ureongdaek", 25, { mv: ["magicalleaf", "watergun", "growl", "tailwhip"], item: "jujube" }]] };
+  // v2.55 사용자 "스토리 너무 쉬움, 특히 3~4관장": 오는 길의 트레이너를 다 이기면 스타팅이 Lv28~31(학습장치)이라 예전 팀(Lv22~25)은 95~100% 이김
+  //   → v2.56 "레벨스케일 전반적으로" 넷(Lv27·28·27·30) · 실력자 AI(지킴이) · 쌍화탕 1개(실제 관장처럼 HP 1/4 아래에서) · 타고난 힘 20 · 우렁댁(우렁된장 — 요리반다운 버티기 에이스)
+  //   bal_gym3(넷, 쌍화탕 2, 풀·물 = 베놈쇼크): 스타팅 Lv28·짝 24 풀 31 · 불꽃 81 · 물 25% / Lv30·짝 27 풀 63 · 불꽃 100 · 물 50%
+  //   (센 안 — 기가드레인·씨기관총 참다람·누룽지 — 은 풀·물 0~13%라 뺌)
+  iv: 20, items: ["superpotion"],
+  team: [["bakari", 27, { ab: "harvest", item: "mogwa", mv: ["megadrain", "leechseed", "magicalleaf", "growl"] }],
+         ["gwangdaeseot", 28, { ab: "effectspore", mv: ["megadrain", "acid", "stunspore", "sweetscent"] }],
+         ["heosuni", 27, { ab: "cursedbody", mv: ["bulletseed", "shadowclaw", "leer", "astonish"] }],
+         ["ureongdaek", 30, { ab: "hyangdan", item: "mogwa", mv: ["bubblebeam", "magicalleaf", "growl", "protect"] }]] };
 const SH_HINT = [
   "수현: 다시 왔네요. 좋아요.\f풀 타입은 불꽃·얼음·독·비행·벌레에\n약해요.\f들판의 다리작이나 나비채,\n쪽빛에서 받은 베놈쇼크도 좋아요.",
-  "수현: 광대섯 저리가루에 마비되면\n움직이기 힘들죠?\f마비풀이환을 챙기거나\n먼저 쓰러뜨리는 게 좋아요.",
-  "수현: 우렁댁은 물 타입이기도 해서\n불꽃이 잘 안 들어요.\f비행·독·벌레 기술로 맞서 봐요.\n대추를 먹고 버티는 것도 조심!",
+  "수현: 광대섯 저리가루에 마비되면\n움직이기 힘들죠?\f마비풀이환을 챙기거나\n먼저 쓰러뜨리는 게 좋아요.\f허수니는 풀·고스트라서\n노말·격투 기술이 안 들어요.",
+  "수현: 우렁댁은 물 타입이기도 해서\n불꽃이 잘 안 들어요.\f비행·독·벌레 기술로 맞서 봐요.\f우렁댁의 [향단이]는 HP가 절반 아래면\n한 번 몰래 밥상을 차려 회복해요.\f회복한 뒤에 한 번 더\n세게 때리면 돼요!\f선생님도 쌍화탕을 하나 챙겨 와요.\n……그러니까 상처약은 넉넉히!",
 ];
 async function suhyeonTalk(a) {
   if (hasBadge(3)) { await say(`수현: ${G.name}, 밥은 먹고 다녀요?\f……남켓몬들도요.\n같이 먹어야 더 맛있어요.`); return; }

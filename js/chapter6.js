@@ -52,8 +52,8 @@ if (MV.brickbreak && !ITEMS.tm31) ITEMS.tm31 = { n: "기술머신31", p: "tm", p
 const BANGSAM5 = { id: "bondi_bangsam5", cls: "본디회 단원", name: "방삼", spr: "grunt_m", base: 40, music: "bondi", bgm: "trainer",
   intro: "방삼: 에헴! 고갯마루를 넘으려면\n통행료를 내야지!\f돈이 없으면…… 남켓몬으로 받는다!",
   lose: "방삼: 끄아악!\n통행료를 도로 뜯겼다……!",
-  team: [["neogulmi", 25, { mv: ["bite", "quickattack", "tailwhip", "payback"] }], ["darijak", 25, { mv: ["wingattack", "quickattack", "featherdance", "growl"] }],
-         ["heosuni", 24, { mv: ["astonish", "bulletseed", "growth", "leer"] }]] };    // 개그 배틀: 가볍게 — bal_gym(셋·상처약 2) 처음 안(30·30·29)은 Lv29 30–37% → 25·25·24: Lv28 73–83% · Lv30 80–97%
+  team: [["neogulmi", 32, { mv: ["bite", "quickattack", "tailwhip", "payback"] }], ["darijak", 32, { mv: ["wingattack", "quickattack", "featherdance", "growl"] }],
+         ["heosuni", 31, { mv: ["astonish", "bulletseed", "growth", "leer"] }]] };    // 개그 배틀: 가볍게 — bal_gym(셋·상처약 2) 처음 안(30·30·29)은 Lv29 30–37% → 25·25·24: Lv28 73–83% · Lv30 80–97%
 async function bangsam5Event() {
   const P = World.player, B1 = act("bangsam5"), B2 = act("danji5");
   if (!B1 || !B2) return;
@@ -91,10 +91,10 @@ const rival6 = () => { const k = RIVAL_EVO[RIVAL_OF[G.starter] || "bulsap"] || "
     loseText: "한결: 봤지?\n운동장 서른 바퀴의 힘이다!",
     intro: "한결: 처음 남켓몬 받고 붙었던 거\n기억나?\f그때보다 우리 둘 다\n훨씬 세졌지?\f그러니까…… 진심으로 간다!",
     lose: "한결: ……하하.\n졌는데 기분이 좋네.",
-    team: [["darijak", 29, { mv: ["airslash", "quickattack", "pluck", "leer"] }],
-           ["ttallanggong", 29, { mv: ["spark", "thundershock", "screech", "astonish"] }],
-           ["ssireumso", 29, { mv: ["lowsweep", "machpunch", "doublekick", "leer"] }],
-           [k, 31, { mv: RIVAL6_MV[k] }]] }; };
+    team: [["eunhajak", 36, { mv: ["airslash", "quickattack", "pluck", "leer"] }],
+           ["wonangwang", 36, { mv: ["spark", "thundershock", "screech", "astonish"] }],
+           ["ssireumso", 36, { mv: ["lowsweep", "machpunch", "doublekick", "leer"] }],
+           [k, 38, { mv: RIVAL6_MV[k] }]] }; };   // v2.55 스토리 난이도 +3
 async function rival6Event() {
   const P = World.player, H = act("hangyeol_c6");
   if (!H) return;
@@ -121,15 +121,15 @@ async function rival6Event() {
 // =====================================================================
 const GY_GRUNT1 = { id: "bondi_gy1", cls: "본디회", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer", range: 1,
   intro: "단원: 본디대로!\n산성은 본디 사람이 없던 곳이다!", lose: "단원: 크윽……\n문이 뚫렸다!",
-  team: [["bakjumi", 30], ["metkongi", 31]],
+  team: [["bakjumi", 33], ["metkongi", 34]],
   after: "단원: 행수님들은 군창 지하에 계신다.\n……아, 말해 버렸다!" };
 const GY_GRUNT2 = { id: "bondi_gy2", cls: "본디회", name: "단원", spr: "grunt_f", base: 30, music: "bondi", bgm: "trainer", range: 1,
   intro: "단원: 교룡산 남켓몬은\n우리가 쉬게 해 줄 거야!", lose: "단원: 이, 이럴 수가!",
-  team: [["seotkongi", 30], ["sojjeokmi", 31]],
+  team: [["seotkongi", 33], ["sojjeokmi", 34]],
   after: "단원: 솔뫼 행수님은 산을 사랑하셔.\n……그건 진짜야." };
 const GY_GRUNT3 = { id: "bondi_gy3", cls: "본디회", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer", range: 3,
   intro: "단원: 군창에는 아무도 못 들어간다!\n본디대로!", lose: "단원: 문, 문을 지켜야 하는데……",
-  team: [["heosuni", 31], ["bakjumi", 31]],
+  team: [["heosuni", 34], ["bakjumi", 34]],
   after: "단원: 옛날엔 여기 군량 창고가 있었대.\n지금은…… 우리 창고야." };
 async function gisuGateEvent() {
   const P = World.player, K = act("gisu_gate");
@@ -156,19 +156,19 @@ async function gisuGateEvent() {
 const HB_GRUNTS = [
   { id: "bondi_hb1", cls: "본디회", name: "단원", spr: "grunt_f", base: 30, music: "bondi", bgm: "trainer",
     intro: "단원: 굴림 바닥에 미끄러져\n여기까지 왔구나!", lose: "단원: 나도 미끄러졌다……",
-    team: [["geumulgeo", 31], ["seotkongi", 31]], after: "단원: 화살 쪽으로 밀려 가.\f어디서 멈추는지 잘 보면\n길이 보여." },
+    team: [["geumulgeo", 34], ["seotkongi", 34]], after: "단원: 화살 쪽으로 밀려 가.\f어디서 멈추는지 잘 보면\n길이 보여." },
   { id: "bondi_hb2", cls: "본디회", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer",
     intro: "단원: 컨베이어를 타고 왔다고?\n그럼 여기서 멈춰라!", lose: "단원: 거꾸로 밀려났다……",
-    team: [["metkongi", 31], ["bakjumi", 32]], after: "단원: 계단은 오른쪽 위야.\f……가르쳐 준 거 아니다!" },
+    team: [["metkongi", 34], ["bakjumi", 35]], after: "단원: 계단은 오른쪽 위야.\f……가르쳐 준 거 아니다!" },
   { id: "bondi_hb3", cls: "본디회", name: "단원", spr: "grunt_f", base: 30, music: "bondi", bgm: "trainer",
     intro: "단원: 여기는 막다른 방!\n잘못 왔지롱!", lose: "단원: 막다른 건 나였네……",
-    team: [["sojjeokmi", 31], ["heosuni", 31]], after: "단원: 아래로 가는 화살을 타면\n가운데 방으로 돌아가." },
+    team: [["sojjeokmi", 34], ["heosuni", 34]], after: "단원: 아래로 가는 화살을 타면\n가운데 방으로 돌아가." },
   { id: "bondi_hb4", cls: "본디회", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer",
     intro: "단원: 항아리 창고에는\n아무도 못 들어간다!", lose: "단원: 항아리가 흔들렸다……",
-    team: [["dukkeojang", 32]], after: "단원: 항아리마다 남켓몬이\n자고 있어. 쉿!" },
+    team: [["dukkeojang", 35]], after: "단원: 항아리마다 남켓몬이\n자고 있어. 쉿!" },
   { id: "bondi_hb5", cls: "본디회", name: "단원", spr: "grunt_f", base: 30, music: "bondi", bgm: "trainer",
     intro: "단원: 솔뫼 행수님께는\n절대 못 가!", lose: "단원: 행수님, 죄송해요……",
-    team: [["namujjo", 32], ["chamdaram", 32]], after: "단원: 솔뫼 행수님은 원래\n산림 감시원이셨대." },
+    team: [["namujjo", 35], ["chamdaram", 35]], after: "단원: 솔뫼 행수님은 원래\n산림 감시원이셨대." },
 ];
 // 설정집 4장 팀(옹이 목기령 28·허수장 28·참숯장 29 / 솔뫼 너덜바 28·맷돌멧 28·달곰콩 29)을 이 게임 진행에 맞춤
 //   bal_gym(셋, 상처약 2, 짝 = 이 지역 여덟 마리 중 둘): 옹이 처음 안(목기령·허수장 32·참숯장 33, 저주·이상한빛)은 풀 3–17%·물 10–20%(풀·고스트 둘이 버티기만 함)
@@ -177,15 +177,15 @@ const HB_GRUNTS = [
 const ONGI2 = { id: "ongi2", cls: "본디회 행수", name: "옹이", spr: "ongi", base: 60, music: "bondi", bgm: "trainer",
   intro: "옹이: 또 너냐, 꼬마.\f이번 항아리는 지난번과 달라.\n가마 불을 두 배로 땠거든!",
   lose: "옹이: ……또 금이 갔군.\f……이상하지. 스승님 말씀이\n자꾸 떠올라.",
-  team: [["mokdongi", 29, { mv: ["hex", "megadrain", "astonish", "sweetscent"] }],
-         ["heosuni", 29, { mv: ["astonish", "bulletseed", "leer", "megadrain"] }],
-         ["sutkkeomi", 31, { mv: ["incinerate", "ancientpower", "smackdown", "smokescreen"] }]] };
+  team: [["mokgiryeong", 36, { mv: ["hex", "megadrain", "astonish", "sweetscent"] }],
+         ["heosujang", 36, { mv: ["astonish", "bulletseed", "leer", "megadrain"] }],
+         ["chamsutjang", 38, { mv: ["incinerate", "ancientpower", "smackdown", "smokescreen"] }]] };
 const SOLMOE1 = { id: "solmoe1", cls: "본디회 행수", name: "솔뫼", spr: "solmoe", base: 60, music: "bondi", bgm: "trainer",
   intro: "솔뫼: 산은 사람 없이도\n잘 살았다.\f……이 산의 문은\n내가 닫는다!",
   lose: "솔뫼: 허……\n바위가 굴렀구먼.",
-  team: [["neodeolba", 31, { mv: ["rocktomb", "bulldoze", "stealthrock", "leer"] }],
-         ["metkongi", 31, { mv: ["rockslide", "bulldoze", "sandtomb", "mudslap"] }],
-         ["dalgomkong", 32, { mv: ["slash", "facade", "scaryface", "covet"] }]] };
+  team: [["neodeolba", 38, { mv: ["rocktomb", "bulldoze", "stealthrock", "leer"] }],
+         ["metkongi", 38, { mv: ["rockslide", "bulldoze", "sandtomb", "mudslap"] }],
+         ["bandaljanggun", 39, { mv: ["slash", "facade", "scaryface", "covet"] }]] };
 async function elderEvent() {
   const P = World.player, E = act("hb_elder");
   if (!E) return;
@@ -316,17 +316,17 @@ const GYM5_KIDS = [
   { id: "g5k1", n: 1, x: 12, y: 18, dir: "left", spr: "kid_m",
     hint: "지후: 레이저 빛이 감지기에\n닿으면 문이 열려!\f거울 앞에서 A를 누르면\n거울 방향이 바뀌어.",
     after: "지후: 기수 선생님 실험은\n늘 '왜 그럴까?'로 시작해.",
-    tr: { id: "gym5_jihu", cls: "과학반 짝꿍", name: "지후", spr: "kid_m", base: 20, team: [["satbaso", 29], ["bakjumi", 29]],
+    tr: { id: "gym5_jihu", cls: "과학반 짝꿍", name: "지후", spr: "kid_m", base: 20, team: [["satbaso", 32], ["bakjumi", 32]],
       intro: "지후: 가설! 이 배틀은\n내가 이긴다!", lose: "지후: 가설이 틀렸다……\n다시 실험!" } },
   { id: "g5k2", n: 2, x: 6, y: 14, dir: "right", spr: "kid_f",
     hint: "서진: 빛은 거울에 부딪히면\n꺾여서 나가.\f빛이 지나가는 길을\n손가락으로 따라가 봐!",
     after: "서진: 선생님이 그러셨어.\n'틀린 실험도 좋은 실험'이래.",
-    tr: { id: "gym5_seojin", cls: "과학반 짝꿍", name: "서진", spr: "kid_f", base: 20, team: [["eomnirang", 29]],
+    tr: { id: "gym5_seojin", cls: "과학반 짝꿍", name: "서진", spr: "kid_f", base: 20, team: [["eomnirang", 32]],
       intro: "서진: 관찰 일지에\n이 배틀도 적을 거야!", lose: "서진: 관찰 결과:\n네가 더 세다!" } },
   { id: "g5k3", n: 3, x: 11, y: 7, dir: "down", spr: "kid_f",
     hint: "하율: 거울이 네 개나 있어.\f빛이 어디서 막히는지 보고\n하나씩 고쳐 봐.\f(하나는 빛이 안 지나가는\n심술쟁이 거울이야!)",
     after: "하율: 기수 선생님은 화날 때\n목소리가 작아지셔.\f……그게 더 무서워.",
-    tr: { id: "gym5_hayul", cls: "과학반 짝꿍", name: "하율", spr: "kid_f", base: 20, team: [["beomageom", 28], ["sojjeokmi", 29]],
+    tr: { id: "gym5_hayul", cls: "과학반 짝꿍", name: "하율", spr: "kid_f", base: 20, team: [["beomageom", 31], ["sojjeokmi", 32]],
       intro: "하율: 사마귀처럼\n재빠르게!", lose: "하율: 낫이 무뎌졌다……" } },
 ];
 async function gym5Check(n) {          // 감지기에 빛이 닿았는지 보고 수업(관찰 기록)
@@ -370,13 +370,16 @@ async function gym5GuideTalk() {
 const GISU5 = { id: "leader_gisu", cls: "지킴이", name: "기수", spr: "gl_gisu", type: "격투", indoor: true, bg: "indoor", base: 110, music: "eyes", bgm: "battle_gym",
   intro: "기수: 빛 실험, 잘 풀었네요.\f과학은 '왜?'라고 묻는 데서\n시작해요. 격투도 그래요.\f상대를 잘 관찰하면\n어디로 들어올지 보이거든요.\f자, 실험 시작!",
   lose: "기수: 음~ 졌네요.\f좋은 관찰이었어요.\n가설을 세우고, 실험하고, 고치고.\f오늘 그걸 다 해냈어요.",
-  team: [["satbaso", 29, { mv: ["lowsweep", "machpunch", "focusenergy", "leer"] }],
-         ["ssireumso", 30, { mv: ["lowsweep", "circlethrow", "bulkup", "leer"] }],
-         ["beomageom", 32, { mv: ["forcepalm", "furycutter", "quickattack", "leer"], item: "jujube" }]] };
+  // v2.56 사용자 "5관장이 28~31인데 내 남켓몬이 41" → 넷(38·39·39·43, 모두 진화 끝) · 실력자 AI · 경옥고 1개 · 타고난 힘 22
+  iv: 22, items: ["hyperpotion"],
+  team: [["ssireumso", 38, { ab: "guts", mv: ["submission", "strength", "bulkup", "scaryface"] }],
+         ["eomnirang", 39, { ab: "strongjaw", mv: ["brickbreak", "hyperfang", "bite", "leer"] }],
+         ["gulsojang", 39, { ab: "immunity", mv: ["brickbreak", "dig", "taunt", "scaryface"] }],
+         ["beomageom", 43, { mv: ["lowsweep", "xscissor", "quickattack", "focusenergy"], item: "mogwa" }]] };
 const GS_HINT = [
   "기수: 다시 왔네요. 좋아요!\f격투는 에스퍼·비행·페어리에 약해요.\n9번도로 밤에는 박쥬미가 날아요.",
   "기수: 씨름소는 벌크업으로\n점점 세져요.\f오래 끌지 말고 먼저 쓰러뜨리거나,\n화상을 입혀 봐요.",
-  "기수: 버마검은 벌레·격투라서\n불꽃과 비행이 특히 잘 들어요.\f대추를 지니고 있으니\n한 번 더 버틸 거예요.",
+  "기수: 버마검은 벌레·격투라서\n불꽃과 비행이 특히 잘 들어요.\f모과를 지니고 있으니\n한 번 더 버틸 거예요.",
 ];
 async function gisuTalk(a) {
   if (hasBadge(5)) { await say(`기수: ${G.name}, 요즘은 뭘 관찰하고 있어요?\f……남켓몬이 웃는 때를\n세어 보는 것도 좋은 관찰이에요.`); return; }

@@ -288,7 +288,8 @@ class Battle {
       await this.switchIn("P", i);
     } else {
       if (this.wild) return;
-      const i = this.foe.findIndex((m, k) => m.hp > 0 && k !== this.ei); if (i < 0) return;
+      let i = this.foe.findIndex((m, k) => m.hp > 0 && k !== this.ei); if (i < 0) return;
+      if (this.aiNext) { const hp0 = this.foe[this.ei].hp; this.foe[this.ei].hp = 0; const j = this.aiNext(); this.foe[this.ei].hp = hp0; if (j >= 0 && j !== this.ei) i = j; }   // v2.58
       await this.say(`${J(this.nm("E"), "은")} ${this.o.trainer.name}에게\n돌아갔다!`);
       if (a.m.abT) { a.m.ab = a.m.abT; delete a.m.abT; }
       this.box.E.vis = false; await this.withdraw("E");
@@ -629,19 +630,23 @@ class Battle {
     if (act.type === "switch") { await this.switchIn("P", act.i); return await this.enemyOnly(); }
     if (act.type === "item") { await this.useItem(act); return await this.enemyOnly(); }
     if (act.type === "ball") { const r = await this.throwCatch(act.item); if (r) return r; return await this.enemyOnly(); }
-    const eid = this.aiMove(E);
+    const eItem = this.aiItem ? this.aiItem(E) : null;          // v2.55 관장처럼 회복약을 쓰면 그 턴은 기술을 쓰지 않음(실제 게임처럼 도구가 먼저)
+    const eSw = eItem == null && this.aiSwitch ? this.aiSwitch(E) : null;   // v2.58 실력자: 상성이 나쁘면 교체(실제 대전처럼 교체가 기술보다 먼저)
+    const eid = eItem == null && eSw == null ? this.aiMove(E) : null;
+    if (eItem != null) await this.trainerItem(E, eItem);
+    if (eSw != null) await this.trainerSwitch(eSw);
     const pr = (w, id) => MV[id].pri + (w.m.ab === "prankster" && MV[id].c === "X" ? 1 : 0) + (w.m.ab === "galewings" && MV[id].t === "비행" && w.m.hp === w.m.st[0] ? 1 : 0);
-    const pp = pr(P, act.id), ep = pr(E, eid);
-    const qc = w => this.hi(w) === "qclaw" && Math.random() < 0.2, qP = qc(P), qE = qc(E);   // v2.41 날쌘발톱(선제공격손톱)
+    const pp = pr(P, act.id), ep = eid ? pr(E, eid) : 0;
+    const qc = w => this.hi(w) === "qclaw" && Math.random() < 0.2, qP = qc(P), qE = eid ? qc(E) : false;   // v2.41 날쌘발톱(선제공격손톱)
     const pFirst = pp !== ep ? pp > ep : qP !== qE ? qP : this.speed(P) !== this.speed(E) ? this.speed(P) > this.speed(E) : Math.random() < 0.5;
     const qcSide = pp === ep && qP !== qE ? (qP ? "P" : "E") : null;
-    const order = pFirst ? [["P", act.id], ["E", eid]] : [["E", eid], ["P", act.id]];
+    const order = eid == null ? [["P", act.id]] : pFirst ? [["P", act.id], ["E", eid]] : [["E", eid], ["P", act.id]];
     const actors = { P: this.w.P, E: this.w.E };
     for (const [s, id] of order) {
       const a = this.w[s], d = this.w[this.other(s)];
       if (a !== actors[s]) continue;            // v2.11 끌려 나온·바뀌어 들어온 남켓몬은 이번 턴에 움직이지 않음
       if (a.m.hp <= 0 || d.m.hp <= 0) continue;
-      a.vol.last = s === order[1][0];
+      a.vol.last = order.length < 2 || s === order[1][0];
       if (qcSide === s) await this.say(`${J(this.nm(s), "은")} 날쌘발톱으로\n재빨리 움직였다!`);
       await this.useMove(s, id);
       if (this.endNow) { const r = this.endNow; this.endNow = null; return r; }
@@ -652,6 +657,8 @@ class Battle {
   async enemyOnly() {
     const E = this.w.E; if (E.m.hp <= 0) return null;
     E.vol.last = true;
+    { const it = this.aiItem ? this.aiItem(E) : null; if (it != null) { await this.trainerItem(E, it); return await this.endTurn(); } }   // v2.55
+    { const sw = this.aiSwitch ? this.aiSwitch(E) : null; if (sw != null) { await this.trainerSwitch(sw); return await this.endTurn(); } }   // v2.58
     await this.useMove("E", this.aiMove(E));
     if (this.endNow) { const r = this.endNow; this.endNow = null; return r; }
     const r = await this.checkFaint(); if (r) return r === "cont" ? null : r;
@@ -1134,7 +1141,7 @@ class Battle {
     const E = this.w.E, P = this.w.P;
     if (E.m.hp <= 0 && !E.done) {
       E.done = true; await this.faintAnim("E");
-      const next = this.foe.findIndex(m => m.hp > 0);
+      const next = this.aiNext ? this.aiNext() : this.foe.findIndex(m => m.hp > 0);   // v2.58 실력자는 상성을 보고 다음 남켓몬(에이스는 마지막)
       if (next < 0) bgm(this.wild ? "victory_wild" : "victory");
       if (P.m.tfSave) { this.untf(P.m); this.spr.P.set(P.m.k, P.m.shiny); }
       if (!this.o.noExp) await this.giveExp(E.m);       // v2.52 배틀누각: 경험치 없음
@@ -1178,14 +1185,17 @@ class Battle {
   // ---- 경험치·레벨업 ----
   async giveExp(foe) {
     const sp = MON[(foe.tfSave || foe).k]; const tr = this.wild ? 1 : 1.5;
-    const base = Math.floor(sp.by * foe.lv / 7 * tr);
+    const flv = foe.xlv || foe.lv;          // v2.58 레벨을 맞춘 트레이너 남켓몬은 이야기에서 정한 레벨로 셈
+    const base = Math.floor(sp.by * flv / 7 * tr);
     const parts = G.party.filter(m => m.hp > 0 && this.part.has(m.uid));
     const share = G.flag("expshare_on") && G.has("expshare");
     const list = [];
+    // v2.56 레벨 차이 경험치(5세대 뒤 실제 게임처럼): 상대보다 레벨이 높으면 덜, 낮으면 더 — 스타팅 혼자 너무 앞서 가지 않게, 늦게 잡은 동료는 빨리 따라오게
+    const lvMul = m => Math.pow((2 * flv + 10) / (flv + m.lv + 10), 2.5);
     for (const m of G.party) {
       if (m.hp <= 0 || m.lv >= 100) continue;
-      if (this.part.has(m.uid)) list.push([m, Math.max(1, Math.floor(base / Math.max(1, parts.length)))]);
-      else if (share) list.push([m, Math.max(1, Math.floor(base / 2))]);
+      if (this.part.has(m.uid)) list.push([m, Math.max(1, Math.floor(base / Math.max(1, parts.length) * lvMul(m)))]);
+      else if (share) list.push([m, Math.max(1, Math.floor(base / 2 * lvMul(m)))]);
     }
     // 노력치: 상대 종족값이 가장 높은 능력 +1
     const hi = sp.s.indexOf(Math.max(...sp.s));
@@ -1475,6 +1485,16 @@ async function trainerSpotted(a) {
   face(P, a);
   await trainerBattle(a, true);
 }
+// v1.3 트레이너가 특성·기술을 정해 줄 수 있음 · v2.55 타고난 힘(개체값: 팀 칸 o.iv 또는 트레이너 T.iv)·성격(o.nat: 번호나 이름)도
+function trainerFoe(T) {
+  return T.team.map(([k, lv, o]) => { o = o || {};
+    const iv = o.iv != null ? o.iv : T.iv, nat = typeof o.nat === "string" ? NATURES.findIndex(n => n[0] === o.nat) : o.nat;
+    const m = makeMon(k, lv, { ot: T.name, iv: iv == null ? undefined : Array.isArray(iv) ? iv.slice() : [iv, iv, iv, iv, iv, iv], nat: nat == null || nat < 0 ? undefined : nat });
+    if (o.ab) m.ab = o.ab;
+    if (o.item) m.item = o.item;
+    if (o.mv) m.moves = o.mv.filter(id => MV[id]).map(id => ({ id, pp: MV[id].pp, max: MV[id].pp }));
+    return m; });
+}
 async function trainerBattle(a, spotted) {
   const rm = typeof rematchTrainer === "function" && G.flag("tr_" + a.trainer.id) && G.flag("rm_" + a.trainer.id);   // v2.0 겨루기 징 재대결
   const T = rm ? rematchTrainer(a.trainer) : a.trainer;
@@ -1482,12 +1502,8 @@ async function trainerBattle(a, spotted) {
   await say(T.intro);
   bgm(T.bgm || "trainer");
   await battleTransition("trainer");
-  const foe = T.team.map(([k, lv, o]) => { const m = makeMon(k, lv, { ot: T.name });      // v1.3 트레이너가 특성·기술을 정해 줄 수 있음
-    if (o && o.ab) m.ab = o.ab;
-    if (o && o.item) m.item = o.item;
-    if (o && o.mv) m.moves = o.mv.filter(id => MV[id]).map(id => ({ id, pp: MV[id].pp, max: MV[id].pp }));
-    return m; });
-  const b = new Battle({ kind: "trainer", foe, weather: T.indoor ? null : World.fieldWx(), bg: T.bg || World.zoneInfo().bg || (World.M.outdoor ? "grass" : "indoor"), trainer: { name: T.name, cls: T.cls, spr: T.spr, lose: T.lose, wx: T.wx, prize: T.prize || T.base * foe[foe.length - 1].lv }, canLose: T.canLose, loseText: T.loseText });
+  const foe = trainerFoe(T);
+  const b = new Battle({ kind: "trainer", foe, weather: T.indoor ? null : World.fieldWx(), bg: T.bg || World.zoneInfo().bg || (World.M.outdoor ? "grass" : "indoor"), trainer: { name: T.name, cls: T.cls, spr: T.spr, lose: T.lose, wx: T.wx, prize: T.prize || T.base * (foe[foe.length - 1].xlv || foe[foe.length - 1].lv), smart: T.smart, items: (T.items || []).slice() }, canLose: T.canLose, loseText: T.loseText });
   const r = await b.start();
   if (r === "win" || (r === "lose" && T.canLose)) G.flag("tr_" + T.id, true);
   if (rm && r === "win") G.flag("rm_" + T.id, false);

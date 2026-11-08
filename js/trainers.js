@@ -86,34 +86,34 @@ const LEADERS = {
   "bgm": "battle_gym",
   "team": [
    [
-    "godeumi",
-    53,
+    "eunbingeo",
+    59,
     {
      "ab": "icebody",
      "mv": [
       "hail",
       "blizzard",
       "freezedry",
-      "iciclecrash"
+      "surf"
      ]
     }
    ],
    [
-    "gusangmi",
-    54,
+    "dongchimu",
+    60,
     {
-     "ab": "naturalcure",
+     "ab": "thickfat",
      "mv": [
-      "woodhammer",
-      "iciclecrash",
+      "icebeam",
+      "earthpower",
       "hail",
-      "leechseed"
+      "yawn"
      ]
     }
    ],
    [
     "gusangryeong",
-    55,
+    61,
     {
      "ab": "stamina",
      "mv": [
@@ -126,7 +126,7 @@ const LEADERS = {
    ],
    [
     "seorikkot",
-    56,
+    62,
     {
      "ab": "icebody",
      "mv": [
@@ -139,7 +139,7 @@ const LEADERS = {
    ],
    [
     "baekdam",
-    57,
+    63,
     {
      "ab": "snowcloak",
      "mv": [
@@ -169,7 +169,7 @@ const LEADERS = {
   "team": [
    [
     "jeokdam",
-    54,
+    60,
     {
      "ab": "flamebody",
      "mv": [
@@ -182,7 +182,7 @@ const LEADERS = {
    ],
    [
     "chamsutjang",
-    55,
+    61,
     {
      "ab": "flamebody",
      "mv": [
@@ -195,7 +195,7 @@ const LEADERS = {
    ],
    [
     "danpungbul",
-    56,
+    62,
     {
      "ab": "chlorophyll",
      "mv": [
@@ -207,8 +207,8 @@ const LEADERS = {
     }
    ],
    [
-    "honbulsae",
-    57,
+    "neokbulhak",
+    63,
     {
      "ab": "honbul",
      "mv": [
@@ -221,7 +221,7 @@ const LEADERS = {
    ],
    [
     "hwaryongjeong",
-    58,
+    64,
     {
      "ab": "solarpower",
      "mv": [

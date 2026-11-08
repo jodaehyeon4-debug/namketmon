@@ -24,9 +24,9 @@ async function camPan(to, n = 30) {         // 카메라를 천천히 위(음수
 const SOLMOE2 = { id: "solmoe2", cls: "본디회 행수", name: "솔뫼", spr: "solmoe", base: 60, music: "bondi", bgm: "trainer",
   intro: "솔뫼: 또 너냐.\f여기서부터는 지나갈 수 없다.\n이 산의 문은 내가 닫는다!",
   lose: "솔뫼: ……반달장군이\n쓰러지다니.",
-  team: [["jiriam", 40, { mv: ["rocktomb", "bulldoze", "harden", "leer"] }],
-         ["maetdolmet", 42, { mv: ["bulldoze", "rockthrow", "growl", "harden"] }],
-         ["bandaljanggun", 43, { mv: ["brickbreak", "slash", "scaryface", "leer"] }]] };
+  team: [["jiriam", 48, { mv: ["rocktomb", "bulldoze", "harden", "leer"] }],
+         ["maetdolmet", 50, { mv: ["bulldoze", "rockthrow", "growl", "harden"] }],
+         ["bandaljanggun", 51, { mv: ["brickbreak", "slash", "scaryface", "leer"] }]] };
 async function solmoe2Event() {
   const P = World.player, S = act("by_solmoe");
   if (!S || G.flag("solmoe2_done")) return;
@@ -53,9 +53,9 @@ async function solmoe2Event() {
 const YEOUL2 = { id: "yeoul2", cls: "본디회 행수", name: "여울", spr: "yeoul", base: 60, music: "bondi", bgm: "trainer",
   intro: "여울: ……미안.\n지금은 비켜 줄 수 없어.",
   lose: "여울: ……물살이 바뀌었네.",
-  team: [["ssogalbeom", 40, { mv: ["waterpulse", "bite", "scaryface", "leer"] }],
-         ["chamjipwang", 40, { mv: ["bubblebeam", "metalclaw", "protect", "growl"] }],
-         ["megijang", 41, { mv: ["mudshot", "waterpulse", "harden", "tickle"] }]] };
+  team: [["ssogalbeom", 48, { mv: ["waterpulse", "bite", "scaryface", "leer"] }],
+         ["chamjipwang", 48, { mv: ["bubblebeam", "metalclaw", "protect", "growl"] }],
+         ["megijang", 49, { mv: ["mudshot", "waterpulse", "harden", "tickle"] }]] };
 const GARAM4 = { id: "garam4", cls: "도령", name: "가람", spr: "garam", base: 40, music: "garam", bgm: "trainer", canLose: true,
   intro: "가람: 너하고는……\n한 번 더 붙어 보고 싶었어.\f네 남켓몬들 목소리,\n마지막으로 들어 볼게.",
   lose: "가람: ……들렸어.\f'이 아이 곁이라 좋다'고.\n……정말이구나.",

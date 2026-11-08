@@ -11,28 +11,28 @@ window.LEAGUE_READY = true;
 const HAERANG = { id: "league_haerang", cls: "산지기", name: "해랑", spr: "haerang", type: "고스트", indoor: true, bg: "indoor", base: 200, music: "eyes", bgm: "battle_gym",
   intro: "해랑: 어서 와요.\n나는 이야기꾼 해랑.\f오늘 들려줄 이야기는……\n밤길에서 만난 도깨비 이야기예요.\f옛이야기 속 도깨비는\n겁주는 척하지만\f끝까지 들어 준 사람에게는\n꼭 선물을 남겨요.\f……끝까지 들을 수 있을까요?",
   lose: "해랑: ……이야기가\n이렇게 끝나네요.\f좋은 이야기는 듣는 사람이\n끝을 바꾸는 법이죠.",
-  team: [["mokgiryeong", 53, { mv: ["shadowball", "gigadrain", "willowisp", "leechseed"] }],
-         ["heosujang", 54, { mv: ["shadowball", "leafblade", "leechseed", "hex"] }],
-         ["gumiru", 55, { mv: ["flamethrower", "shadowball", "willowisp", "hex"] }],
-         ["neokbulhak", 55, { mv: ["flamethrower", "hex", "willowisp", "airslash"].filter(m => MV[m]) }],
-         ["bangmangdochae", 57, { mv: ["shadowball", "crunch", "hex", "willowisp"], item: "jujube" }]] };
+  team: [["mokgiryeong", 59, { mv: ["shadowball", "gigadrain", "willowisp", "leechseed"] }],
+         ["heosujang", 60, { mv: ["shadowball", "leafblade", "leechseed", "hex"] }],
+         ["gumiru", 61, { mv: ["flamethrower", "shadowball", "willowisp", "hex"] }],
+         ["neokbulhak", 61, { mv: ["flamethrower", "hex", "willowisp", "airslash"].filter(m => MV[m]) }],
+         ["bangmangdochae", 63, { mv: ["shadowball", "crunch", "hex", "willowisp"], item: "jujube" }]] };
 const YEONGRAN = { id: "league_yeongran", cls: "산지기", name: "영란", spr: "gl_yeongran", type: "비행", indoor: true, bg: "indoor", base: 200, music: "eyes", bgm: "battle_gym",
   intro: "영란: 왔어요?\n먼저 숨 한번 크게 쉬어 볼까요?\f……후—\f좋아요.\f바람은 억지로 붙잡으면\n손가락 사이로 빠져나가요.\f같이 흘러가 봐요!",
   lose: "영란: 후— 좋은 바람이었어요.\f몸도 마음도\n한결 가벼워졌네요.",
-  team: [["cheongdungdae", 55, { mv: ["surf", "airslash", "roost", "icebeam"] }],
-         ["malgupju", 55, { mv: ["airslash", "crunch", "roost", "tailwind"].filter(m => MV[m]) }],
-         ["kalgitmae", 56, { mv: ["bravebird", "closecombat", "roost", "swordsdance"] }],
-         ["boeunbi", 56, { mv: ["airslash", "dazzlinggleam", "roost", "calmmind"] }],
-         ["ureureung", 58, { mv: ["thunderbolt", "hurricane", "roost", "voltswitch"].filter(m => MV[m]), item: "jujube" }]] };
+  team: [["cheongdungdae", 61, { mv: ["surf", "airslash", "roost", "icebeam"] }],
+         ["malgupju", 61, { mv: ["airslash", "crunch", "roost", "tailwind"].filter(m => MV[m]) }],
+         ["kalgitmae", 62, { mv: ["bravebird", "closecombat", "roost", "swordsdance"] }],
+         ["boeunbi", 62, { mv: ["airslash", "dazzlinggleam", "roost", "calmmind"] }],
+         ["ureureung", 64, { mv: ["thunderbolt", "hurricane", "roost", "voltswitch"].filter(m => MV[m]), item: "jujube" }]] };
 const MRHWANG = { id: "league_mrhwang", cls: "챔피언", name: "미스터 황", spr: "gl_mrhwang", indoor: true, bg: "indoor", base: 300, music: "eyes", bgm: "battle_champ",
   intro: "교장 선생님: 왔구나.\f산지기 넷을 지나\n여기 가운데 방까지.\f……운동화 끈은\n단단히 묶었겠지?\f지금부터는 교장도 학생도 없다.\n트레이너 대 트레이너다!",
   lose: "교장 선생님: ……허허.\f졌다.\n기분 좋게 졌구나.",
-  team: [["jiriam", 57, { mv: ["earthquake", "rockslide", "ironhead", "protect"].filter(m => MV[m]) }],
-         ["byeoljara", 58, { mv: ["surf", "psychic", "icebeam", "protect"] }],
-         ["cheonhajangso", 58, { mv: ["drainpunch", "earthquake", "leer", "protect"].filter(m => MV[m]) }],
-         ["namsaengbae", 59, { mv: ["surf", "powergem", "icebeam", "protect"] }],
-         ["eunhajak", 59, { mv: ["psychic", "airslash", "roost", "protect"] }],
-         ["cheonmireu", 61, { mv: ["dragonclaw", "airslash", "roost", "protect"], item: "jujube" }]] };
+  team: [["jiriam", 63, { mv: ["earthquake", "rockslide", "ironhead", "protect"].filter(m => MV[m]) }],
+         ["byeoljara", 64, { mv: ["surf", "psychic", "icebeam", "protect"] }],
+         ["cheonhajangso", 64, { mv: ["drainpunch", "earthquake", "leer", "protect"].filter(m => MV[m]) }],
+         ["namsaengbae", 65, { mv: ["surf", "powergem", "icebeam", "protect"] }],
+         ["eunhajak", 65, { mv: ["psychic", "airslash", "roost", "protect"] }],
+         ["cheonmireu", 67, { mv: ["dragonclaw", "airslash", "roost", "protect"], item: "jujube" }]] };
 
 // 방: [지도, 산지기, 방위, 빛깔, 기운]
 const LGR = [

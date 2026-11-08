@@ -106,7 +106,7 @@ const GARAM6 = { id: "garam6", cls: "본디 자리 지킴이", name: "가람", s
   intro: "가람: 홍우성이 자꾸 네 은직성을 봐.\f……그 전에, 지킴이끼리\n한 판 하자.",
   lose: "가람: ……역시.\n같이 걷는 사람이 강하구나.",
   loseText: "가람: 괜찮아?\f남켓몬들 쉬게 하고\n또 와.",
-  team: [["gumiru", 62], ["bangmangdochae", 62], ["dancheongmong", 63], ["gusangryeong", 63], ["eunhajak", 64]] };
+  team: [["gumiru", 68], ["bangmangdochae", 68], ["dancheongmong", 69], ["gusangryeong", 69], ["eunhajak", 70]] };
 async function garamPost() {
   const P = World.player, GR = act("end_garam");
   if (GR) face(GR, P);

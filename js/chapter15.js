@@ -42,7 +42,7 @@ async function jeopoGame() {
   G.flag("jeopo_played", true);   // 밤이 아닐 때 1번도로 입구를 지나면 다시 할 수 있음(mbGateCond)
   if (me >= 2) {
     await say("돌부처님이 빙그레\n웃으시는 것 같다……!");
-    if (!G.flag("jeopo_first")) { G.flag("jeopo_first", true); await getItem("spelltag" in ITEMS ? "spelltag" : "ether"); }
+    if (!G.flag("jeopo_first")) { G.flag("jeopo_first", true); await getItem("spelltag" in ITEMS ? "spelltag" : "ether"); if (typeof jpBowl === "function") await jpBowl(); }   // v2.59 정표 ③ 은주발
     else { const L = ["ether", "superpotion", "ok"]; await getItem(L[Math.floor(Math.random() * L.length)]); }
   } else await say("돌부처님이 '다음에 또 오너라'\n하시는 것 같다.");
 }

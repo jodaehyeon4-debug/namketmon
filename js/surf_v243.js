@@ -15,7 +15,7 @@ Object.assign(ITEMS, {
 const SURF_BADGE = 4;
 FIELD_MOVES.surf = { badge: SURF_BADGE, use: (m) => useSurfFromMenu(m) };
 delete FIELD_MOVES.waterfall;
-const surfUser = () => G.party.find(m => m.hp > 0 && m.moves.some(x => x.id === "surf")) || G.party.find(m => m.moves.some(x => x.id === "surf"));
+const surfUser = () => G.party.find(m => m.hp > 0 && m.moves.some(x => x.id === "surf")) || G.party.find(m => m.moves.some(x => x.id === "surf")) || (typeof fieldHelper === "function" ? fieldHelper("surf") : null);   // v2.56 배운 남켓몬이 없으면 도우미 남생배
 const canSurf = () => hasBadge(SURF_BADGE) && !!surfUser();
 const isSurfing = () => !!G.flag("surf");
 const waterAt = (x, y) => { const M = World.M; return !!(M && M.beh[y] && M.beh[y][x] === "water"); };
@@ -34,6 +34,7 @@ function surfEnc(list) {
 
 async function startSurf(m) {
   m = m || surfUser();
+  if (m.helper && typeof helperArrive === "function") await helperArrive(m);
   await say(`${J(mname(m), "은")}\n파도타기를 썼다!`);
   if (typeof fieldCutIn === "function") await fieldCutIn(m);
   G.flag("surf", true); G.surfMon = m.k; sfx("jump");
@@ -147,7 +148,7 @@ async function useSurfFromMenu(m) {
       await say("뱃사공: 오, 구룡 어사패를 받았구먼!\f저 섬까지는 나룻배로도\n못 가지만\f너한텐 남켓몬이 있잖니.");
       await say("뱃사공: 이걸 가져가거라.\n파도타기를 가르치는 비전머신이다.");
       await getItem("hm03");
-      await say("뱃사공: 물 남켓몬에게 가르쳐서\n물을 바라보고 A를 누르면\f그 남켓몬 등에 타고\n물 위를 건널 수 있단다.\f물 위에도 남켓몬이 산다.\n조심해서 다니거라!");
+      await say("뱃사공: 물을 바라보고 A를 누르면\n남생배가 와서 등에 태워 준단다.\f파도타기를 배운 남켓몬이 있으면\n그 녀석 등에 타도 되고.\f물 위에도 남켓몬이 산다.\n조심해서 다니거라!");
       return; }
     // v2.47 어사패 4 전에도 원래 이야기(본디회)와 나룻배를 그대로 — 배를 안 타면 섬 이야기를 덧붙임(v2.43에서 나룻배가 막혔던 것 고침)
     if (!hasBadge(SURF_BADGE) && !G.has("hm03")) { if (typeof t0 === "function") await t0(a); else await say(t0);

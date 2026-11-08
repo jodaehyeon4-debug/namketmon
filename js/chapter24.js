@@ -103,11 +103,11 @@ const rival9 = () => { const k = RIVAL_FINAL[RIVAL_OF[G.starter] || "bulsap"] ||
     loseText: "한결: 봤지!\f이게 내 남켓몬들이랑\n같이 큰 힘이야!",
     intro: "한결: 오방고원 가기 전에\n마지막으로!\f……봐주는 거 없다.\n진짜 전력이다!",
     lose: "한결: ……하하.\n역시 너야.\f졌는데 이상하게\n후련하다.",
-    team: [["eunhajak", 52, { mv: ["psychic", "airslash", "roost", "tailwind"].filter(m => MV[m]) }],
-           ["wonangwang", 51, { mv: ["thunderbolt", "flashcannon", "voltswitch", "thunderwave"] }],
-           ["cheonhajangso", 52, { mv: ["drainpunch", "earthquake", "rockslide", "leer"].filter(m => MV[m]) }],
-           ["kalgitmae", 51, { mv: ["bravebird", "drainpunch", "roost", "leer"].filter(m => MV[m]) }],
-           [k, 55, { mv: RIVAL9_MV[k] || RIVAL8_MV[k], item: "jujube" }]] }; };
+    team: [["eunhajak", 60, { mv: ["psychic", "airslash", "roost", "tailwind"].filter(m => MV[m]) }],
+           ["wonangwang", 59, { mv: ["thunderbolt", "flashcannon", "voltswitch", "thunderwave"] }],
+           ["cheonhajangso", 60, { mv: ["drainpunch", "earthquake", "rockslide", "leer"].filter(m => MV[m]) }],
+           ["kalgitmae", 59, { mv: ["bravebird", "drainpunch", "roost", "leer"].filter(m => MV[m]) }],
+           [k, 63, { mv: RIVAL9_MV[k] || RIVAL8_MV[k], item: "mogwa" }]] }; };   // v2.55 스토리 난이도 +1
 
 async function rival9Event() {
   const P = World.player, H = act("mh_hangyeol");

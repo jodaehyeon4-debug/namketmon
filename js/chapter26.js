@@ -123,6 +123,7 @@ async function endingRun() {
   await say("엄마: 참, 오작교에서 만난 가람이가\n한 판 겨뤄 보고 싶대.\f윤슬 박사님도 전설 남켓몬\n소문을 들었다더라.");   // v2.38 D20 클리어 뒤 전설 안내
   G.healAll();
   G.heal = ["home", 3, 5, "up"];
+  if (typeof jpEpilogue === "function") await jpEpilogue();   // v2.59 정표 · 박씨 · 제비꼬 · 4월의 엽서
   await say("(이야기는 여기서 끝이지만\n모험은 계속돼요!\f오방고원 리그에 다시 도전하거나\n도감을 채워 보세요.)");
   if (typeof doSave === "function") await doSave();
 }

@@ -25,15 +25,15 @@ DATA.spawns["갈매마을"] = [
 const R3_GRUNT = { id: "bondi_r3", cls: "본디회", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 가마 불 꺼지면\n네가 책임질 거야?",
   lose: "단원: 으앗, 뜨거!\n불똥이 튀었다!",
-  team: [["seureumi", 17], ["heosuni", 18]] };
+  team: [["seureumi", 19], ["heosuni", 20]] };
 // 설정집: 옹이 = 마을 행수, 옹기장, 고스트·불꽃, 봉인 항아리를 만든 사람. 가마 숯불의 숯꺼미.
 // bal_gym(셋, 상처약 2): Lv19 68–93% · Lv20 90–93% (풀·불꽃·물). 허수니를 넣으면 물 스타팅이 25–43%라 뺌
 const ONGI1 = { id: "ongi1", cls: "본디회 행수", name: "옹이", spr: "ongi", base: 60, music: "bondi", bgm: "trainer",
   intro: "옹이: 가마 불맛 좀 봐라!",
   lose: "옹이: ……금이 갔군.\f불을 너무 세게 땠어.",
-  team: [["mokdongi", 19, { mv: ["ominouswind", "hex", "astonish", "sweetscent"] }],
-         ["sutkkeomi", 19, { mv: ["incinerate", "flamecharge", "smokescreen", "growl"] }],
-         ["honmangul", 20, { mv: ["mysticalfire", "hex", "willowisp", "astonish"] }]] };
+  team: [["mokdongi", 23, { mv: ["ominouswind", "hex", "astonish", "sweetscent"] }],
+         ["sutkkeomi", 23, { mv: ["incinerate", "flamecharge", "smokescreen", "growl"] }],
+         ["honmangul", 24, { mv: ["mysticalfire", "hex", "willowisp", "astonish"] }]] };
 async function ongiEvent() {
   const P = World.player, O = act("ongi_f"), Gr = act("ongi_gr"), B = act("boreum_r3");
   if (!O || !Gr || !B) return;
@@ -96,9 +96,9 @@ const rival4 = () => { const k = RIVAL_EVO[RIVAL_OF[G.starter] || "bulsap"] || "
     loseText: "한결: 거봐!\n덕과 아카데미는 내 홈그라운드야!",
     intro: "한결: 출장 가신 조박사님 대신\n너한테 보여 주지!",
     lose: "한결: 또……!\n이번엔 진짜 자신 있었는데!",
-    team: [["darijak", 18, { mv: ["quickattack", "wingattack", "featherdance", "tailwind"] }],
-           ["ttallanggong", 19, { mv: ["spark", "chargebeam", "thundershock", "screech"] }],
-           [k, 21, { mv: RIVAL4_MV[k] }]] }; };
+    team: [["darijak", 22, { mv: ["quickattack", "wingattack", "featherdance", "tailwind"] }],
+           ["ttallanggong", 23, { mv: ["spark", "chargebeam", "thundershock", "screech"] }],
+           [k, 25, { mv: RIVAL4_MV[k] }]] }; };
 async function rivalGalmae() {
   const P = World.player, H = act("hangyeol_c4");
   if (!H) return;

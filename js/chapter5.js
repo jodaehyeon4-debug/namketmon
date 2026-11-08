@@ -38,9 +38,9 @@ const rival5 = () => { const k = RIVAL_EVO[RIVAL_OF[G.starter] || "bulsap"] || "
     loseText: "한결: 봤지?\n운동장 특훈의 결과다!",
     intro: "한결: 섬진 어사패?\n나도 땄어. 어제!\f이번엔 진짜 진심이다!",
     lose: "한결: ……하.\n또 졌네.",
-    team: [["darijak", 24, { mv: ["wingattack", "quickattack", "pluck", "tailwind"] }],
-           ["ttallanggong", 24, { mv: ["spark", "chargebeam", "thundershock", "screech"] }],
-           [k, 26, { mv: RIVAL5_MV[k] }]] }; };
+    team: [["darijak", 30, { mv: ["wingattack", "quickattack", "pluck", "tailwind"] }],
+           ["wonangwang", 30, { mv: ["spark", "chargebeam", "thundershock", "screech"] }],
+           [k, 32, { mv: RIVAL5_MV[k] }]] }; };   // v2.55 스토리 난이도 +3
 async function rivalBridge() {
   const P = World.player, H = act("hangyeol_c5");
   if (!H) return;
@@ -127,17 +127,17 @@ const GYM4_KIDS = [
   { id: "g4k1", n: 1, x: 8, y: 16, dir: "left", spr: "kid_f",
     hint: "별이: 수업판 문제를 맞히면\n문이 열려!\f아까 육모정에서 가람이\n뭐라고 했는지 기억나?",
     after: "별이: 신하 선생님은 맨날 '흥!' 하시는데\n우리 이름은 하나도 안 틀리셔.",
-    tr: { id: "gym4_byeori", cls: "천문반 짝꿍", name: "별이", spr: "kid_f", base: 20, team: [["daseulmi", 25], ["jjidami", 25]],
+    tr: { id: "gym4_byeori", cls: "천문반 짝꿍", name: "별이", spr: "kid_f", base: 20, team: [["daseulmi", 27], ["jjidami", 27]],
       intro: "별이: 별자리처럼\n차근차근 이어 볼까?", lose: "별이: 별똥별처럼\n휙 졌다……" } },
   { id: "g4k2", n: 2, x: 4, y: 11, dir: "up", spr: "kid_m",
     hint: "한울: 이번 문제는 남원 생태도감!\f치레뇽을 잡았다면\n도감에서 ▶를 눌러 봐.",
     after: "한울: 치레뇽은 밤에 나와.\n회중시계로 밤을 만들어 봐!",
-    tr: { id: "gym4_hanul", cls: "천문반 짝꿍", name: "한울", spr: "kid_m", base: 20, team: [["gaegulmi", 26], ["chireyong", 26]],
+    tr: { id: "gym4_hanul", cls: "천문반 짝꿍", name: "한울", spr: "kid_m", base: 20, team: [["gaegulmi", 28], ["chireyong", 28]],
       intro: "한울: 비 오는 밤엔\n물 남켓몬이 신난다!", lose: "한울: 우산이 뒤집혔다……" } },
   { id: "g4k3", n: 3, x: 10, y: 6, dir: "right", spr: "kid_f",
     hint: "은하: 마지막은 타입 상성!\f신하 선생님 남켓몬은\n모두 물 타입이야.\f물은 불꽃이랑 땅에는 강한데……\n무엇에 약할까?",
     after: "은하: 비 오는 날엔 별이 안 보이잖아.\f근데 선생님이 그러셨어.\n'안 보여도 거기 있어.'",
-    tr: { id: "gym4_eunha", cls: "천문반 짝꿍", name: "은하", spr: "kid_f", base: 20, team: [["eunchimi", 26], ["daseulmi", 27]],
+    tr: { id: "gym4_eunha", cls: "천문반 짝꿍", name: "은하", spr: "kid_f", base: 20, team: [["eunchimi", 28], ["daseulmi", 29]],
       intro: "은하: 은하수처럼 길게\n버텨 볼게!", lose: "은하: 은하수가\n끊어졌다……" } },
 ];
 async function gym4Quiz(n) {
@@ -191,19 +191,25 @@ async function gym4GuideTalk() {
 // v1.3 팀(치레뇽 27·은치미 28·개굴미 29·메기장 30)은 bal_gym(셋, 상처약 2)에서 불꽃·물 스타팅 0~10%:
 //   메기장(물·땅)은 전기가 안 들고, 쓱쓱 은치미가 빗속에서 너무 빠름. → 셋(치레뇽·다슬미·개굴미, Lv26–28), 잔비 치레뇽은 그대로
 //   측정: 셋 풀 Lv28 100% · 불꽃 Lv28 77%·29 63%(기술머신57 차지빔) · 물 Lv28 93%
-const SINHA4_TEAM = [["chireyong", 26, { ab: "drizzle", mv: ["watergun", "twister", "raindance", "growl"] }],
-                     ["daseulmi", 26, { mv: ["watergun", "protect", "supersonic", "leer"] }],
-                     ["gaegulmi", 28, { ab: "hydration", mv: ["bubblebeam", "raindance", "leer", "growl"] }]];
+// v2.56 사용자 "스토리 너무 쉬움, 특히 3~4관장" · "최종진화체를 몇 개" → 넷(29·28·28·31)의 비 팀, 에이스는 은치미 최종 진화 은린왕
+//   잔비 치레뇽 → 촉촉바디 개굴미 · 메기장(물·땅: 전기가 안 듦, 풀로!) · 은린왕(물·에스퍼) · 실력자 AI · 쌍화탕 1개 · 타고난 힘 20
+//   bal_gym3(다섯, 쌍화탕 3, 풀·물 = 베놈쇼크, 짝 = 스타팅 −4): 스타팅 Lv34(레벨 차이 경험치로 오는 길을 다 이긴 레벨) 풀 100 · 불꽃 19 · 물 56% / Lv36 100 · 94 · 100%
+//   (쓱쓱 은린왕 34·물먹은돌 안은 불꽃 0~6%라 뺌 — 불꽃은 물 배움터가 가장 어려운 짝, 실제 게임처럼)
+const SINHA4_TEAM = [["chireyong", 29, { ab: "drizzle", mv: ["bubblebeam", "dragonbreath", "raindance", "leer"] }],
+                     ["gaegulmi", 28, { ab: "hydration", mv: ["waterfall", "bodyslam", "raindance", "leer"] }],
+                     ["megijang", 28, { ab: "hydration", mv: ["mudshot", "waterpulse", "raindance", "tickle"] }],
+                     ["eunrinwang", 31, { ab: "aromaveil", mv: ["waterfall", "psychicnoise", "supersonic", "raindance"] }]];
+const SINHA4_X = { iv: 20, items: ["superpotion"] };
 const SN_HINT = [
   "신하: 또 왔어?\n……기다린 건 아니고.\f물에는 전기와 풀이 잘 통해.\n11번도로 고갯길에 찌다미가 살아.",
   "신하: 비가 오면 물 기술이 세져.\f쾌청으로 해를 띄우거나,\n다섯 턴만 버텨 봐. 비는 그쳐.",
-  "신하: 치레뇽은 나오자마자\n비를 불러.\f개굴미는 빗속에서\n상태 이상을 씻어 내.\f그래도 전기·풀이면 돼.\n……이 정도면 됐지?",
+  "신하: 치레뇽은 나오자마자\n비를 불러.\f메기장은 물·땅이라 전기가 안 통해.\n대신 풀은 네 배야.\f마지막 은린왕은 물·에스퍼.\n전기·풀·벌레·고스트·악이 잘 들어.\f……이 정도면 됐지?",
 ];
 async function sinhaTalk(a) {
   if (hasBadge(4)) { await say(`신하: ${G.name}. ……흥.\f맑은 밤에 또 와.\n별, 보여 줄 테니까.`); return; }
   const lost = G.flags.sn_lost || 0;
   if (lost) await say(SN_HINT[Math.min(lost, SN_HINT.length) - 1]);
-  const T = Object.assign({}, LEADERS.sinha, { cls: "지킴이", team: SINHA4_TEAM });
+  const T = Object.assign({}, LEADERS.sinha, SINHA4_X, { cls: "지킴이", team: SINHA4_TEAM });
   const r = await trainerBattle({ x: a.x, y: a.y, dir: a.dir, trainer: T }, false);
   if (r !== "win") { G.flags.sn_lost = lost + 1; return; }
   bgm("gym4");

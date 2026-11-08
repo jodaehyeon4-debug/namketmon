@@ -69,6 +69,7 @@ async function jjyGuide() {
   await say("해설사: 끝까지 잘 들어 줘서\n고마워요.\f이건 기념관에서 드리는\n엽서예요.");
   await getItem("jjy_card");
   await say("해설사: 열사가 지키려던 건\n'공정한 선거'였어요.\f우리 반에서 회장을 뽑을 때도\n똑같이 소중한 일이에요.");
+  await say("해설사: 이 엽서, 잘 간직해 줘요.\f'틀린 건 틀렸다고' 말해야 할 때\n꼭 떠올려 줘요.");   // v2.59 복선(비색마을 투표·출두)
 }
 async function jjyCardRead() {
   await say("4월의 엽서.\f앞면에는 흰 국화 한 송이.\f뒷면에는 또박또박\n'함께 지키는 민주주의'.");

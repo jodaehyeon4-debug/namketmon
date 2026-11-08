@@ -104,6 +104,7 @@ async function festivalEvent() {
   G.flag("festival_done", true);
   const kid = act("gym_door_kid"); if (kid) kid.hidden = true;
   await walkPath(C, 25, 16); await walk(C, "up"); C.hidden = true; sfx("door");      // v2.24 배움터 문 아래
+  if (typeof jpFestival === "function") await jpFestival();   // v2.59 정표 ① 옥가락지(월매 역 할머니)
 }
 
 // =====================================================================
@@ -207,7 +208,8 @@ async function gymGuideTalk() {
 }
 
 // ---- 지킴이 찬향 ----
-const CHANHYANG = { id: "leader_chanhyang", cls: "지킴이", name: "찬향", spr: "gl_chanhyang", type: "노말", indoor: true, bg: "indoor", base: 100, music: "eyes", bgm: "battle_gym",
+// v2.56 첫 두 배움터는 처음 배우는 곳이라 보통 트레이너처럼 생각함(smart: 1) — 실제 게임 첫 관장처럼 너그럽게
+const CHANHYANG = { smart: 1, id: "leader_chanhyang", cls: "지킴이", name: "찬향", spr: "gl_chanhyang", type: "노말", indoor: true, bg: "indoor", base: 100, music: "eyes", bgm: "battle_gym",
   intro: "찬향: 다홍 배움터 지킴이 찬향!\n노말 타입의 기본기, 보여 줄게요!",
   lose: "찬향: 와아……! 정말 잘했어요!\f질문하고, 생각하고, 남켓몬을 믿었죠?\n그래서 이긴 거예요.",
   team: [["gorakong", 12, { ab: "runaway", mv: ["doublekick", "tackle", "growl"] }],

@@ -14,10 +14,10 @@ const rival8 = () => { const k = RIVAL_FINAL[RIVAL_OF[G.starter] || "bulsap"] ||
     loseText: "한결: 봤냐!\n허수아비 세우다 생긴 힘이다!",
     intro: "한결: 예전엔 강해야\n지킬 수 있다고 생각했거든.\f지금은 좀 달라.\n……그걸 너한테 보여 줄게!",
     lose: "한결: ……하하.\n역시 너는 세다.\f근데 오늘은\n진 것 같지가 않아.",
-    team: [["eunhajak", 43, { mv: ["wingattack", "confusion", "tailwind", "featherdance"] }],
-           ["wonangwang", 42, { mv: ["spark", "metalclaw", "screech", "tackle"] }],
-           ["cheonhajangso", 43, { mv: ["karatechop", "strength", "scaryface", "leer"] }],
-           [k, 45, { mv: RIVAL8_MV[k] || RIVAL7_MV[k] }]] }; };
+    team: [["eunhajak", 50, { mv: ["wingattack", "confusion", "tailwind", "featherdance"] }],
+           ["wonangwang", 49, { mv: ["spark", "metalclaw", "screech", "tackle"] }],
+           ["cheonhajangso", 50, { mv: ["karatechop", "strength", "scaryface", "leer"] }],
+           [k, 52, { mv: RIVAL8_MV[k] || RIVAL7_MV[k] }]] }; };   // v2.55 스토리 난이도 +3
 
 async function rival8Event() {
   const P = World.player, H = act("r16_hangyeol"), F = act("r16_farmer");

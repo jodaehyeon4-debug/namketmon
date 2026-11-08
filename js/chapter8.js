@@ -43,8 +43,8 @@ const RIVAL_FINAL = { bulsap: "cheongsarong", mongjjuk: "baraemong", kkokkuri: "
 const BANGSAM7 = { id: "bondi_bangsam7", cls: "본디회 단원", name: "방삼", spr: "grunt_m", base: 40, music: "bondi", bgm: "trainer",
   intro: "방삼: 마침 잘 왔다!\n손님 1호로 모시지!\f네 남켓몬을 이 항아리에——",
   lose: "방삼: 끄아악!\n개업 첫날부터……!",
-  team: [["dungabi", 34, { mv: ["transform"] }], ["neogulmi", 35, { mv: ["slash", "headbutt", "payback", "growl"] }],
-         ["heosujang", 34, { mv: ["astonish", "bulletseed", "confuseray", "growl"] }]] };      // 개그 배틀: 가볍게(둔갑이는 상대 남켓몬으로 변신)
+  team: [["dungabi", 42, { mv: ["transform"] }], ["neogulmi", 43, { mv: ["slash", "headbutt", "payback", "growl"] }],
+         ["heosujang", 42, { mv: ["astonish", "bulletseed", "confuseray", "growl"] }]] };      // 개그 배틀: 가볍게(둔갑이는 상대 남켓몬으로 변신)
 async function bangsam7Event() {
   const P = World.player, B1 = act("iw_bangsam"), B2 = act("iw_danji"), V = act("iw_granny");
   if (!B1) return;
@@ -85,10 +85,10 @@ const rival7 = () => { const k = RIVAL_FINAL[RIVAL_OF[G.starter] || "bulsap"] ||
     loseText: "한결: 봤냐!\n장터 국밥의 힘이다!",
     intro: "한결: 요즘 계속 생각했어.\n나는 왜 이기고 싶은 걸까.\f처음엔 그냥 너를\n이기고 싶어서였는데……\f지금은 내 남켓몬들한테\n'우리가 해냈다'를 보여 주고 싶어!",
     lose: "한결: ……크으.\n또 졌다!\f근데 이상하다.\n하나도 안 분하네.",
-    team: [["eunhajak", 36, { mv: ["wingattack", "pluck", "tailwind", "featherdance"] }],
-           ["wonangwang", 33, { mv: ["spark", "metalsound", "screech", "tackle"] }],
-           ["ssireumso", 34, { mv: ["strength", "machpunch", "scaryface", "leer"] }],
-           [k, 36, { mv: RIVAL7_MV[k] }]] }; };
+    team: [["eunhajak", 47, { mv: ["wingattack", "pluck", "tailwind", "featherdance"] }],
+           ["wonangwang", 46, { mv: ["spark", "metalsound", "screech", "tackle"] }],
+           ["cheonhajangso", 46, { mv: ["strength", "machpunch", "scaryface", "leer"] }],
+           [k, 48, { mv: RIVAL7_MV[k] }]] }; };   // v2.55 스토리 난이도(인월 야생 37~41)
 async function rival7Event() {
   const P = World.player, H = act("iw_hangyeol");
   if (!H) return;
@@ -118,11 +118,11 @@ async function rival7Event() {
 const AGENT7A = { id: "agent_misaek1", cls: "금박재단", name: "요원", spr: "agent", base: 50, music: "bondi", bgm: "trainer",
   intro: "요원: 설명회 진행을 방해하시면\n곤란합니다.\f절차대로 처리하겠습니다.",
   lose: "요원: ……보고서에\n'예상 밖'이라고 적겠습니다.",
-  team: [["neogulmi", 36, { mv: ["nightslash", "headbutt", "honeclaws", "payback"] }], ["eosapae", 37, { mv: ["mirrorshot", "confusion", "metalsound", "block"] }]] };
+  team: [["neogulmi", 40, { mv: ["nightslash", "headbutt", "honeclaws", "payback"] }], ["eosapae", 41, { mv: ["mirrorshot", "confusion", "metalsound", "block"] }]] };
 const AGENT7B = { id: "agent_misaek2", cls: "금박재단", name: "요원", spr: "agent", base: 50, music: "bondi", bgm: "trainer",
   intro: "요원: 서명만 하시면 됩니다.\f……아, 어린이는\n서명할 수 없군요.",
   lose: "요원: 이건 '서류에 없는 항목'\n입니다……",
-  team: [["yeopjeoni", 35, { mv: ["mirrorshot", "spark", "irondefense", "metalsound"] }], ["gujeongwang", 38, { mv: ["sludge", "bite", "harden", "payback"] }]] };
+  team: [["yeopjeoni", 39, { mv: ["mirrorshot", "spark", "irondefense", "metalsound"] }], ["gujeongwang", 42, { mv: ["sludge", "bite", "harden", "payback"] }]] };
 async function misaekEvent() {
   const P = World.player, BD = act("ms_byeon"), A1 = act("ms_agent1"), A2 = act("ms_agent2"), HJ = act("ms_hanji"), HE = act("ms_heeju"),
     V1 = act("ms_v_old"), V2 = act("ms_v_kid");

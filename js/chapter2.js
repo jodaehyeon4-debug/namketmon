@@ -53,11 +53,11 @@ async function garamEvent() {
 const JJ_GRUNT1 = { id: "bondi_jjok1", cls: "본디회", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 비켜라, 꼬마!\f들판 남켓몬들은 사람 때문에\n쉴 곳이 없다고!\f어둡고 시원한 항아리 속이\n본디 자리지!",
   lose: "단원: 으윽……\n항아리 뚜껑이 미끄러졌다!",
-  team: [["seureumi", 13], ["kkulbeong", 13]] };
+  team: [["seureumi", 15], ["kkulbeong", 15]] };
 const JJ_GRUNT2 = { id: "bondi_jjok2", cls: "본디회", name: "단원", spr: "grunt_f", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 우리는 남켓몬을 지키는 거야.\n본디대로!\f방해하면 너도 항아리행이야!",
   lose: "단원: 거짓말……\n꼬마한테 둘 다 지다니!",
-  team: [["heosuni", 13], ["honmangul", 14]] };
+  team: [["heosuni", 15], ["honmangul", 16]] };
 async function dyeEvent() {
   const P = World.player, Gm = act("dye_gm"), B1 = act("jg1"), B2 = act("jg2"), M = act("miyeong_f");
   if (!Gm || !B1 || !B2 || !M) return;
@@ -108,6 +108,7 @@ async function dyeEvent() {
   G.flag("dye_done", true);
   const kid = act("gym2_door_kid"); if (kid) kid.hidden = true;
   await walkPath(M, 27, 8); await walk(M, "up"); M.hidden = true; sfx("door");
+  if (typeof jpDye === "function") await jpDye();   // v2.59 정표 ② 쪽빛 손수건(청출어람)
   zoneBgm();
 }
 
@@ -192,14 +193,15 @@ async function gym2GuideTalk() {
 }
 
 // ---- 지킴이 미영 ----
-const MIYEONG = { id: "leader_miyeong", cls: "지킴이", name: "미영", spr: "gl_miyeong", type: "페어리", indoor: true, bg: "indoor", base: 100, music: "eyes", bgm: "battle_gym",
+// v2.56 첫 두 배움터는 처음 배우는 곳이라 보통 트레이너처럼 생각함(smart: 1) — 실제 게임 첫 관장처럼 너그럽게
+const MIYEONG = { smart: 1, id: "leader_miyeong", cls: "지킴이", name: "미영", spr: "gl_miyeong", type: "페어리", indoor: true, bg: "indoor", base: 100, music: "eyes", bgm: "battle_gym",
   intro: "미영: 쪽빛 배움터 지킴이, 미영.\f페어리는 여린 줄 알지?\n……한번 겪어 봐.",
   lose: "미영: ……좋은 색이 나왔네.\f네 남켓몬들, 한 번 더 담글수록\n깊어지는 쪽빛 같아.",
   // 난이도(v1.5 측정, 상성 아는 아이 70%·상처약 2개, 스타팅별 30판): 혼자 Lv20 풀 93·불꽃 100·물 67%, 둘(Lv19+둘째 17) 풀 73·불꽃 100·물 73%
   // 처음 안(에이스 달방아 19 + 드레인키스)은 풀·물 스타팅이 Lv21 혼자 0~13%, 둘이 20~37% → 에이스를 방아토로, 기술머신09(베놈쇼크)를 수업 셋에서 줌
-  team: [["bangato", 17, { mv: ["drainingkiss", "disarmingvoice", "growl", "pound"] }],
-         ["mudangkong", 18, { ab: "liquidooze", mv: ["fairywind", "tackle", "supersonic", "safeguard"] }],
-         ["bangato", 19, { mv: ["drainingkiss", "disarmingvoice", "charm", "pound"], item: "jujube" }]] };
+  team: [["bangato", 19, { mv: ["drainingkiss", "disarmingvoice", "growl", "pound"] }],
+         ["mudangkong", 20, { ab: "liquidooze", mv: ["fairywind", "tackle", "supersonic", "safeguard"] }],
+         ["bangato", 21, { mv: ["drainingkiss", "disarmingvoice", "charm", "pound"], item: "jujube" }]] };
 const MY_HINT = [
   "미영: 또 왔네.\f……지난번엔 왜 졌는지 생각해 봤어?\f페어리는 독과 강철에 약해.\n쪽빛마을 들판에 스르미가 산다던데.",
   "미영: 포기 안 하는구나.\f……방아토는 애교부리기로\n상대 공격을 크게 떨어뜨려.\f그럴 땐 남켓몬을 바꾸거나\n특수 기술로 맞서는 게 좋아.",
@@ -238,7 +240,7 @@ const rival3 = () => { const k = RIVAL_EVO[RIVAL_OF[G.starter] || "bulsap"] || "
     loseText: "한결: 봤지? 봤지?\n이번엔 내가 이겼다!",
     intro: "한결: 혼불 어사패?\f흥, 나도 방금 땄거든!\n이번엔 진짜 안 져!",
     lose: "한결: 말도 안 돼……!\n세 번째인데!",
-    team: [["darijak", 18, { mv: ["quickattack", "wingattack", "featherdance", "tailwind"] }], [k, 18, { mv: RIVAL3_MV[k] }]] }; };
+    team: [["darijak", 20, { mv: ["quickattack", "wingattack", "featherdance", "tailwind"] }], [k, 20, { mv: RIVAL3_MV[k] }]] }; };
 async function rivalJjok() {
   const P = World.player, H = act("hangyeol_c2");
   if (!H) return;

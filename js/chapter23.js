@@ -26,18 +26,18 @@ let CX_FX = null;            // { k: 'moon'|'chuldu'|'unhae'|'ojak'|'temple', t 
 const CX_G1 = { id: "cx_g1", cls: "본디회 단원", name: "단원", spr: "grunt_m", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 멈춰라!\f오늘 밤은 '오작 봉인식'이다.\n아무도 들어갈 수 없다!", lose: "단원: 으윽……\n대방님께 혼나겠다……",
   after: "단원: 대방님이 오작의 힘으로\n남켓몬을 모두 항아리에 모신대.\f……그게 정말 '본디'일까?",
-  team: [["eopseureong", 46], ["malgupju", 46]] };
+  team: [["eopseureong", 49], ["malgupju", 49]] };
 const CX_G2 = { id: "cx_g2", cls: "본디회 단원", name: "단원", spr: "grunt_f", base: 30, music: "bondi", bgm: "trainer",
   intro: "단원: 본디대로!\n남켓몬은 본디 자리로!\f……라고 외치라고 해서\n외치는 중이야!", lose: "단원: 외치는 것만으론\n안 되는구나……",
   after: "단원: 저기 검은 정장 입은 사람들,\n본디회랑은 좀 안 어울리지 않아?",
-  team: [["ttanggul", 46], ["dochaedong", 47]] };
+  team: [["ttanggul", 49], ["dochaedong", 50]] };
 const ONGI3 = { id: "ongi3", cls: "본디회 행수", name: "옹이", spr: "ongi", base: 60, music: "bondi", bgm: "trainer",
   intro: "옹이: ……덤벼.\f내가 빚은 항아리가 맞는지,\n내 손으로 확인할래!",
   lose: "옹이: ……가마 불이\n꺼졌네.",
-  team: [["mokgiryeong", 48, { mv: ["woodhammer", "poisonjab", "leechseed", "protect"] }],
-         ["heosujang", 48, { mv: ["seedbomb", "airslash", "leechseed", "protect"] }],
-         ["honbulsae", 49, { mv: ["flamethrower", "shadowball", "willowisp", "protect"] }],
-         ["chamsutjang", 50, { mv: ["flamethrower", "rockslide", "willowisp", "harden"], item: "jujube" }]] };
+  team: [["mokgiryeong", 55, { mv: ["woodhammer", "poisonjab", "leechseed", "protect"] }],
+         ["heosujang", 55, { mv: ["seedbomb", "airslash", "leechseed", "protect"] }],
+         ["neokbulhak", 56, { mv: ["flamethrower", "shadowball", "willowisp", "protect"] }],
+         ["chamsutjang", 57, { mv: ["flamethrower", "rockslide", "willowisp", "harden"], item: "jujube" }]] };
 const SORI8 = { id: "sori_elder", cls: "칠로", name: "소리 어른", spr: "sori", base: 60, music: "eyes", bgm: "trainer",
   intro: "소리 어른: 들려다오.\n네 남켓몬들의 소리를.\f가두지 않고도 오래 남는\n소리가 있는지.",
   lose: "소리 어른: ……얼씨구.\n좋은 소리다.",
@@ -48,19 +48,19 @@ const GARAM5 = { id: "garam5", cls: "본디회의 도령", name: "가람", spr: 
   intro: "가람: ……다음에 만나면\n전설과 함께라고 했지.\f들려줘. 네 남켓몬들이\n정말 네 곁을 원하는지.",
   lose: "가람: ……들렸어.\f'같이 있고 싶다'고.\n홍우성한테서도.",
   loseText: "가람: ……괜찮아?\f남켓몬들을 쉬게 해 줄게.\n아직 끝난 게 아니니까.",
-  team: [["gumiru", 50, { mv: ["xscissor", "aerialace", "protect", "swordsdance"] }],
-         ["bangmangdochae", 50, { mv: ["shadowball", "darkpulse", "confuseray", "protect"] }],
-         ["dancheongmong", 50, { mv: ["psychic", "silverwind", "protect", "calmmind"] }],
-         ["eunhajak", 51, { mv: ["airslash", "moonblast", "roost", "protect"] }],
-         ["honguseong", 53, { mv: ["earthquake", "firefang", "dig", "sunnyday"] }]] };
+  team: [["gumiru", 57, { mv: ["xscissor", "aerialace", "protect", "swordsdance"] }],
+         ["bangmangdochae", 57, { mv: ["shadowball", "darkpulse", "confuseray", "protect"] }],
+         ["dancheongmong", 57, { mv: ["psychic", "silverwind", "protect", "calmmind"] }],
+         ["eunhajak", 58, { mv: ["airslash", "moonblast", "roost", "protect"] }],
+         ["honguseong", 60, { mv: ["earthquake", "firefang", "dig", "sunnyday"] }]] };
 const BYEON8 = { id: "byeon_final", cls: "금박재단 이사장", name: "변도진", spr: "byeon", base: 120, music: "jaedan", bgm: "battle_gym",
   intro: "변도진: 옛것은 지켜야지요.\n단, 제 금고 안에서.\f아이 하나 이기는 건\n서류 한 장보다 쉽습니다.",
   lose: "변도진: ……서류에 없는 항목.\f이것이…… 그것이었나.",
-  team: [["gujeongwang", 51, { mv: ["sludgebomb", "nightslash", "screech", "harden"] }],
-         ["takrankkuk", 51, { mv: ["drillpeck", "nightslash", "aerialace", "swordsdance"] }],
-         ["maetdolmet", 52, { mv: ["earthquake", "rockslide", "icefang", "harden"] }],
-         ["malgupju", 52, { mv: ["airslash", "brutalswing", "confuseray", "screech"] }],
-         ["simsulbak", 54, { mv: ["baktagi", "nightslash", "seedbomb", "swordsdance"], item: "jujube" }]] };
+  team: [["gujeongwang", 58, { mv: ["sludgebomb", "nightslash", "screech", "harden"] }],
+         ["takrankkuk", 58, { mv: ["drillpeck", "nightslash", "aerialace", "swordsdance"] }],
+         ["maetdolmet", 59, { mv: ["earthquake", "rockslide", "icefang", "harden"] }],
+         ["malgupju", 59, { mv: ["airslash", "brutalswing", "confuseray", "screech"] }],
+         ["simsulbak", 61, { mv: ["baktagi", "nightslash", "seedbomb", "swordsdance"], item: "jujube" }]] };
 
 // ---- 잡을 수 없는 연출 배틀(운해룡) ----
 { const _tc = Battle.prototype.throwCatch;
@@ -251,6 +251,7 @@ async function cxReveal() {
   await say("사방에서 목소리가 울렸다.\f'출두요!' '출두요!'\n'암행어사 출두요!'");
   await say("횃불 사이로 사람들이 쏟아져 나왔다.\f관장 선생님들, 한결, 여울,\n솔뫼, 마을 사람들까지……");
   cxFx("chuldu", 70);
+  if (typeof cxRingLine === "function") await cxRingLine();   // v2.59 정표 옥가락지(춘향전의 어사처럼)
   const JB = act("cx_jb"), HW = act("cx_hwang");
   if (JB) { await cxWalk(JB, P.x - 1, P.y + 1); face(JB, P); }
   await say("조박사: 잘했어!\n선생님이 다 봤다.");
@@ -261,6 +262,7 @@ async function cxReveal() {
   const Y = act("cx_yeoul"); if (Y) { await cxWalk(Y, P.x + 1, P.y + 1); face(Y, P); }
   await say("여울: 그리고 이건 내가 찍은 사진.\f흙탕물이 된 섬진강,\n메워진 두꺼비 바위 옆 여울목.\f강은 흘러야 해.\n사람이 막지만 않으면.");
   if (G.has("landdoc")) await say(`${J(G.name, "은")} 땅 매입 서류도\n꺼내 보였다.\f한지 어른: 칠로 '후원금'으로\n마을 땅을 사들인 기록이오!`);
+  if (typeof cxVoteEvidence === "function") await cxVoteEvidence();   // v2.59 비색마을 투표 지시서
   if (G.flag("cx_jars")) await say("옹이: 봉인 항아리는 다 열렸어.\f남켓몬들은 이미\n제 자리로 돌아갔고.");
   if (HW) { await cxWalk(HW, P.x, P.y + 1); face(HW, D || P); }
   await say("교장 선생님: 변도진 이사장.\f이 아이는 혼자 온 게 아니오.\n여덟 마을이 함께 왔소.");
@@ -310,6 +312,7 @@ async function cxUnhae() {
   cxFx("unhae", 120);
   await say("운해룡은 쓰러지지 않는다.\f텅 빈 몸속에서 별빛만\n흔들리고 있다……");
   if (r !== "win") await cxHeal("조박사: 버텨! 혼자가 아니야!\f……남켓몬들이 다시 일어섰다!");
+  if (typeof cxStars === "function") await cxStars();   // v2.59 정표 여섯이 운해룡의 빈 몸을 채움
   // 별돌
   await say("그때, 가방 속 별돌이\n뜨겁게 빛나기 시작했다!");
   cxFx("ojak");
@@ -320,9 +323,12 @@ async function cxUnhae() {
   await say("가람: 홍우성이……\n울고 있어. 반가워서.");
   try { Audio2.cry("honguseong"); } catch (e) {}
   await say("홍우성과 은직성이\n서로를 바라보았다.\f견우와 직녀가 일 년 만에\n만나는 것처럼.");
-  await say("까마귀와 까치 떼가 날아올라\n두 남켓몬 사이에\f빛의 다리를 놓았다!");
+  const jpN = typeof jpCount === "function" ? jpCount() : 0;   // v2.59 정표의 빛으로 짠 다리
+  if (jpN) await say("은직성이 정표의 빛을\n실처럼 뽑아 엮기 시작했다!");
+  await say(jpN ? "까마귀와 까치 떼가 그 빛의 실을\n물고 날아올라\f두 남켓몬 사이에\n빛의 다리를 놓았다!" : "까마귀와 까치 떼가 날아올라\n두 남켓몬 사이에\f빛의 다리를 놓았다!");
   await say("'지켜 온 것'과 '새로 짜는 것'.\f둘이 다시 하나로 이어지자\n운해룡의 빈 몸속이\f따뜻한 별빛으로\n가득 채워졌다……");
   await say("운해룡은 조용히 울더니\n구름을 거두었다.\f그리고 반야봉 쪽 하늘로\n날아갔다.");
+  if (typeof jpFxOff === "function") jpFxOff();
   // 떠오르는 만복사
   await camPan(110, 40);
   cxFx("temple");
@@ -376,13 +382,17 @@ async function cxEnding() {
   await say("여울: 내일부터 한결이랑\n요천 청소하기로 했어.\f강은 흘러야 하니까.");
   await say("한결: 야! 너 진짜 멋있었어!\f……다음엔 내가 마패 들 거야!\n아, 몰라!");
   await say("솔뫼: 나는 산으로 돌아가겠다.\f이번엔 문을 닫으러가 아니라,\n길을 안내하러.");
+  if (typeof cxEndFan === "function") await cxEndFan();   // v2.59 소리 부채를 돌려 드림
   await say("소리 어른: 보름아,\n한 소리 같이 하자꾸나.");
   await say("보름: 네, 할아버지!\f……얼씨구!");
+  if (typeof cxEndFan2 === "function") await cxEndFan2();
   if (JB) { face(JB, P); }
   await say("조박사: 마패, 잘 썼어?\f이제 선생님 거 돌려줘야지.\n……음 그건 안 돼, 라고 할 줄 알았지?");
   await say("조박사: 농담이야.\f그 마패는 오늘 밤만큼은\n네 거였어.");
+  if (typeof cxEndCloth === "function") await cxEndCloth(JB);   // v2.59 청출어람
   G.take && G.take("mapae");
   await say(`${J(G.name, "은")} 조박사에게\n마패를 돌려주었다.`);
+  if (typeof cxEndSeed === "function") await cxEndSeed();   // v2.59 박씨 · 엽서
   if (HW) face(HW, P);
   await say("교장 선생님: 수고했다.");
   await say("교장 선생님: 이제 남은 건\n하나뿐이구나.\f오방고원의 덕과 아카데미 리그.\n'졸업 시험'이다.");
