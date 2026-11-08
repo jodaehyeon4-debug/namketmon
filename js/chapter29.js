@@ -70,10 +70,10 @@ let LEGEND_FX = null;                        // 반야봉 정상 운해룡 연�
 const hideAct = (...ids) => { for (const id of ids) { const a = act(id); if (a) a.hidden = true; } };   // 배틀 뒤 바로 사라지게(다시 들어오면 show가 다시 정함)
 async function horyeongEvent() {
   if (G.flag("horyeong_caught")) return;
-  await say("구상나무 숲 한가운데,\n커다란 범이 앉아 있다.\f이마에 '山' 무늬가\n또렷하다……");
+  await say("구상나무 숲 한가운데,\n커다란 범이 앉아 있다.\f이마에 뾰족한 산봉우리\n무늬가 또렷하다……");
   try { Audio2.cry("horyeongsan"); } catch (e) {}
   for (let i = 0; i < 2; i++) { await fadeOut(5, "#c84a28"); await fadeIn(5, "#c84a28"); }
-  await say("어흥―!\f산이 한순간에\n붉게 물드는 것 같았다!");
+  await say("어흐흥 어흥!!\f산이 한순간에\n붉게 물드는 것 같았다!");
   const r = await startWild("horyeongsan", 60, "grass");
   if (r === "caught") { G.flag("horyeong_caught", true); hideAct("by_horyeong"); await say("숲에 다시 바람이 분다.\f산군이 길을 내어 준 것 같다."); return; }
   if (r === "lose") return;

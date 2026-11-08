@@ -141,21 +141,25 @@ const FX = (() => {
     if (weather) drawWeather(cx, weather, now, W, H);
     for (const [side, col] of aura) { const [x, y, w] = pos(side); for (let i = 0; i < 10; i++) { const u = (now/1600 + R(i)) % 1; dot(x + (R(i + 3)*2 - 1)*w*.38, y + w*.25 - u*w*.7, 2, col[i % 3]); } }
     const t0 = now; jobs = jobs.filter(j => { const t = (t0 - j.start)/(j.dur*slow); if (t >= 1) { j.done(); return false; }
-      try { j.tp.draw(t, j.a, j.d, j.p); } catch (e) {} return true; });
+      try { j.tp.draw(t, j.a, j.d, j.p, j.ty, j); } catch (e) { if (!errs.has(j.name)) { errs.add(j.name); console.warn("FX " + j.name + ": " + e.message); } } return true; });
   }
   function kick() {}
+  const errs = new Set();
+  // v2.50 세게 맞는 기술: 배경을 잠깐 어둡게(남켓몬·이펙트는 그대로 밝게)
+  function dimNow(now) { let best = null; for (const j of jobs) { const D = j.tp.dim; if (!D) continue; const t = (now - j.start) / (j.dur * slow); if (t < 0 || t >= 1) continue;
+      const a = D[1] * clamp(t / .15) * clamp((1 - t) / .2); if (!best || a > best.a) best = { c: D[0], a }; } return best; }
   return {
     // 기술 연출. 맞는 순간에 resolve(그 뒤에도 연출은 끝까지 그린다)
     play(name, a, d, type) {
       const tp = T[name] || T.star; if (!Save.opt.anim) return Promise.resolve();
       const p = FXP[type] || FXP["노말"], A = pos(a.side), Dd = pos(d.side);
-      return new Promise(res => { let hit = false; const job = { tp, a: A, d: tp.self ? A : Dd, p, start: performance.now(), dur: tp.dur, done: () => { if (!hit) res(); } };
-        jobs.push(job); if (tp.start) tp.start(); kick();
+      return new Promise(res => { let hit = false; const job = { tp, name, ty: type, dir: a.side === "E" ? -1 : 1, a: A, d: tp.self ? A : Dd, p, start: performance.now(), dur: tp.dur, done: () => { if (!hit) res(); } };
+        jobs.push(job); if (tp.start) tp.start(); kick(); if (tp.snd && typeof sfx === "function") sfx("fx_" + tp.snd);   // v2.50 템플릿마다 효과음
         setTimeout(() => { hit = true; res(); }, tp.dur*tp.hit*slow); });
     },
-    setWeather(w) { weather = w; kick(); }, get weather() { return weather; },
+    setWeather(w) { weather = w; kick(); }, get weather() { return weather; }, dimNow, get busy() { return jobs.length; },
     setAura(side, type) { if (type) aura.set(side, FXP[type] || FXP["노말"]); else aura.delete(side); kick(); },
-    shake, flash, render, cv, clear() { jobs = []; weather = null; aura.clear(); cx.clearRect(0, 0, W, H); },
+    shake, flash, render, cv, tpl: T, pal: FXP, ctx: cx, clear() { jobs = []; weather = null; aura.clear(); cx.clearRect(0, 0, W, H); },
   };
 })();
 // ===== v1.2 날씨 그림 (배틀 FX 캔버스·필드 화면 공용) =====

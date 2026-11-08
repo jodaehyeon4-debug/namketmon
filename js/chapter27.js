@@ -122,7 +122,7 @@ async function m7Lesson(z) {
   if (m7done(z)) { await say("칠판 구석에 '참 잘했어요!'\n도장이 꾹 찍혀 있다."); return; }
   await say(Q.board);
   await say(Q.q);
-  await say(`① ${Q.opts[0]}\n② ${Q.opts[1]}\f③ ${Q.opts[2]}`);
+  await say(`1. ${Q.opts[0]}\n2. ${Q.opts[1]}\f3. ${Q.opts[2]}`);   // v2.49 글꼴에 없는 ①②③ → 1. 2. 3.
   await say("'정답 번호의 톱니바퀴 손잡이를\n당겨 보세요!'");
   G.flag("ms7r" + (z + 1), true);
 }

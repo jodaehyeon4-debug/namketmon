@@ -148,8 +148,8 @@ async function paintStep(c) {
   if (was === now) return;
   PAINT = now; sfx("grass");
   if (!was) await say(`찰박! 발에\n${c} 물감이 묻었다!`);
-  else if (now === "갈색") await say(`${was}에 ${c}이(가) 또 섞여서\n탁한 갈색이 되었다…\f세숫대야에서 발을 씻고\n다시 해 보자.`);
-  else await say(`${was} 위에 ${c}이(가) 섞여서…\f${now} 발자국이 되었다!`);
+  else if (now === "갈색") await say(`${was}에 ${J(c, "이")} 또 섞여서\n탁한 갈색이 되었다…\f세숫대야에서 발을 씻고\n다시 해 보자.`);
+  else await say(`${was} 위에 ${J(c, "이")} 섞여서…\f${now} 발자국이 되었다!`);
 }
 async function archTalk(n) {
   if (G.flag("g2q" + n)) return;
@@ -159,8 +159,8 @@ async function archTalk(n) {
   await say(A.colors.map((c, i) => `${c} 발자국 = ${Q.opts[i]}`).slice(0, 2).join("\n") + "\f" + `${A.colors[2]} 발자국 = ${Q.opts[2]}`);
   if (!PAINT) { await say("발자국 색깔로 대답하는 문이다.\f물감 쟁반을 밟고 다시 와 보자."); return; }
   const v = A.colors.indexOf(PAINT);
-  if (v < 0) { await say(`지금 발자국은 ${PAINT}.\f${PAINT}은(는) 대답에 없는 색이다.\n세숫대야에서 씻고 다시 해 보자.`); return; }
-  if (!await yes(`지금 발자국은 ${PAINT}.\n'${Q.opts[v]}'(으)로 대답할까?`)) return;
+  if (v < 0) { await say(`지금 발자국은 ${PAINT}.\f${J(PAINT, "은")} 대답에 없는 색이다.\n세숫대야에서 씻고 다시 해 보자.`); return; }
+  if (!await yes(`지금 발자국은 ${PAINT}.\n'${Q.opts[v]}'${jp(Q.opts[v], "으로")} 대답할까?`)) return;
   const r = await gymLesson(Q, k, { board: false, answer: v });
   if (r === "lost" || r === "cancel") return;
   PAINT = null; PAINT_TRAIL = [];
@@ -304,7 +304,7 @@ async function starStep(sec, i) {
   }
   if (i === STAR_K[sec - 1]) {
     STAR_K[sec - 1]++; sfx("cursor");
-    if (STAR_K[sec - 1] === S.stars.length) { G.flag(F, true); await Audio2.jingle("jg_levelup"); await say(`별이 하나로 이어졌다!\f${S.name}이(가) 바닥에서 반짝인다!`); return starDone(sec); }
+    if (STAR_K[sec - 1] === S.stars.length) { G.flag(F, true); await Audio2.jingle("jg_levelup"); await say(`별이 하나로 이어졌다!\f${J(S.name, "이")} 바닥에서 반짝인다!`); return starDone(sec); }
     return;
   }
   if (STAR_K[sec - 1] === 0) { if (i !== 0) await say(`이 별은 '${S.nm[i]}'.\f별자리판을 보면\n어디서 시작하는지 알 수 있다.`); return; }

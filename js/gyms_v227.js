@@ -284,8 +284,8 @@ async function g7tray(c) {
   if (was === now) { sfx("grass"); return; }
   G7.paint = now; sfx("grass");
   if (!was) await say(`찰박! 발에\n${c} 물감이 묻었다!\f(여섯 걸음이 지나면 말라요.)`);
-  else if (now === "갈색") await say(`${was}에 ${c}이(가) 또 섞여서\n탁한 갈색이 되었다…\f세숫대야에서 발을 씻고\n다시 해 보자.`);
-  else await say(`${was} 위에 ${c}이(가) 섞여서…\f${now} 발자국이 되었다!\n(다시 여섯 걸음)`);
+  else if (now === "갈색") await say(`${was}에 ${J(c, "이")} 또 섞여서\n탁한 갈색이 되었다…\f세숫대야에서 발을 씻고\n다시 해 보자.`);
+  else await say(`${was} 위에 ${J(c, "이")} 섞여서…\f${now} 발자국이 되었다!\n(다시 여섯 걸음)`);
 }
 async function g7arch(i) {
   const need = g7dev("gym2").need[i], n = i + 1;

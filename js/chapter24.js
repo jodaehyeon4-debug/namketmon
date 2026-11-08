@@ -251,7 +251,7 @@ whiteout = async function () {
         talk: "등산객: 꼭대기에 오래 서 있는\n사람은 없어.\f다 내려가서 또 다른 산을\n오르러 가지.\f……그래서 산은 늘\n다음을 보여 주는 거야." },
       { id: "mh_ranger", x: 25, y: 47, spr: "ranger", dir: "left", move: "look", heart: "만행산 지킴이",
         talk: "지킴이: 리그에 가는 트레이너들이\n이 길에서 마지막으로 겨뤄요.\f숲은 그 소리를 다 듣고 있지만\n아무 말도 안 하죠.\f……그래서 다들 여기서\n제일 솔직해지나 봐요." },
-      { item: "maxrevive", x: 3, y: 26 }, { item: "fullrestore", x: 44, y: 43 }, { item: "maxelixir", x: 26, y: 41 }, { item: "rarecandy" in ITEMS ? "rarecandy" : "maxpotion", x: 18, y: 21 },
+      { item: "maxrevive", x: 3, y: 26 }, { item: "fullrestore", x: 44, y: 43 }, { item: "maxelixir", x: 26, y: 41 }, { item: "yeot", x: 18, y: 21 },
       { x: 30, y: 43, spr: "simmani_girl", dir: "down", trainer: { id: "mh_danbi", cls: "심마니 소녀", name: "단비", spr: "simmani_girl", range: 2, base: 26, team: [["eollekkot", 52], ["bomulbak", 53]],
         intro: "할아버지 따라 산에 다니다가\n리그까지 오게 됐어!", lose: "할아버지한테 혼나겠다……", after: "산삼은 잎이 다섯 갈래래.\n손가락처럼!" } },
       { x: 34, y: 38, spr: "foreign_m", dir: "right", trainer: { id: "mh_mark", cls: "여행가", name: "마크", spr: "foreign_m", range: 2, base: 30, team: [["kalgitmae", 52], ["ureureung", 53]],

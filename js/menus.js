@@ -122,20 +122,20 @@ class PartyScreen extends Modal {
     rect(x + 2, y + 2, w - 4, 2, "rgba(255,255,255,.5)");
     // v2.37 기술머신·진화 도구: 실제 게임처럼 체력 막대 자리에 '배울 수 있다/쓸 수 있다'(전엔 막대 위에 겹치고 맨 앞 남켓몬엔 안 보였음)
     const lab = this.mode === "tm" && this.tmId ? (tmOk(m, this.tmId) ? ["배울 수 있다", 1] : ["배울 수 없다", 0])
-      : this.mode === "evo" && this.evoId ? (ITEMS[this.evoId].evo[m.k] ? ["쓸 수 있다", 1] : ["쓸 수 없다", 0]) : null;
+      : this.mode === "evo" && this.evoId ? (ITEMS[this.evoId].evo[m.k] ? ["쓸 수 있다", 1] : ["쓸 수 없다", 0]) : this.labFn ? this.labFn(m) : null;   // v2.52 labFn: 특성 환약·병뚜껑·배틀누각 고르기
     const labDraw = (lx, ly, al) => Font.draw(g, lab[0], lx, ly, { font: "g9", align: al, col: lab[1] ? TXT.blue : TXT.red, sh: null });
     if (i === 0) {
-      drawIcon(m.k, x + 2, y + 2, sel); Font.draw(g, mname(m), x + 36, y + 6);
+      drawIcon(m.k, x + 2, y + 2, sel); Font.draw(g, mname(m), x + 36, y + 6, { fit: w - 40 });
       Font.draw(g, "Lv" + m.lv, x + 36, y + 22, { font: "g9" }); if (m.gender) Font.draw(g, m.gender === "m" ? "♂" : "♀", x + 70, y + 20, { col: m.gender === "m" ? TXT.blue : TXT.red, sh: null });
       if (m.status || fnt) statusBadge(fnt ? "fnt" : m.status, x + 6, y + 36);
       if (lab) labDraw(x + w - 6, y + 42, "right");
       else { hpBar(x + 34, y + 38, 44, m.hp / m.st[0]); Font.draw(g, `${m.hp}/${m.st[0]}`, x + w - 6, y + 47, { font: "g9", align: "right" }); }
     } else {
-      drawIcon(m.k, x, y - 4, sel); Font.draw(g, mname(m), x + 32, y + 1);
+      drawIcon(m.k, x, y - 4, sel); Font.draw(g, mname(m), x + 32, y + 1, { fit: 50 });   // v2.49 이름 칸 50(체력 막대를 오른쪽 끝으로)
       Font.draw(g, "Lv" + m.lv, x + 32, y + 14, { font: "g9" }); if (m.gender) Font.draw(g, m.gender === "m" ? "♂" : "♀", x + 62, y + 12, { col: m.gender === "m" ? TXT.blue : TXT.red, sh: null });
       if (m.status || fnt) statusBadge(fnt ? "fnt" : m.status, x + 74, y + 15);
       if (lab) labDraw(x + w - 6, y + 8, "right");
-      else { hpBar(x + 76, y + 5, 44, m.hp / m.st[0]); Font.draw(g, `${m.hp}/${m.st[0]}`, x + w - 6, y + 13, { font: "g9", align: "right" }); }
+      else { hpBar(x + w - 64, y + 5, 40, m.hp / m.st[0]); Font.draw(g, `${m.hp}/${m.st[0]}`, x + w - 6, y + 13, { font: "g9", align: "right" }); }
     }
   }
 }
@@ -170,8 +170,8 @@ class Summary extends Modal {
     panel(4, 24, 100, 112, "#d8e8f0");
     monFront(m.k, 6, 30, 0, m.shiny);
     // v1.8.1: 성별 기호가 고정 자리(80)에 있어 Lv·이름과 겹치던 것 → 이름 바로 뒤에 붙임(실제 게임처럼 '이름 ♂ … Lv')
-    rect(4, 120, 100, 16, "#3a3a46"); Font.draw(g, mname(m), 8, 120, { col: TXT.white, sh: TXT.wsh });
-    if (m.gender) Font.draw(g, m.gender === "m" ? "♂" : "♀", 10 + Font.width(mname(m)), 120, { col: m.gender === "m" ? "#90b0ff" : "#ff9090", sh: null });
+    rect(4, 120, 100, 16, "#3a3a46"); const nw = Font.draw(g, mname(m), 8, 120, { col: TXT.white, sh: TXT.wsh, fit: 80 });
+    if (m.gender) Font.draw(g, m.gender === "m" ? "♂" : "♀", 10 + nw, 120, { col: m.gender === "m" ? "#90b0ff" : "#ff9090", sh: null });
     if (m.shiny) { Font.draw(g, "★", 8, 32, { col: "#ffd040", sh: "#a06010" }); }   // v2.40 이로치 표시(모습 칸 왼쪽 위)
     Font.draw(g, "Lv" + m.lv, 101, 122, { font: "g9", col: TXT.white, sh: TXT.wsh, align: "right" });
     const bi = JSN.balls.keys.indexOf(m.ball || "namket"); sprite(IMG.balls, 0, Math.max(0, bi) * 16, 16, 16, 6, 26);
@@ -187,6 +187,8 @@ class Summary extends Modal {
     } else if (this.page === 1) {
       const nat = NATURES[m.nat];
       rect(X, 26, 140, 14, "#c8b890"); Font.draw(g, "HP", X + 4, 26, { font: "g9" }); Font.draw(g, `${m.hp}/${m.st[0]}`, X + 136, 26, { align: "right", font: "g9" });
+      const jd = typeof judgeWord === "function" && G.flag("judge_on");   // v2.52 판정관에게 한 번 판정을 받으면 능력마다 개체값 판정(실제 게임의 '판정 기능'처럼)
+      if (jd) for (let k = 0; k < 6; k++) { const [w, c] = judgeWord(m, k); Font.draw(g, w, X + 50, k ? 50 + k * 13 : 26, { font: "g9", col: c, sh: null }); }
       hpBar(X + 40, 42, 76, m.hp / m.st[0]);
       for (let k = 1; k < 6; k++) { const y = 50 + k * 13; const up = nat[1] === k && nat[1] !== nat[2], dn = nat[2] === k && nat[1] !== nat[2];
         Font.draw(g, STN[k], X + 4, y, { font: "g9", col: up ? TXT.red : dn ? TXT.blue : TXT.dark, sh: up ? TXT.rsh : dn ? TXT.bsh : TXT.sh }); Font.draw(g, String(m.st[k]), X + 136, y, { font: "g9", align: "right" }); }
@@ -195,7 +197,8 @@ class Summary extends Modal {
       panel(4, 140, 248, 50, "#fbf8f0");
       Font.draw(g, "다음 레벨까지 " + (m.lv >= 100 ? 0 : hi - m.exp), 12, 144, { font: "g9" }); expBar(130, 148, 112, (m.exp - lo) / Math.max(1, hi - lo));
       const a = AB[m.ab];
-      Font.draw(g, "특성  " + (a ? a.n : m.ab), 12, 158, { font: "g9", col: "#a03020", sh: TXT.rsh });
+      const aw = Font.draw(g, "특성  " + (a ? a.n : m.ab), 12, 158, { font: "g9", col: "#a03020", sh: TXT.rsh });
+      if (MON[m.k] && MON[m.k].ab[1] === m.ab && !MON[m.k].ab[0].includes(m.ab)) Font.draw(g, "· 숨은 특성", 16 + aw, 158, { font: "g9", col: "#6a3aa8", sh: null });   // v2.52 특성 고약으로 바꾼 숨은 특성
       if (a && a.orig) Font.draw(g, "★남원 특성  A: 이야기", 244, 158, { font: "g9", align: "right", col: "#b07818", sh: null });
       Font.wrap(a ? a.d : "", 232, "g9").slice(0, 2).forEach((l, k) => Font.draw(g, l, 12, 168 + k * 10, { font: "g9" }));
     } else {
@@ -241,7 +244,7 @@ class Bag extends Modal {
       const it = ITEMS[id];
       if (this.mode === "give") { if (!canHold(id)) { await say("그것은 지니게 할 수 없다."); return; } Bag.lastP = this.p; this.done({ item: id }); return; }
       if (this.mode === "battle") {
-        if (it.p === "key" || it.p === "tm" || it.repel || it.escape || it.candy || it.evo || (it.hold && !it.heal && !it.hpPct && !it.cure && !it.pp && !it.conf)) { await say("지금은 쓸 수 없다."); return; }
+        if (it.p === "key" || it.p === "tm" || it.repel || it.escape || it.candy || it.evo || it.fieldOnly || (it.hold && !it.heal && !it.hpPct && !it.cure && !it.pp && !it.conf)) { await say("지금은 쓸 수 없다."); return; }
         if (it.ball) { if (G.party.length >= 6 && PCB.free() <= 0) { await say("PC가 가득 차서 더 잡을 수 없다!"); return; } Bag.lastP = this.p; this.done({ item: id }); return; }
         if (isBattleOnly(it)) { Bag.lastP = this.p; this.done({ item: id, target: BT ? BT.pi : 0 }); return; }
         const t = await openParty("item"); if (t == null || t < 0) return;
@@ -619,8 +622,10 @@ class TrainerCard extends Modal {
 class Options extends Modal {
   constructor() { super(); this.i = 0; this.opaque = true; }
   get rows() { const o = Save.opt; return [
-    ["글자 속도", ["느림", "보통", "빠름"], "speed"], ["배틀 애니메이션", ["켜기", "끄기"], "anim", true], ["배틀 방식", ["교체", "계속"], "style"],
-    ["늘 달리기", ["켜기", "끄기"], "autorun", true], ["배경 음악", null, "music"], ["효과음", null, "sfx"], ["창 테두리", FRAMES.map(f => f.name), "frame"], ["닫기"]]; }
+    ["글자 속도", ["느림", "보통", "빠름"], "speed"], ["대화 다 읽기", ["켜기", "끄기"], "readlock", true], ["배틀 애니메이션", ["켜기", "끄기"], "anim", true], ["배틀 방식", ["교체", "계속"], "style"],
+    ["늘 달리기", ["켜기", "끄기"], "autorun", true], ["배경 음악", null, "music"], ["효과음", null, "sfx"], ["창 테두리", FRAMES.map(f => f.name), "frame"], ["자동 리포트", ["켜기", "끄기"], "autosave", true], ["닫기"]]; }
+  get lh() { const n = this.rows.length; return n > 9 ? 13 : n > 8 ? 14 : 15; }   // v2.51 줄이 열 개(대화 다 읽기 더함) → 제목·도움말 칸을 줄여 13칸 간격
+  get y0() { return 30; }
   update(f) {
     if (!f) return; const R = this.rows, o = Save.opt;
     if (Input.rep("up")) { this.i = (this.i + R.length - 1) % R.length; sfx("cursor"); }
@@ -636,15 +641,15 @@ class Options extends Modal {
   }
   draw() {
     bgPattern("#5a7a5a", "#648464");
-    frame(8, 6, 240, 22); Font.draw(g, "설정", 128, 9, { align: "center" });
-    frame(8, 30, 240, 128);
+    frame(8, 3, 240, 21); Font.draw(g, "설정", 128, 5, { align: "center" });
+    frame(8, 25, 240, 137);
     const o = Save.opt;
-    this.rows.forEach((r, k) => { const y = 37 + k * 15; Font.draw(g, r[0], 24, y); if (k === this.i) cursor(14, y + 3);
+    this.rows.forEach((r, k) => { const y = this.y0 + k * this.lh; Font.draw(g, r[0], 24, y); if (k === this.i) cursor(14, y + 3);
       if (!r[2]) return;
       let v; if (r[1]) v = r[1][r[3] ? (o[r[2]] ? 0 : 1) : o[r[2]]]; else v = "■".repeat(Math.round(o[r[2]] * 10)) + "□".repeat(10 - Math.round(o[r[2]] * 10));
       if (!r[1]) { for (let i = 0; i < 10; i++) rect(150 + i * 8, y + 4, 6, 8, i < Math.round(o[r[2]] * 10) ? "#d04030" : "#c8c8c0"); }
       else Font.draw(g, "◀ " + v + " ▶", 238, y, { align: "right", col: "#d04030", sh: TXT.rsh }); });
-    frame(8, 160, 240, 30, o.frame); Font.draw(g, "Z: 결정  X: 취소·달리기  C/Enter: 메뉴", 128, 168, { align: "center", font: "g9" });
+    frame(8, 164, 240, 26, o.frame); Font.draw(g, "Z: 결정  X: 취소·달리기  C/Enter: 메뉴", 128, 170, { align: "center", font: "g9" });
   }
 }
 

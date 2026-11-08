@@ -306,7 +306,7 @@ async function yeosimTalk(a) {
     warps: [18, 19, 20, 21].map(x => [x, 43, ["route12", x - 2, 0, "down", "edge"]]),
     zones: [["구룡계곡", 0, 0, 39, 43]],
     zinfo: { "구룡계곡": { bgm: "juhong", enc: "구룡계곡", rate: 0.13, bg: "grass" } },
-    signs: [[22, 41, "구룡계곡\n가져온 쓰레기는 되가져가요!\f— 주홍 배움터 천문반"], [16, 12, "구룡계곡 소(沼)\n만복대에서 흘러온 맑은 물이\n모여 깊은 소를 이룬 곳"]],
+    signs: [[22, 41, "구룡계곡\n가져온 쓰레기는 되가져가요!\f— 주홍 배움터 천문반"], [16, 12, "구룡계곡 소\f만복대에서 흘러온 맑은 물이\n모여 깊은 소를 이룬 곳"]],
     checks: [],   // v2.45 폭포 지움
     areas: [{ x0: 14, y0: 12, x1: 21, y1: 13, cond: () => !G.flag("garam3_met"), run: garam3Event }],
     npcs: [

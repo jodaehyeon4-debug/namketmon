@@ -13,12 +13,17 @@ const rnd = n => Math.floor(Math.random() * n);
 const pick = a => a[rnd(a.length)];
 const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const OPP = { up: "down", down: "up", left: "right", right: "left" };
-const josa = (w, a, b) => { const c = w.charCodeAt(w.length - 1); if (c < 0xac00 || c > 0xd7a3) return w + a; return w + ((c - 0xac00) % 28 ? a : b); };
+// v2.49 받침 셈: 한글 + 숫자(0 영 1 일 2 이 3 삼 4 사 5 오 6 육 7 칠 8 팔 9 구 — 받침 ㄹ은 8)
+const JONG_D = { 0: 21, 1: 8, 2: 0, 3: 16, 4: 0, 5: 0, 6: 1, 7: 8, 8: 8, 9: 0 };
+const jongOf = w => { const s = String(w).replace(/['"’”)\]\s.!?…]+$/, ""), c = s.charCodeAt(s.length - 1); if (c >= 0xac00 && c <= 0xd7a3) return (c - 0xac00) % 28; const ch = s[s.length - 1]; return ch in JONG_D ? JONG_D[ch] : 1; };
+const josa = (w, a, b) => w + (jongOf(w) ? a : b);
 // 은/는, 이/가, 을/를, 과/와, 으로/로
 const JS = { "은": ["은", "는"], "이": ["이", "가"], "을": ["을", "를"], "과": ["과", "와"], "아": ["아", "야"], "이여": ["이여", "여"] };
 // 받침 있으면 '이'를 붙인다 (한별 → 한별이, 몽쭉이 → 몽쭉이): 친근한 부름·서술격 조사 생략형에 쓴다
 function ii(w) { const c = w.charCodeAt(w.length - 1); return (c >= 0xac00 && c <= 0xd7a3 && (c - 0xac00) % 28) ? w + "이" : w; }
-function J(w, t) { const p = JS[t]; if (t === "으로") { const c = w.charCodeAt(w.length - 1); const jong = c >= 0xac00 && c <= 0xd7a3 ? (c - 0xac00) % 28 : 0; return w + (jong && jong !== 8 ? "으로" : "로"); } return josa(w, p[0], p[1]); }
+function J(w, t) { const p = JS[t]; if (t === "으로") { const jong = jongOf(w); return w + (jong && jong !== 8 ? "으로" : "로"); } return josa(w, p[0], p[1]); }
+// v2.49 조사만(따옴표·괄호 뒤에 붙일 때): jp("상자 2", "이") → "가"
+function jp(w, t) { return J(w, t).slice(String(w).length); }
 
 // ---- 화면 맞춤 (정수 배율) ----
 function fit() {
@@ -169,9 +174,14 @@ const Font = (() => {
     return c;
   }
   // n: 보여 줄 글자 수(타자기). 반환: 그린 너비
-  function draw(ctx, str, x, y, { font = "g11", col = TXT.dark, sh = TXT.sh, n = Infinity, align = "left" } = {}) {
+  // v2.49 fit: 그 너비를 넘으면 작은 글씨(g9)로, 그래도 넘으면 가로로 살짝 좁혀 그림(여섯 글자 별명이 체력 막대·Lv와 겹치던 것)
+  function draw(ctx, str, x, y, { font = "g11", col = TXT.dark, sh = TXT.sh, n = Infinity, align = "left", fit = 0 } = {}) {
     str = String(str); if (!str) return 0;
+    if (fit && font === "g11" && width(str, "g11") > fit) { font = "g9"; y += 2; }
     const r = render(str, font, col, sh);
+    if (fit && r.w > fit && n === Infinity) {
+      const dw = fit + 1; if (align === "right") x -= fit; else if (align === "center") x -= Math.floor(fit / 2);
+      ctx.drawImage(r.c, 0, 0, r.c.width, r.c.height, Math.round(x), Math.round(y), dw, r.c.height); return fit; }
     if (align === "right") x -= r.w; else if (align === "center") x -= Math.floor(r.w / 2);
     const cnt = Math.min(n, r.xs.length - 1); if (cnt <= 0) return 0; const cw = cnt >= r.xs.length - 1 ? r.c.width : r.xs[cnt] + 1;
     if (cw > 0) ctx.drawImage(r.c, 0, 0, cw, r.c.height, Math.round(x), Math.round(y), cw, r.c.height);
@@ -342,6 +352,49 @@ const Audio2 = (() => {
     cast() { tone("sine", 900, 300, 0.25, 0.08); noise(0.2, 0.05, 0, 3000, 9000); },
     splash() { noise(0.35, 0.3, 0, 300, 3500, 900); tone("sine", 500, 200, 0.2, 0.08); },
     gong() { tone("sine", 196, 190, 1.6, 0.22); tone("sine", 392, 380, 1.2, 0.08); tone("triangle", 587, 560, 0.8, 0.05); noise(0.12, 0.1, 0, 200, 1500); },
+    // v2.50 기술 이펙트 효과음(실제 게임처럼 기술마다 소리) — 맞는 소리(hit)는 따로 그대로
+    fx_whoosh() { noise(0.14, 0.12, 0, 600, 4000, 1500); },
+    fx_dash() { noise(0.2, 0.12, 0, 800, 6000, 2000); tone("sine", 300, 600, 0.15, 0.04); },
+    fx_slash() { noise(0.08, 0.14, 0, 3000, 12000, 6000); tone("square", 2400, 1200, 0.06, 0.04); },
+    fx_bite() { tone("square", 180, 120, 0.05, 0.13); noise(0.05, 0.14, 0.05, 500, 3000); tone("square", 220, 140, 0.05, 0.1, 0.07); },
+    fx_dragon() { tone("sawtooth", 110, 70, 0.35, 0.09); noise(0.3, 0.08, 0, 100, 1200); },
+    fx_whip() { noise(0.06, 0.15, 0.2, 2000, 9000, 4000); tone("square", 1600, 400, 0.07, 0.05, 0.22); },
+    fx_bind() { tone("triangle", 200, 160, 0.3, 0.09); tone("triangle", 160, 210, 0.3, 0.07, 0.15); },
+    fx_crash() { noise(0.3, 0.22, 0.2, 100, 2500, 400); tone("sine", 120, 50, 0.25, 0.18, 0.2); },
+    fx_coins() { for (let i = 0; i < 4; i++) tone("square", i % 2 ? 2637 : 2093, i % 2 ? 2637 : 2093, 0.04, 0.05, i * 0.06); },
+    fx_web() { tone("sine", 1200, 1800, 0.2, 0.04); noise(0.15, 0.05, 0, 4000, 10000); },
+    fx_powder() { noise(0.5, 0.05, 0, 5000, 12000); for (let i = 0; i < 3; i++) tone("sine", 1800 + i * 300, 1800 + i * 300, 0.08, 0.03, i * 0.1); },
+    fx_glare() { tone("square", 880, 880, 0.06, 0.07); tone("square", 660, 660, 0.12, 0.07, 0.07); },
+    fx_smoke() { noise(0.5, 0.1, 0, 200, 1500, 600); },
+    fx_spray() { noise(0.25, 0.1, 0, 1500, 7000, 3000); },
+    fx_wind() { noise(0.55, 0.12, 0, 300, 800, 3000); },
+    fx_notes() { tone("triangle", 784, 784, 0.1, 0.07); tone("triangle", 988, 988, 0.1, 0.07, 0.1); tone("triangle", 1175, 1175, 0.14, 0.07, 0.2); },
+    fx_aura() { for (let i = 0; i < 6; i++) tone("sine", 400 + i * 120, 420 + i * 120, 0.08, 0.05, i * 0.05); },
+    fx_metal() { tone("square", 1800, 1700, 0.2, 0.05); tone("triangle", 2600, 2500, 0.25, 0.05, 0.01); },
+    fx_hazard() { for (let i = 0; i < 3; i++) tone("square", 900 - i * 100, 880 - i * 100, 0.04, 0.06, 0.25 + i * 0.08); noise(0.06, 0.08, 0.3, 800, 4000); },
+    fx_ghost() { tone("sine", 400, 250, 0.45, 0.07); tone("sine", 412, 258, 0.45, 0.05, 0.02); },
+    fx_drain() { tone("sine", 300, 300, 0.05, 0.05); for (let i = 0; i < 5; i++) tone("sine", 500 + i * 150, 520 + i * 150, 0.06, 0.05, 0.3 + i * 0.07); },
+    fx_leaf() { noise(0.3, 0.08, 0, 2500, 8000, 4000); tone("sine", 1200, 1500, 0.12, 0.03); },
+    fx_twinkle() { tone("square", 2093, 2093, 0.05, 0.04); tone("square", 2637, 2637, 0.05, 0.04, 0.06); tone("square", 3136, 3136, 0.08, 0.04, 0.12); },
+    fx_orb() { tone("sine", 500, 900, 0.18, 0.08); },
+    fx_charge() { tone("sine", 200, 900, 0.6, 0.07); noise(0.6, 0.04, 0, 2000, 8000); },
+    fx_zap() { for (let i = 0; i < 4; i++) tone("sawtooth", 900 + (i % 2) * 400, 300, 0.07, 0.06, i * 0.05); noise(0.2, 0.07, 0, 2000, 9000); },
+    fx_fire() { noise(0.4, 0.17, 0, 150, 2500, 800); tone("sawtooth", 90, 70, 0.3, 0.05); },
+    fx_bubble() { for (let i = 0; i < 4; i++) tone("sine", 300 + i * 90, 500 + i * 90, 0.05, 0.07, i * 0.08); },
+    fx_sleep() { tone("triangle", 600, 400, 0.25, 0.06); tone("triangle", 500, 330, 0.3, 0.05, 0.3); },
+    fx_ice() { tone("sine", 2400, 2400, 0.15, 0.05); tone("sine", 3200, 3200, 0.2, 0.04, 0.05); noise(0.1, 0.06, 0, 5000, 12000); },
+    fx_confuse() { tone("sine", 700, 500, 0.2, 0.06); tone("sine", 500, 700, 0.2, 0.06, 0.2); },
+    fx_wave() { noise(0.8, 0.16, 0, 200, 2500, 600); tone("sine", 150, 90, 0.6, 0.06); },
+    fx_heal() { tone("triangle", 1046, 1046, 0.08, 0.05); tone("triangle", 1318, 1318, 0.08, 0.05, 0.08); tone("triangle", 1568, 1568, 0.12, 0.05, 0.16); },
+    fx_shield() { tone("sine", 440, 660, 0.2, 0.07); tone("sine", 880, 880, 0.25, 0.04, 0.05); },
+    fx_beam() { tone("square", 400, 1600, 0.3, 0.05); noise(0.5, 0.08, 0.1, 1000, 6000); },
+    fx_water() { noise(0.3, 0.12, 0, 600, 4000, 1200); tone("sine", 600, 300, 0.15, 0.05); },
+    fx_thunder() { noise(0.6, 0.28, 0.18, 60, 3000, 300); tone("sawtooth", 1200, 100, 0.2, 0.08, 0.18); },
+    fx_psy() { tone("sine", 500, 800, 0.3, 0.07); tone("sine", 800, 500, 0.3, 0.05, 0.15); },
+    fx_dark() { tone("sawtooth", 150, 90, 0.3, 0.08); noise(0.2, 0.06, 0, 100, 800); },
+    fx_quake() { noise(0.7, 0.28, 0, 40, 500, 200); tone("sine", 60, 40, 0.6, 0.22); },
+    fx_buzz() { tone("sawtooth", 160, 170, 0.3, 0.05); tone("sawtooth", 163, 158, 0.3, 0.04); },
+    fx_gong() { tone("sine", 392, 385, 0.6, 0.12); tone("triangle", 784, 770, 0.4, 0.05); },
   };
   function sfx(n) { if (!ac || !unlocked) return; try { SFX[n] && SFX[n](); } catch (e) {} }
   // ---- 울음소리: 종 키로 정해지는 짧은 합성음 (포켓몬처럼 종마다 다르다) ----
@@ -378,7 +431,7 @@ const bgm = n => Audio2.play(n), sfx = n => Audio2.sfx(n);
 
 // ---- 저장 (이 브라우저에만; 실패해도 게임은 돈다) ----
 const Save = {
-  opt: { speed: 1, anim: 1, style: 0, frame: 0, music: 0.8, sfx: 0.9, autorun: 0 },
+  opt: { speed: 1, anim: 1, style: 0, frame: 0, music: 0.8, sfx: 0.9, autorun: 0, autosave: 1, readlock: 1 },   // v2.49 자동 리포트(기본 켬) · v2.51 대화 다 읽기(기본 켬, 설정에서 끔)
   loadOpt() { try { const o = JSON.parse(localStorage.getItem("nk_opt") || "null"); if (o) Object.assign(this.opt, o); } catch (e) {} },
   saveOpt() { try { localStorage.setItem("nk_opt", JSON.stringify(this.opt)); } catch (e) {} },
   has() { try { return !!localStorage.getItem("nk_save1"); } catch (e) { return false; } },

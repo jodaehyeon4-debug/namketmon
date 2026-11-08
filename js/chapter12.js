@@ -12,7 +12,7 @@ if (typeof FISH !== "undefined") {
 }
 (function fixSpawn12() { if (DATA.spawns["섬진강 나루"]) DATA.spawns["섬진강 나루"] = DATA.spawns["섬진강 나루"].filter(e => e.k !== "geumseom"); })();
 if (typeof HIDDEN !== "undefined") {
-  HIDDEN.route6 = [[20, 12, "superpotion"], [50, 21, "ether"], [61, 3, "rarecandy" in ITEMS ? "rarecandy" : "elixir"]];
+  HIDDEN.route6 = [[20, 12, "superpotion"], [50, 21, "ether"], [61, 3, "yeot"]];
   HIDDEN.seomjin = [[3, 3, "fullheal"], [41, 17, "hyperpotion"]];
 }
 

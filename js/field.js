@@ -145,11 +145,11 @@ async function nameRaterTalk() {
     const ov = new Overlay(() => { rect(0, 0, SW, SH, "rgba(20,24,40,.55)"); frame(64, 4, 128, 104); monFront(m.k, 80, 6, 0, m.shiny); darkBox(0, 144, 256, 48);
       Font.draw(g, `${cur}의 새 이름은?`, 12, 150, { col: TXT.white, sh: TXT.wsh }); Font.draw(g, "(비워 두면 그대로)", 12, 168, { font: "g9", col: "#c8c8d8", sh: null }); });
     Scenes.push(ov); const v = await typeName(cur + "의 새 이름은?", null, { mon: m.k }, m.nick || ""); Scenes.pop(ov);
-    if (v && v !== cur) { m.nick = v === sp ? null : v; sfx("select"); await say(`이름 감정사: 좋아! 이제부터 이 아이는\n'${v}'(이)란다.\f전보다 훨씬 좋은 이름이구나!`); return; }
-    await say(`이름 감정사: 그래, ${J(cur, "이")}라는 이름이\n역시 제일 잘 어울려.`); return;
+    if (v && v !== cur) { m.nick = v === sp ? null : v; sfx("select"); await say(`이름 감정사: 좋아! 이제부터 이 아이는\n'${v}'${ii(v).slice(v.length)}란다.\f전보다 훨씬 좋은 이름이구나!`); return; }
+    await say(`이름 감정사: 그래, ${ii(cur)}라는 이름이\n역시 제일 잘 어울려.`); return;
   }
   if (m.nick && ch === 1) { m.nick = null; sfx("select"); await say(`이름 감정사: 그래, 원래 이름\n${J(sp, "으로")} 되돌렸단다.`); return; }
-  await say(`이름 감정사: 그래, ${J(cur, "이")}라는 이름이\n역시 제일 잘 어울려.`);
+  await say(`이름 감정사: 그래, ${ii(cur)}라는 이름이\n역시 제일 잘 어울려.`);
 }
 
 // ------------------------------------------------------------------ 겨루기 징 (배틀서처): 이긴 트레이너와 다시 붙기

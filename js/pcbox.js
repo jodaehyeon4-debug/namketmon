@@ -140,7 +140,7 @@ class BoxScreen extends Modal {
       if (this.fighting(m) === 0) { sfx("flee_fail"); await this.msg("싸울 수 있는 남켓몬이\n없어지게 됩니다!"); return; }
       const b = await this.chooseBox("어느 상자에 맡기겠습니까?"); if (b < 0) return;
       const bx = G.boxes[b], i = bx.m.indexOf(null);
-      if (i < 0) { sfx("flee_fail"); await this.msg(`'${bx.n}'은(는)\n가득 차 있습니다!`); return; }
+      if (i < 0) { sfx("flee_fail"); await this.msg(`'${bx.n}'${jp(bx.n, "은")}\n가득 차 있습니다!`); return; }
       G.party.splice(this.pi, 1); bx.m[i] = m; this.bi = b; G.boxCur = b; sfx("pc_on");
       await this.msg(`${J(mname(m), "을")}\n'${bx.n}'에 맡겼다.`);
       this.pi = Math.min(this.pi, G.party.length - 1);
@@ -217,8 +217,8 @@ class BoxScreen extends Modal {
     panel(2, 2, 92, 152, "#e8eef8", "#1a1e30");
     if (!m) { Font.draw(g, "빈칸", 48, 70, { align: "center", col: TXT.gray, sh: null }); return; }
     g.save(); g.beginPath(); g.rect(4, 4, 88, 92); g.clip(); rect(4, 4, 88, 92, "#d0e4f0"); monFront(m.k, -2, 2, 0, m.shiny); g.restore();
-    rect(4, 96, 88, 16, "#3a3a46"); Font.draw(g, mname(m), 7, 96, { col: TXT.white, sh: TXT.wsh });
-    if (m.gender) Font.draw(g, m.gender === "m" ? "♂" : "♀", 9 + Font.width(mname(m)), 96, { col: m.gender === "m" ? "#90b0ff" : "#ff9090", sh: null });
+    rect(4, 96, 88, 16, "#3a3a46"); const nw = Font.draw(g, mname(m), 7, 96, { col: TXT.white, sh: TXT.wsh, fit: m.gender ? 68 : 82 });
+    if (m.gender) Font.draw(g, m.gender === "m" ? "♂" : "♀", 9 + nw, 96, { col: m.gender === "m" ? "#90b0ff" : "#ff9090", sh: null });
     Font.draw(g, "Lv" + m.lv, 90, 98, { font: "g9", col: TXT.white, sh: TXT.wsh, align: "right" });
     MON[m.k].t.forEach((t, j) => typeBadge(t, 6 + j * 42, 116, 40));
     Font.draw(g, "지닌 물건", 7, 132, { font: "g9", col: TXT.gray, sh: null });
@@ -314,6 +314,6 @@ async function nicknamePrompt(m, sayFn) {
   Scenes.push(ov);
   const v = await typeName(n + "의 별명은?", null, { mon: m.k });
   Scenes.pop(ov);
-  if (v && v !== n) { m.nick = v; sfx("select"); await (sayFn || say)(`${n}의 별명은\n'${v}'(으)로 정했다!`); return true; }
+  if (v && v !== n) { m.nick = v; sfx("select"); await (sayFn || say)(`${n}의 별명은\n'${v}'${jp(v, "으로")} 정했다!`); return true; }
   return false;
 }

@@ -1,6 +1,7 @@
 // ===== UI: 대화창(타자기·▼·한 줄 올림), 선택 메뉴, 예/아니오, 수량 고르기 =====
 "use strict";
 const CPF = [0.5, 1.0, 2.5];            // 글자/프레임 (느림·보통·빠름)
+const READ_SEEN = new Set();          // v2.49 끝까지 읽은 대화 화면(이번에 켠 동안)
 
 class TextBox {
   // opt: dark(배틀 글상자), x,y,w,h, auto(ms: 다 쓰면 자동 닫힘), keep(닫지 않고 남김), noArrow
@@ -15,8 +16,11 @@ class TextBox {
   get lines() { return this.pages[this.pg]; }
   // v2.48 대화 다 읽기(사용자: "대화를 막 틱틱틱 하면서 넘기는 경우가 많으므로, 답답하더라도 대화를 전부 읽을 수 있게"):
   //   한 화면(두 줄)이 뜬 뒤 글자 수만큼(한 글자 0.11초, 0.6~4.5초) 지나야 A·B로 넘어감 — 그 전엔 눌러도 안 넘어가고 ▼도 안 보임
-  readNeed(lines) { const c = lines.reduce((a, t) => a + (t ? String(t).replace(/\s/g, "").length : 0), 0); return Math.round(Math.max(0.6, Math.min(4.5, c * 0.11)) * 60); }
-  get readOk() { return window.NK_READ_LOCK === false || this.shownT >= this.needT; }
+  readNeed(lines) { if (READ_SEEN.has(lines.join("\n"))) return 0;      // v2.49 이미 끝까지 읽은 화면(센터 인사·같은 배틀 말 등)은 바로 넘김
+    const c = lines.reduce((a, t) => a + (t ? String(t).replace(/\s/g, "").length : 0), 0); return Math.round(Math.max(0.6, Math.min(4.5, c * 0.11)) * 60); }
+  scrKey() { const L = this.lines; return [L[this.top], L[this.top + 1]].filter(x => x !== undefined).join("\n"); }
+  // v2.51 설정 '대화 다 읽기'를 끄면 예전처럼 바로 넘김(사용자: "텍스트 다 끝나면 넘길 수 있는 장치 … 설정에서 끌 수 있게") · 시험 페이지는 NK_READ_LOCK이 우선
+  get readOk() { const L = window.NK_READ_LOCK, on = L === undefined ? Save.opt.readlock !== 0 : !!L; return !on || this.shownT >= this.needT; }
   update(focus) {
     if (this.done && this.o.keep) return;
     if (!focus && !this.o.keep) return;
@@ -33,13 +37,14 @@ class TextBox {
       this.waitT++;
       const auto = this.o.auto && this.waitT * 16.7 >= this.o.auto;
       if (((Input.ok() || Input.cancel()) && this.readOk) || auto) {
+        if (this.readOk) READ_SEEN.add(this.scrKey());
         if (!auto) sfx("cursor");
         this.next();
       }
     } else if (this.state === "scroll") {
       this.scroll += 4;
       if (this.scroll >= 16) { this.scroll = 0; this.top++; this.n = [this.n[1], 0]; this.n[0] = (this.lines[this.top] || "").length; this.state = "type";
-        this.shownT = 0; this.needT = this.readNeed([this.lines[this.top + 1]]); }
+        this.shownT = 0; this.needT = READ_SEEN.has(this.scrKey()) ? 0 : this.readNeed([this.lines[this.top + 1]]); }
     }
   }
   endLines() {
@@ -68,7 +73,8 @@ class TextBox {
       Font.draw(g, s, tx, ty + i * 16 - this.scroll, { col, sh, n: Math.floor(n) });
     }
     g.restore();
-    if (this.state === "wait" && !this.o.auto && !this.o.noArrow && this.readOk) downArrow(x + w - 16, y + h - 13);
+    if (this.state === "wait" && !this.o.auto && !this.o.noArrow) { if (this.readOk) downArrow(x + w - 16, y + h - 13);
+      else { const k = Math.min(1, this.shownT / Math.max(1, this.needT)); rect(x + w - 17, y + h - 8, 9, 2, dark ? "rgba(255,255,255,.18)" : "rgba(0,0,0,.12)"); rect(x + w - 17, y + h - 8, Math.round(9 * k), 2, dark ? "rgba(255,255,255,.55)" : "rgba(120,110,100,.55)"); } }   // v2.49 기다리는 동안 작은 막대가 차오름
   }
 }
 function say(text, opt = {}) {

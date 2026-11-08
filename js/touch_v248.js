@@ -7,6 +7,7 @@
   const cv = $("screen"), body = document.body;
   let relA = 0;
   const pressA = () => { Input.set("a", false); Input.set("a", true); clearTimeout(relA); relA = setTimeout(() => Input.set("a", false), 80); };
+  const relK = {}; const pressKey = k => { Input.set(k, false); Input.set(k, true); clearTimeout(relK[k]); relK[k] = setTimeout(() => Input.set(k, false), 80); };
   const gpos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * SW / r.width, (e.clientY - r.top) * SH / r.height]; };
   const inside = (x, y, x0, y0, w, h) => x >= x0 && x < x0 + w && y >= y0 && y < y0 + h;
 
@@ -29,6 +30,51 @@
       const n = BT && BT.w && BT.w.P ? BT.w.P.m.moves.length : 4, k = (y >= 166 ? 2 : 0) + (x >= 92 ? 1 : 0);
       if (k >= n) return false;
       s.i = k; pressA(); return true;
+    }
+    // v2.49 남켓몬 고르기·가방도 눌러서(태블릿)
+    if (typeof PartyScreen !== "undefined" && s instanceof PartyScreen && !s.busy) {
+      let k = -1;
+      if (inside(x, y, 4, 18, 98, 62)) k = 0;
+      else if (inside(x, y, 206, 152, 48, 26)) k = 6;
+      else if (inside(x, y, 106, 4, 148, 140)) { const r = Math.floor((y - 4) / 28); if (r >= 0 && r < 5 && y - 4 - r * 28 < 26) k = r + 1; }
+      if (k < 0 || (k < 6 && k >= G.party.length)) return false;
+      s.i = k; pressA(); return true;
+    }
+    if (typeof Bag !== "undefined" && s instanceof Bag && !s.busy) {
+      if (inside(x, y, 4, 4, 48, 22)) { pressKey("left"); return true; }
+      if (inside(x, y, 52, 4, 48, 22) || inside(x, y, 16, 40, 72, 100)) { pressKey("right"); return true; }
+      if (inside(x, y, 104, 4, 150, 134)) {
+        const L = s.list();
+        if (y < 10) { if (s.top > 0) { s.i = s.top - 1; sfx("cursor"); } return true; }                         // 위 화살표: 한 줄 올림
+        if (y >= 130) { if (s.top + 7 < L.length) { s.i = Math.min(L.length - 1, s.top + 7); sfx("cursor"); } return true; }   // 아래 화살표: 한 줄 내림
+        const r = Math.floor((y - 8) / 18), k = s.top + r; if (r < 0 || r > 6 || k >= L.length) return false;
+        if (s.i !== k) { s.i = k; sfx("cursor"); return true; }          // 처음 누르면 고르고(설명이 보임) 한 번 더 누르면 결정
+        pressA(); return true;
+      }
+      return false;
+    }
+    if (typeof Dex !== "undefined" && s instanceof Dex) {                 // v2.49 도감 목록: 줄을 누르면 고르고, 한 번 더 누르면 자세히 · 목록 위·아래 끝은 7칸씩
+      if (!inside(x, y, 120, 24, 132, 164)) return false;
+      if (y < 28) { pressKey("left"); return true; } if (y >= 182) { pressKey("right"); return true; }
+      const r = Math.floor((y - 28) / 19), k = s.top + r; if (r < 0 || r > 7 || k >= s.max) return false;
+      if (s.i !== k) { s.i = k; sfx("cursor"); return true; }
+      pressA(); return true;
+    }
+    if (typeof Options !== "undefined" && s instanceof Options) {         // v2.49 설정: 줄을 누르면 고르고, 오른쪽 ◀ ▶ 쪽을 누르면 값 바꾸기, '닫기'는 결정
+      const R = s.rows, lh = s.lh || 15, k = Math.floor((y - (s.y0 || 31) + 2) / lh);
+      if (x < 8 || x > 248 || k < 0 || k >= R.length) return false;
+      if (s.i !== k) { s.i = k; if (R[k][2]) sfx("cursor"); }
+      if (!R[k][2]) { pressA(); return true; }
+      if (x >= 140) pressKey(x < 194 ? "left" : "right");
+      return true;
+    }
+    if (typeof TownMap !== "undefined" && s instanceof TownMap && s.pts && s.pts.length) {   // v2.49 타운맵·공중날기: 장소를 누르면 고르고, 한 번 더 누르면(날기) 결정
+      let best = -1, bd = 12;
+      s.pts.forEach((p, j) => { const d = Math.hypot(p.px - x, p.py - y); if (d < bd) { bd = d; best = j; } });
+      if (best < 0) return false;
+      if (s.i !== best) { s.i = best; sfx("cursor"); return true; }
+      if (s.constructor.name === "FlyMap") { pressA(); return true; }
+      return true;
     }
     if (s instanceof TextBox) { pressA(); return true; }                   // 대화창: A와 같음(다 읽기 시간은 그대로 지킴)
     const nm = s.constructor && s.constructor.name;

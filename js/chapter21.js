@@ -31,16 +31,16 @@
       q: ["봄에 소나무에서 바람에\n날리는 노란 가루는?", ["송홧가루", "황사", "모래 먼지"], 0, "소나무 꽃가루를\n송홧가루라고 한단다.\f마을 이름 '송화'도\n여기서 따왔지."], gift: ["lemonade", 3],
       talk: "솔숲 그늘에서 쉬면\n여름에도 시원하단다.", heart: "늘 푸른 소나무처럼\n변하지 않는 친구가 제일이지." },
     { id: "hall_juhong", name: "주홍 마을회관", bgm: "juhong", look: MODERN, exit: () => exitJH("hall_juhong"), wx: "주천·구룡계곡", enc: "주홍마을", where: "주홍마을 풀숲",
-      q: ["'구룡계곡'의 '구룡'은\n무슨 뜻일까?", ["아홉 마리 용", "구름 속 용", "거북과 용"], 0, "구(九)는 아홉, 룡(龍)은 용.\n아홉 마리 용이 살았다는 이야기지.\f폭포마다 용 이야기가\n하나씩 있단다."], gift: ["revive", 1],
+      q: ["'구룡계곡'의 '구룡'은\n무슨 뜻일까?", ["아홉 마리 용", "구름 속 용", "거북과 용"], 0, "'구'는 아홉, '룡'은 용.\n아홉 마리 용이 살았다는 이야기지.\f폭포마다 용 이야기가\n하나씩 있단다."], gift: ["revive", 1],
       talk: "지리산 물은 차고 맑아서\n수박 담가 두기 딱이야.", heart: "계곡물은 바위를 만나도\n돌아서 끝까지 흘러간단다." },
     { id: "hall_gamcheong", name: "감청 마을회관", bgm: "gamcheong", look: MODERN, exit: () => exitGC("hall_gamcheong"), wx: "교룡산성", enc: "감청마을", where: "감청마을 풀숲",
-      q: ["교룡산성 성문처럼 돌을\n무지개 모양으로 쌓은 문은?", ["홍예문", "일주문", "솟을대문"], 0, "무지개 홍(虹)에 무지개 예(霓),\n그래서 홍예문이란다.\f돌끼리 서로 기대어\n무너지지 않지."], gift: ["fullheal", 2],
+      q: ["교룡산성 성문처럼 돌을\n무지개 모양으로 쌓은 문은?", ["홍예문", "일주문", "솟을대문"], 0, "'홍예'는 무지개라는 뜻이야.\n그래서 홍예문이란다.\f돌끼리 서로 기대어\n무너지지 않지."], gift: ["fullheal", 2],
       talk: "산성 돌담은 사람들이\n하나하나 손으로 쌓은 거야.", heart: "돌도 서로 기대야 버티듯\n사람도 기대어 사는 거란다." },
     { id: "hall_ssukbit", name: "쑥빛 마을회관", bgm: "ssukbit", look: MODERN, exit: () => exitSB("hall_ssukbit"), wx: "운봉", enc: "12번도로", where: "12번도로 풀숲",
       q: ["운봉에서 태어나 동편제를\n크게 일으킨 명창은?", ["송흥록", "김홍도", "허준"], 0, "송흥록 명창은 '가왕'이라\n불릴 만큼 소리가 뛰어났단다.\f국악당에 가면 그 이야기를\n더 들을 수 있지."], gift: ["moomoomilk", 3],
       talk: "고원이라 바람이 차도\n별은 제일 잘 보인단다.", heart: "목이 쉬어도 다시 부르는 게\n소리꾼이란다. 너도 그렇게 해." },
     { id: "hall_inwol", name: "인월 경로당", bgm: "inwol", look: HANOK, exit: () => exitIW("hall_inwol"), wx: "인월", enc: "인월장터", where: "인월장터 풀숲",
-      q: ["'인월(引月)'이라는 이름에\n들어 있는 것은?", ["달", "해", "별"], 0, "끌 인(引), 달 월(月).\n달을 끌어당겼다는 옛이야기에서\f나온 이름이란다."], gift: ["ok", 2],
+      q: ["'인월'이라는 이름에\n들어 있는 것은?", ["달", "해", "별"], 0, "'인'은 끌다, '월'은 달.\n달을 끌어당겼다는 옛이야기에서\f나온 이름이란다."], gift: ["ok", 2],
       talk: "장날이면 이 앞길이\n발 디딜 틈도 없단다.", heart: "장터에선 덤 하나가\n마음 하나란다." },
     { id: "hall_misaek", name: "미색 경로당", bgm: "misaek", look: HANOK, exit: () => exitMS("hall_misaek"), wx: "아영", enc: "미색마을", where: "미색마을 풀숲",
       q: ["흥부가 다리를 고쳐 준\n새는?", ["제비", "까치", "참새"], 0, "흥부가 고쳐 준 제비가\n박씨를 물어 왔지.\f작은 친절이 큰 복이 되어\n돌아온 이야기란다."], gift: ["hyperpotion", 2],
@@ -90,7 +90,7 @@
   async function board(h) {
     const k = typeof fieldWeather === "function" ? fieldWeather(h.wx) : null;
     const tip = k && WX_TIP[k] ? WX_TIP[k][1] : "산책하기 좋은 날이에요.";
-    await say(`마을 소식판이다.\f오늘 ${h.name.split(" ")[0]} 날씨: ${WXN[k] || "맑음"}\n${tip}`);
+    await say(`마을 소식판이다.\f오늘 ${h.name.split(" ")[0]} 날씨: ${WXN[k] || "맑음"}\f${tip}`);   // v2.52 비·눈 날 안내가 두 줄이라 한 쪽 세 줄이 되던 것 → 쪽 나눔
     const L = (typeof encTable === "function" ? encTable(h.enc) : []).slice().sort((a, b) => (RARE_W[b.r] || 0) - (RARE_W[a.r] || 0));
     const seen = new Set(); const names = [];
     for (const e of L) { if (seen.has(e.k)) continue; seen.add(e.k); names.push(G.seen && G.seen[e.k] ? MON[e.k].n : "???"); if (names.length >= 4) break; }

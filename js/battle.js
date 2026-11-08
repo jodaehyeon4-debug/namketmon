@@ -29,6 +29,7 @@ class BSprite {
   draw() {
     if (!this.vis || !this.key || !this.im || !this.im.complete) return;
     if (this.blink > 0 && (this.blink >> 2) & 1) return;
+    { const w = BT && BT.w && BT.w[this.side]; if (w && w.vol && w.vol.inv && w.m && w.m.hp > 0 && BT.spr && BT.spr[this.side] === this) return; }   // v2.50 하늘·땅속·어딘가로 사라진 동안
     const R = ROWS[this.row], P = POS[this.side].mon, C = cellOf(this.im);
     const sx = this.f * C, sy = R[0] * C;
     let src = this.im, ssx = sx, ssy = sy;
@@ -90,7 +91,7 @@ class Battle {
     }
     this.spr = { P: new BSprite("P"), E: new BSprite("E") };
     this.w = { P: null, E: null };
-    this.foe = o.foe; this.box = { P: { vis: false, off: 140, hp: 0, exp: 0 }, E: { vis: false, off: -140, hp: 0 } };
+    this.foe = o.foe; this.box = { P: { vis: false, off: 150, hp: 0, exp: 0 }, E: { vis: false, off: -150, hp: 0 } };
     this.baseOff = { P: 0, E: 0 }; this.trP = { vis: false, x: 0, f: 0 }; this.trE = o.trainer ? { vis: false, x: 0, f: 0, key: o.trainer.spr } : null;
     this.part = new Set(); this.balls = []; this.shk = { a: 0, t: 0 }; this.fl = { a: 0, c: "#fff", t: 0, d: 1 }; this.runTries = 0; this.weather = o.weather || null; this.wturns = 0; this.wperm = !!o.weather; this.disg = new Set(); this.coins = 0; this.boeun = {};
     this.lowT = 0; this.leveled = new Set(); this.indicator = null; this.res = null;
@@ -118,9 +119,10 @@ class Battle {
     const bg = IMG["bg_" + this.bgName]; if (bg) g.drawImage(bg, 0, 0);
     const be = IMG["base_" + (this.baseE || this.baseName) + "_e"], bp = IMG["base_" + (this.baseP || this.baseName) + "_p"];
     if (be) g.drawImage(be, Math.round(POS.E.base[0] - be.width / 2 + this.baseOff.E), POS.E.base[1] - be.height / 2);
+    if (bp) g.drawImage(bp, Math.round(POS.P.base[0] - bp.width / 2 + this.baseOff.P), POS.P.base[1] - bp.height / 2);
+    { const dm = FX.dimNow ? FX.dimNow(performance.now()) : null; if (dm && dm.a > 0.01) { g.globalAlpha = dm.a; g.fillStyle = dm.c; g.fillRect(-8, -8, SW + 16, 160); g.globalAlpha = 1; } }   // v2.50 세게 맞는 기술: 배경만 어둡게
     if (this.trE && this.trE.vis) { const im = IMG["tr_" + this.trE.key]; if (im) trImg(im, Math.floor(FRAME / 6), POS.E.tr[0] + this.trE.x + this.baseOff.E, POS.E.tr[1]); }
     this.spr.E.draw();
-    if (bp) g.drawImage(bp, Math.round(POS.P.base[0] - bp.width / 2 + this.baseOff.P), POS.P.base[1] - bp.height / 2);
     if (this.trP.vis) { const im = IMG["tr_" + (G.gender === "f" ? "player_f_back" : "player_m_back")]; if (im) trImg(im, this.trP.f, POS.P.tr[0] + this.trP.x + this.baseOff.P, POS.P.tr[1]); }
     this.spr.P.draw();
     FX.render(performance.now()); g.drawImage(FX.cv, 0, 0);
@@ -161,31 +163,31 @@ class Battle {
     const b = this.box[s], w = this.w[s]; if (!b.vis || !w) return;
     const m = w.m, sp = MON[m.k];
     if (s === "E") {
-      const x = 6 + b.off, y = 12;
-      rect(x, y, 120, 32, "#3a3a46"); rect(x + 1, y + 1, 118, 30, "#f8f8f0"); rect(x + 1, y + 1, 118, 2, "#ffffff"); rect(x + 1, y + 27, 118, 4, "#d8d8c8");
-      rect(x + 110, y + 4, 6, 24, "#a8b8c8");
-      Font.draw(g, mname(m), x + 6, y + 2);
-      const nw = Font.width(mname(m));
+      // v2.52 이름 옆에 타입(사용자: "배틀 중 포켓몬의 타입이 보이도록 … 이름 옆에") — 상자를 140으로 넓히고 Lv는 체력 줄 오른쪽으로
+      const x = 6 + b.off, y = 12, T = this.types(w), tw = typeChipsW(T);
+      rect(x, y, 140, 32, "#3a3a46"); rect(x + 1, y + 1, 138, 30, "#f8f8f0"); rect(x + 1, y + 1, 138, 2, "#ffffff"); rect(x + 1, y + 27, 138, 4, "#d8d8c8");
+      const nw = Font.draw(g, mname(m), x + 6, y + 2, { fit: 130 - (m.gender ? 14 : 0) - tw });   // v2.49 긴 별명이 ♂와 겹치지 않게(v2.52 타입 칸만큼 더)
       if (m.gender) Font.draw(g, m.gender === "m" ? "♂" : "♀", x + 8 + nw, y + 2, { col: m.gender === "m" ? TXT.blue : TXT.red, sh: m.gender === "m" ? TXT.bsh : TXT.rsh });
-      Font.draw(g, "Lv" + m.lv, x + 106, y + 4, { font: "g9", align: "right" });
+      typeChips(T, x + 10 + nw + (m.gender ? 12 : 0), y + 3);
       if (this.wild && G.caught[m.k]) sprite(IMG.misc, JSN.misc.t.ball_icon * 16, 0, 16, 16, x - 2, y + 15);
-      if (m.status) statusBadge(m.status, x + 8, y + 18);
-      hpBar(x + 38, y + 19, 64, b.hp / m.st[0]);
+      if (m.status) statusBadge(m.status, x + 6, y + 18);
+      hpBar(x + 36, y + 19, 52, b.hp / m.st[0]);
+      Font.draw(g, "Lv" + m.lv, x + 136, y + 16, { font: "g9", align: "right" });
     } else {
-      const x = 130 + b.off, y = 96;
-      rect(x, y, 124, 44, "#3a3a46"); rect(x + 1, y + 1, 122, 42, "#f8f8f0"); rect(x + 1, y + 1, 122, 2, "#ffffff"); rect(x + 1, y + 39, 122, 4, "#d8d8c8");
+      const x = 114 + b.off, y = 96, T = this.types(w), tw = typeChipsW(T);   // v2.52 이름 옆에 타입 · Lv는 체력 숫자 줄 왼쪽
+      rect(x, y, 140, 44, "#3a3a46"); rect(x + 1, y + 1, 138, 42, "#f8f8f0"); rect(x + 1, y + 1, 138, 2, "#ffffff"); rect(x + 1, y + 39, 138, 4, "#d8d8c8");
       rect(x + 3, y + 4, 4, 30, "#e8a050");
-      Font.draw(g, mname(m), x + 12, y + 2);
-      const nw = Font.width(mname(m));
+      const nw = Font.draw(g, mname(m), x + 12, y + 2, { fit: 124 - (m.gender ? 14 : 0) - tw });
       if (m.gender) Font.draw(g, m.gender === "m" ? "♂" : "♀", x + 14 + nw, y + 2, { col: m.gender === "m" ? TXT.blue : TXT.red, sh: m.gender === "m" ? TXT.bsh : TXT.rsh });
-      Font.draw(g, "Lv" + m.lv, x + 116, y + 4, { font: "g9", align: "right" });
-      if (m.status) statusBadge(m.status, x + 12, y + 17);
-      hpBar(x + 44, y + 19, 64, b.hp / m.st[0]);
-      Font.draw(g, `${Math.max(0, Math.round(b.hp))}/${m.st[0]}`, x + 116, y + 26, { font: "g9", align: "right" });
+      typeChips(T, x + 16 + nw + (m.gender ? 12 : 0), y + 3);
+      hpBar(x + 48, y + 19, 70, b.hp / m.st[0]);
+      const lw = Font.draw(g, "Lv" + m.lv, x + 12, y + 25, { font: "g9" });
+      if (m.status) statusBadge(m.status, x + 16 + lw, y + 26);          // v2.52 상태 이상은 Lv 옆(체력 숫자 줄)
+      Font.draw(g, `${Math.max(0, Math.round(b.hp))}/${m.st[0]}`, x + 136, y + 25, { font: "g9", align: "right" });
       const lo = expAt(sp.gr, m.lv), hi = expAt(sp.gr, m.lv + 1);
       const ex = b.exp ?? m.exp;
       rect(x + 12, y + 37, 14, 5, "#3a3a46"); Font.draw(g, "EXP", x + 13, y + 34, { font: "g7", col: "#f8c040", sh: null });
-      expBar(x + 27, y + 38, 88, m.lv >= 100 ? 0 : (ex - lo) / (hi - lo));
+      expBar(x + 27, y + 38, 106, m.lv >= 100 ? 0 : (ex - lo) / (hi - lo));
     }
   }
   // ---- 글 ----
@@ -205,13 +207,13 @@ class Battle {
     if (ab && this.abp && this.abp.ab === ab.ab && !this.abp.out) this.abp.ttl = 45;
   }
   async eatMsg(w, it, little) {   // 지닌 도구를 먹는 장면(먼저 '먹었다!' → 그다음 효과)
-    FX.play("buff", { side: w.side }, { side: w.side }, "풀");
+    FX.play("aura", { side: w.side }, { side: w.side }, "풀");   // v2.50 먹는 장면: 풀빛이 모여듦(전엔 능력 오름 화살과 같은 그림)
     await this.say(`${J(this.nm(w.side), "은")} 지니고 있던\n${J(it.n, "을")} ${little ? "조금 " : ""}먹었다!`);
   }
   nm(s) { const w = this.w[s]; return (s === "E" ? (this.wild ? "야생 " : "상대 ") : "") + mname(w.m); }
   other(s) { return s === "P" ? "E" : "P"; }
   // ---- v2.11 기술·특성 전수: 도우미 ----
-  types(w) { const t = (w.vol && w.vol.types) || MON[w.m.k].t; return w.vol && w.vol.roost === this.turnNo && t.includes("비행") ? (t.length > 1 ? t.filter(x => x !== "비행") : ["노말"]) : t; }   // 날개쉬기: 그 턴엔 비행타입이 아님
+  types(w) { const t = (w.vol && w.vol.types) || MON[w.m.k].t; return w.vol && w.vol.roost && w.vol.roost === this.turnNo && t.includes("비행") ? (t.length > 1 ? t.filter(x => x !== "비행") : ["노말"]) : t; }   // 날개쉬기: 그 턴엔 비행타입이 아님
   grounded(w) { return this.hi(w) !== "balloon" && !this.types(w).includes("비행") && w.m.ab !== "levitate" && !(w.vol.magnet > 0) && w.vol.inv !== "fly"; }
   forced(w) { const v = w && w.vol; if (!v || w.m.hp <= 0) return null; return v.charge || (v.rampage && v.rampage.id) || (v.rollout && v.rollout.id) || (v.uproar && v.uproar.id) || null; }
   nervous(w) { const o = this.w[this.other(w.side)]; return !!(o && o.m.hp > 0 && o.m.ab === "unnerve"); }
@@ -395,7 +397,7 @@ class Battle {
     await this.sendOut("P", G.party.findIndex(m => m.hp > 0), true);
     await this.entryAbility("E");      // 야생·트레이너 첫 남켓몬의 등장 특성(첫 내보내기 땐 상대가 아직 없어서 건너뜀)
   }
-  async slideBox(s) { const b = this.box[s]; const from = s === "E" ? -140 : 140; for (let i = 1; i <= 12; i++) { b.off = from * (1 - i / 12); await frames(1); } b.off = 0; }
+  async slideBox(s) { const b = this.box[s]; const from = s === "E" ? -150 : 150; for (let i = 1; i <= 12; i++) { b.off = from * (1 - i / 12); await frames(1); } b.off = 0; }
   async sendOut(s, i, first, drag) {
     const party = s === "P" ? G.party : this.foe;
     const m = party[i];
@@ -460,7 +462,7 @@ class Battle {
     const w = this.w[s], o = this.w[this.other(s)];
     if (!w || !o) return;
     if (w.m.ab === "trace" && o.m.hp > 0 && !["trace", "imposter", "disguise"].includes(o.m.ab) && AB[o.m.ab]) {
-      w.m.abT = "trace"; w.m.ab = o.m.ab; await this.say(`${this.nm(s)}의 [${AB.trace.n}]!\n${this.nm(o.side)}의 [${AB[o.m.ab].n}]을(를) 따라 했다!`); }
+      w.m.abT = "trace"; w.m.ab = o.m.ab; await this.say(`${this.nm(s)}의 [${AB.trace.n}]!\n${this.nm(o.side)}의 [${AB[o.m.ab].n}]${jp(AB[o.m.ab].n, "을")} 따라 했다!`); }
     if (w.m.ab === "intimidate" && o.m.hp > 0) {
       await this.say(`${this.nm(s)}의 [${AB.intimidate.n}]!`);
       if (["innerfocus", "owntempo", "oblivious", "scrappy"].includes(o.m.ab)) await this.say(`${this.nm(o.side)}에게는\n통하지 않았다!`);
@@ -508,6 +510,7 @@ class Battle {
         return { type: "move", id };
       }
       if (c === 1) {
+        if (this.o.noBag) { await this.say("이 배틀에서는\n가방을 쓸 수 없다!", { wait: true }); continue; }   // v2.52 배틀누각(실제 배틀타워처럼)
         const r = await openBag("battle"); if (!r) continue;
         if (ITEMS[r.item].ball) {
           if (!this.wild) { await this.say("안 돼! 트레이너의 남켓몬을\n빼앗을 수는 없어!", { wait: true }); continue; }
@@ -557,7 +560,8 @@ class Battle {
           else if (Input.cancel()) { sfx("cancel"); Scenes.pop(this); res(null); } },
         draw() {
           frame(0, 144, 176, 48);
-          P.m.moves.forEach((mv, k) => { const x = 18 + (k & 1) * 80, y = 151 + (k >> 1) * 16; Font.draw(g, MV[mv.id].n, x, y, B.cantUse(P, mv.id) ? { col: TXT.gray, sh: TXT.gsh } : {}); if (k === this.i) cursor(x - 10, y + 3); });
+          P.m.moves.forEach((mv, k) => { const x = 18 + (k & 1) * 80, y = 151 + (k >> 1) * 16, nm = MV[mv.id].n, sm = Font.width(nm) > 74;   // v2.49 일곱 글자 기술(벌레의야단법석 등)은 작은 글씨로(옆 칸·PP 칸을 넘던 것)
+            Font.draw(g, nm, x, y + (sm ? 2 : 0), Object.assign(sm ? { font: "g9" } : {}, B.cantUse(P, mv.id) ? { col: TXT.gray, sh: TXT.gsh } : {})); if (k === this.i) cursor(x - 10, y + 3); });
           for (let k = P.m.moves.length; k < 4; k++) Font.draw(g, "-", 18 + (k & 1) * 80, 151 + (k >> 1) * 16, { col: TXT.gray, sh: TXT.gsh });
           frame(176, 144, 80, 48);
           const mv = P.m.moves[this.i], d = MV[mv.id];
@@ -666,7 +670,7 @@ class Battle {
       const nv = clamp(w.stg[k] + v, -6, 6);
       if (nv === w.stg[k]) { await this.say(`${this.nm(w.side)}의 ${J(nm, "은")}\n더 이상 ${v > 0 ? "오르지" : "떨어지지"} 않는다!`); continue; }
       w.stg[k] = nv; if (v > 0) w.vol.upT = this.turnNo;
-      if (Save.opt.anim) { await FX.play(v > 0 ? "buff" : "debuff", { side: w.side }, { side: w.side }, v > 0 ? "노말" : "악"); }
+      if (Save.opt.anim) { await FX.play(v > 0 ? "statup" : "statdown", { side: w.side }, { side: w.side }, v > 0 ? "노말" : "악"); }   // v2.50 오름 = 붉은 화살 · 내림 = 푸른 화살
       sfx(v > 0 ? "stat_up" : "stat_down");
       await this.say(`${this.nm(w.side)}의 ${J(nm, "이")}\n${Math.abs(v) >= 3 ? "매우 크게 " : Math.abs(v) === 2 ? "크게 " : ""}${v > 0 ? "올라갔다!" : "떨어졌다!"}`);
       if (v < 0 && !selfMove && w.m.ab === "defiant" && w.m.hp > 0) { await this.say(`${this.nm(w.side)}의 [${AB.defiant.n}]!`); await this.boost(w, { atk: 2 }, true); }
@@ -703,7 +707,7 @@ class Battle {
     w.m.status = st; if (st === "slp") w.m.slp = 1 + rnd(3); if (st === "tox") w.m.tox = 1;
     const n = this.nm(w.side);
     const T = { par: `${J(n, "은")} 마비되어\n기술이 나오기 어려워졌다!`, brn: `${J(n, "은")}\n화상을 입었다!`, psn: `${J(n, "은")}\n독에 걸렸다!`, tox: `${J(n, "은")}\n맹독을 입었다!`, slp: `${J(n, "은")}\n잠들어 버렸다!`, frz: `${J(n, "은")}\n얼어붙었다!` };
-    FX.play("status", { side: w.side }, { side: w.side }, { par: "전기", brn: "불꽃", psn: "독", tox: "독", slp: "에스퍼", frz: "얼음" }[st]);
+    FX.play({ par: "c_par", brn: "c_brn", psn: "c_psn", tox: "c_psn", slp: "c_slp", frz: "c_frz" }[st] || "status", { side: w.side }, { side: w.side }, { par: "전기", brn: "불꽃", psn: "독", tox: "독", slp: "에스퍼", frz: "얼음" }[st]);   // v2.50 상태마다 그림
     await this.say(T[st]);
     if (w.m.item) await this.eatBerry(w, "status");
   }
@@ -717,21 +721,21 @@ class Battle {
     const cont = this.forced(a) === id;            // v2.11 이어 쓰는 중(충전 둘째 턴·난동·구르기·소란): PP를 또 쓰지 않음
     const brk = () => { delete a.vol.charge; delete a.vol.inv; delete a.vol.rampage; delete a.vol.rollout; delete a.vol.uproar; a.vol.fc = 0; a.vol.lastFail = true; };
     // 행동 전 상태
-    if (A.status === "slp") { if ((A.slp -= (A.ab === "earlybird" || A.ab === "dongmyeon") ? 2 : 1) > 0) { await FX.play("status", { side: s }, { side: s }, "에스퍼"); await this.say(`${J(this.nm(s), "은")}\n쿨쿨 잠들어 있다.`); brk(); return; } A.status = null; await this.say(`${J(this.nm(s), "은")}\n눈을 떴다!`); }
-    if (A.status === "frz") { if (Math.random() < 0.2 || (MV[id] && MV[id].t === "불꽃")) { A.status = null; await this.say(`${this.nm(s)}의\n얼음이 녹았다!`); } else { await this.say(`${J(this.nm(s), "은")} 얼어붙어서\n움직일 수 없다!`); brk(); return; } }
+    if (A.status === "slp") { if ((A.slp -= (A.ab === "earlybird" || A.ab === "dongmyeon") ? 2 : 1) > 0) { await FX.play("c_slp", { side: s }, { side: s }, "에스퍼"); await this.say(`${J(this.nm(s), "은")}\n쿨쿨 잠들어 있다.`); brk(); return; } A.status = null; await this.say(`${J(this.nm(s), "은")}\n눈을 떴다!`); }
+    if (A.status === "frz") { if (Math.random() < 0.2 || (MV[id] && MV[id].t === "불꽃")) { A.status = null; await this.say(`${this.nm(s)}의\n얼음이 녹았다!`); } else { await FX.play("c_frz", { side: s }, { side: s }, "얼음"); await this.say(`${J(this.nm(s), "은")} 얼어붙어서\n움직일 수 없다!`); brk(); return; } }
     if (a.vol.flinch) { await this.say(`${J(this.nm(s), "은")} 풀이 죽어서\n기술을 쓸 수 없었다!`); if (A.ab === "steadfast") { await this.say(`${this.nm(s)}의 [${AB.steadfast.n}]!`); await this.boost(a, { spe: 1 }, true); } brk(); return; }
     if (a.vol.conf) {
       a.vol.conf--;
       if (a.vol.conf <= 0) { await this.say(`${this.nm(s)}의\n혼란이 풀렸다!`); }
-      else { await this.say(`${J(this.nm(s), "은")}\n혼란에 빠져 있다!`); await FX.play("status", { side: s }, { side: s }, "노말");
-        if (Math.random() < 1 / 3) { const dmg = this.rawDmg(a, a, 40, "P", true); sfx("hit"); this.spr[s].blink = 24; await this.damage(a, dmg); await this.say("영문도 모른 채\n자신을 공격했다!"); brk(); return; } }
+      else { await this.say(`${J(this.nm(s), "은")}\n혼란에 빠져 있다!`); await FX.play("c_conf", { side: s }, { side: s }, "노말");
+        if (Math.random() < 1 / 3) { const dmg = this.rawDmg(a, a, 40, "P", true); if (Save.opt.anim) await FX.play("tackle", { side: s }, { side: s }, "노말"); sfx("hit"); this.spr[s].blink = 24; await this.damage(a, dmg); await this.say("영문도 모른 채\n자신을 공격했다!"); brk(); return; } }
     }
     await this.mherb(a);         // v2.41 박하잎(멘탈허브)
     if (a.vol.attract) {         // 헤롱헤롱(헤롱헤롱바디): 상대가 바뀌면 풀림
       if (d.m !== a.vol.attract) delete a.vol.attract;
-      else { await this.say(`${J(this.nm(s), "은")}\n${this.nm(d.side)}에게 헤롱헤롱하다!`); if (Math.random() < 0.5) { await this.say(`${J(this.nm(s), "은")} 헤롱헤롱해서\n기술을 쓸 수 없었다!`); brk(); return; } }
+      else { await FX.play("c_love", { side: s }, { side: s }, "페어리"); await this.say(`${J(this.nm(s), "은")}\n${this.nm(d.side)}에게 헤롱헤롱하다!`); if (Math.random() < 0.5) { await this.say(`${J(this.nm(s), "은")} 헤롱헤롱해서\n기술을 쓸 수 없었다!`); brk(); return; } }
     }
-    if (A.status === "par" && Math.random() < 0.25) { await FX.play("status", { side: s }, { side: s }, "전기"); await this.say(`${J(this.nm(s), "은")} 몸이 저려서\n움직일 수 없다!`); brk(); return; }
+    if (A.status === "par" && Math.random() < 0.25) { await FX.play("c_par", { side: s }, { side: s }, "전기"); await this.say(`${J(this.nm(s), "은")} 몸이 저려서\n움직일 수 없다!`); brk(); return; }
     const why = cont ? null : this.cantUse(a, id); if (why) { await this.say(why); brk(); return; }
     const slot = A.moves.find(m => m.id === id); if (slot && !cont) slot.pp = Math.max(0, slot.pp - (d.m.ab === "pressure" ? 2 : 1));
     if (slot && slot.pp === 0 && A.item && ITEMS[A.item] && ITEMS[A.item].hold === "pp0" && !this.nervous(a)) { const it = ITEMS[A.item]; a.vol.berry = A.item; A.item = null; await this.eatMsg(a, it); slot.pp = Math.min(slot.max, 10); sfx("heal_hp");
@@ -747,12 +751,13 @@ class Battle {
       await this.say(`${J(this.nm(s), "은")}\n${CH.msg}`); if (CH.up) await this.boost(a, CH.up, true);
       await this.used(a, `${J(this.nm(s), "은")} 산삼뿌리를 씹고\n단숨에 기운을 모았다!`);
     } else if (CH && !cont && !(CH.sun && this.wx() === "sun")) {
-      a.vol.charge = id; if (CH.inv) a.vol.inv = CH.inv;
+      a.vol.charge = id;
+      if (CH.inv) await this.vanish(a, CH.inv); else if (Save.opt.anim) await FX.play("charge", { side: s }, { side: s }, mv.t);
       await this.say(`${J(this.nm(s), "은")}\n${CH.msg}`);
       if (CH.up) await this.boost(a, CH.up, true);
       a.vol.lastFail = false; return;
     }
-    if (a.vol.charge === id) { delete a.vol.charge; delete a.vol.inv; }
+    if (a.vol.charge === id) { const inv = a.vol.inv; delete a.vol.charge; delete a.vol.inv; if (inv) await this.appear(a, inv); }
     if (DOUBLES_ONLY.has(id)) { await this.say("그러나 실패하고 말았다!"); return; }
     if (BOOM.has(id)) { const dm = [a, d].find(w => w.m.hp > 0 && w.m.ab === "damp"); if (dm) { await this.say(`${this.nm(dm.side)}의 [${AB.damp.n}]!\n${J(this.nm(s), "은")} ${J(mv.n, "을")} 쓸 수 없다!`); return; } }
     if (id === "futuresight") {            // 미래예지: 2턴 뒤에 맞음
@@ -823,6 +828,7 @@ class Battle {
     let total = 0, crit = false, n = 0;
     await this.anim(a, d, mv);
     for (let h = 0; h < hits && d.m.hp > 0; h++) {
+      if (h > 0) await this.reFx(a, d, mv);     // v2.50 실제 게임처럼 한 번 맞을 때마다 이펙트(전엔 첫 번째만 그리고 나머지는 소리만)
       const cst = (A.ab === "superluck" ? 1 : 0) + (this.hi(a) === "scope" ? 1 : 0) + (a.vol.crit || 0) + (HIGH_CRIT.has(id) ? 1 : 0);
       const c = !["battlearmor", "shellarmor"].includes(dab) && Math.random() < [1 / 24, 1 / 8, 1 / 2, 1][Math.min(3, cst)];
       const dmg = this.calc(a, d, mv, c, mul);
@@ -839,11 +845,11 @@ class Battle {
       await this.damage(d, real); total += real; n++;
       if (tie === "sash") await this.used(d, `${J(this.nm(d.side), "은")}\n질끈띠로 버텼다!`); else if (tie === "fband") await this.say(`${J(this.nm(d.side), "은")}\n다짐머리띠로 버텼다!`);
       if (real > 0) d.vol.hurtT = this.turnNo;
-      if (h < hits - 1) await frames(8);
+      if (h < hits - 1) await frames(4);
     }
     if (hits > 1) await this.say(`${n}번 맞았다!`);
     if (bak) await this.say("슬근슬근 톱질이야! 박을 타 보니…\n" + { gold: "금은보화가 쏟아져 나왔다!", rice: "하얀 쌀이 쏟아져 나왔다!", swallow: "제비가 박차고 날아올랐다!" }[bak]);
-    if (d.vol.disg) { d.vol.disg = 0; await this.say(`${this.nm(d.side)}의 [${AB.disguise.n}]이(가)\n대신 맞아 주었다!`); await this.damage(d, Math.max(1, Math.floor(d.m.st[0] / 8))); await this.say(`${this.nm(d.side)}의\n탈이 벗겨졌다!`); }
+    if (d.vol.disg) { d.vol.disg = 0; await this.say(`${this.nm(d.side)}의 [${AB.disguise.n}]${jp(AB.disguise.n, "이")}\n대신 맞아 주었다!`); await this.damage(d, Math.max(1, Math.floor(d.m.st[0] / 8))); await this.say(`${this.nm(d.side)}의\n탈이 벗겨졌다!`); }
     else { if (crit) await this.say("급소에 맞았다!");
       if (mul > 1) await this.say("효과가 굉장했다!"); else if (mul < 1) await this.say("효과가 별로인 듯하다…"); }
     if (d.vol.sturdy) { d.vol.sturdy = 0; await this.say(`${J(this.nm(d.side), "은")}\n[옹골참]으로 버텼다!`); }
@@ -851,8 +857,8 @@ class Battle {
     if (mv.drain && total) { const h = Math.max(1, Math.floor(total * mv.drain[0] / mv.drain[1] * (this.hi(a) === "broot" ? 1.3 : 1)));
       if (d.m.ab === "liquidooze") { await this.say(`${this.nm(d.side)}의 [${AB.liquidooze.n}]!`); await this.damage(a, h); await this.say(`${J(this.nm(s), "은")}\n해감액을 빨아들였다!`); }
       else { A.hp = Math.min(A.st[0], A.hp + h); await this.hpWait(s); await this.say(`${this.nm(d.side)}의\n체력을 흡수했다!`); } }
-    if (id === "struggle" && total && A.hp > 0) { await this.damage(a, Math.max(1, Math.floor(A.st[0] / 4))); await this.say(`${J(this.nm(s), "은")}\n반동으로 데미지를 입었다!`); }
-    if (mv.recoil && total && A.ab !== "rockhead" && A.ab !== "magicguard") { await this.damage(a, Math.max(1, Math.floor(total * mv.recoil[0] / mv.recoil[1]))); await this.say(`${J(this.nm(s), "은")}\n반동으로 데미지를 입었다!`); }
+    if (id === "struggle" && total && A.hp > 0) { this.spr[s].blink = 16; sfx("hit_weak"); await this.damage(a, Math.max(1, Math.floor(A.st[0] / 4))); await this.say(`${J(this.nm(s), "은")}\n반동으로 데미지를 입었다!`); }
+    if (mv.recoil && total && A.ab !== "rockhead" && A.ab !== "magicguard") { this.spr[s].blink = 16; sfx("hit_weak"); await this.damage(a, Math.max(1, Math.floor(total * mv.recoil[0] / mv.recoil[1]))); await this.say(`${J(this.nm(s), "은")}\n반동으로 데미지를 입었다!`); }
     // v2.41 지닌 도구(맞힌 뒤): 방패연 찢어짐 · 도깨비구슬 · 조개방울 · 분발부적 · 맞으면 오르는 도구
     const ha = this.hi(a), ct = mv.ct && ha !== "pads" && !(ha === "glove" && mv.punch), secBlock = d.m.ab === "shielddust" || this.hi(d) === "cloak";
     if (total && this.hi(d) === "balloon") await this.used(d, `${this.nm(d.side)}의 방패연이\n찢어지고 말았다!`);
@@ -927,6 +933,28 @@ class Battle {
     if (mv.snd && a.m.ab === "chuimsae" && a.m.hp > 0) { await this.say(`${this.nm(a.side)}의 [${AB.chuimsae.n}]!\n"얼쑤! 좋다!"`); await this.boost(a, { spa: 1 }, true); }
     if (mv.snd && a.m.hp > 0 && this.hi(a) === "tspray") { await this.used(a, `${J(this.nm(a.side), "은")} 도라지청으로\n목을 축였다!`); await this.boost(a, { spa: 1 }, true); }   // v2.41 도라지청(목스프레이)
   }
+  async reFx(a, d, mv) {
+    if (!Save.opt.anim) { await frames(8); return; }
+    const tp = FX.tpl && FX.tpl[mv.fx];
+    await FX.play(tp && tp.dur <= 640 && !tp.self ? mv.fx : "star", { side: a.side }, { side: d.side }, mv.t);
+  }
+  // v2.50 공중날기·뛰어오르기·구멍파기·고스트다이브: 첫 턴엔 화면에서 사라짐(하늘로·땅속으로·스르르) → 둘째 턴에 다시 나타나며 공격
+  async vanish(w, inv) {
+    const sp = this.spr[w.side];
+    if (Save.opt.anim) {
+      if (inv === "fly") { sfx("jump"); for (let f = 1; f <= 14; f++) { sp.dy = -f * f * 0.6; await frames(1); } }
+      else if (inv === "dig") { sfx("fx_quake"); for (let f = 1; f <= 16; f++) { sp.sink = f * 5; await frames(1); } }
+      else { sfx("fx_ghost"); sp.blink = 24; await frames(24); }
+    }
+    w.vol.inv = inv; sp.dy = 0; sp.sink = 0; sp.blink = 0;
+  }
+  async appear(w, inv) {
+    const sp = this.spr[w.side]; if (!Save.opt.anim) return;
+    if (inv === "fly") { for (let f = 10; f >= 0; f--) { sp.dy = -f * f * 1.2; await frames(1); } sfx("land"); }
+    else if (inv === "dig") { sfx("fx_crash"); for (let f = 12; f >= 0; f--) { sp.sink = f * 6; await frames(1); } }
+    else { sp.blink = 12; await frames(12); }
+    sp.dy = 0; sp.sink = 0;
+  }
   async anim(a, d, mv) {
     const kind = mv.c === "P" ? "phys" : "spec";
     const p1 = this.spr[a.side].play(kind);
@@ -999,7 +1027,7 @@ class Battle {
     const s = a.side; const selfT = SELF_TG.includes(mv.tg);
     if (!bounced && ["normal", "adjacentFoe", "allAdjacentFoes", "any", "randomNormal"].includes(mv.tg) && d.m.ab === "magicbounce" && a.m.ab !== "moldbreaker" && d.m.hp > 0) {
       await this.say(`${this.nm(d.side)}의 [${AB.magicbounce.n}]!\n${J(mv.n, "을")} 되받아쳤다!`); return this.statusMove(d, a, id, mv, true); }
-    const fxp = FX.play(mv.fx || "status", { side: s }, { side: selfT ? s : d.side }, mv.t);
+    const fxp = FX.play(mv.fx || "status", { side: s }, { side: selfT || ["allyTeam", "adjacentAlly"].includes(mv.tg) ? s : d.side }, mv.t);   // v2.50 치료방울처럼 우리 편 기술은 내 쪽에
     await this.spr[s].play("spec"); await fxp;
     let did = false;
     if (WX_MV[id]) { await this.setWx(WX_MV[id], undefined, a); return; }
@@ -1041,13 +1069,13 @@ class Battle {
                                   : (T.includes("얼음") || ["snowcloak", "slushrush", "overcoat", "magicguard"].includes(M.ab)))) {
           this.spr[s].blink = 12; await this.damage(w, Math.max(1, Math.floor(M.st[0] / 16))); await this.say(`${WX[wxe].hurt} ${J(this.nm(s), "을")}\n덮쳤다!`);
           const r0 = await this.checkFaint(); if (r0) return r0 === "cont" ? null : r0; if (M.hp <= 0) continue; } }
-      if (M.status === "brn" && M.ab !== "magicguard") { await FX.play("flame", { side: s }, { side: s }, "불꽃"); await this.damage(w, Math.max(1, Math.floor(M.st[0] / 16))); await this.say(`${J(this.nm(s), "은")}\n화상 데미지를 입었다!`); }
+      if (M.status === "brn" && M.ab !== "magicguard") { await FX.play("c_brn", { side: s }, { side: s }, "불꽃"); await this.damage(w, Math.max(1, Math.floor(M.st[0] / 16))); await this.say(`${J(this.nm(s), "은")}\n화상 데미지를 입었다!`); }
       if ((M.status === "psn" || M.status === "tox") && M.ab !== "magicguard") {
-        await FX.play("sludge", { side: s }, { side: s }, "독");
+        await FX.play("c_psn", { side: s }, { side: s }, "독");
         const n = M.status === "tox" ? Math.max(1, Math.floor(M.st[0] * Math.min(15, M.tox++) / 16)) : Math.max(1, Math.floor(M.st[0] / 8));
         await this.damage(w, n); await this.say(`${J(this.nm(s), "은")}\n독에 의한 데미지를 입었다!`);
       }
-      if (w.vol.seed && M.hp > 0) { const o = this.w[this.other(s)]; const n = Math.max(1, Math.floor(M.st[0] / 8)); await FX.play("leaf", { side: s }, { side: o.side }, "풀"); await this.damage(w, n);
+      if (w.vol.seed && M.hp > 0) { const o = this.w[this.other(s)]; const n = Math.max(1, Math.floor(M.st[0] / 8)); await FX.play("drain", { side: o.side }, { side: s }, "풀"); await this.damage(w, n);
         if (o.m.hp > 0) { o.m.hp = Math.min(o.m.st[0], o.m.hp + n); await this.hpWait(o.side); } await this.say(`씨뿌리기가\n${this.nm(s)}의 체력을 빼앗는다!`); }
       const wx = this.wx();
       if (M.hp > 0 && M.status && ((M.ab === "shedskin" && Math.random() < 1 / 3) || (M.ab === "hydration" && wx === "rain"))) { M.status = null; M.tox = 0; await this.say(`${this.nm(s)}의 [${AB[M.ab].n}]!\n상태 이상이 나았다!`); }
@@ -1109,11 +1137,11 @@ class Battle {
       const next = this.foe.findIndex(m => m.hp > 0);
       if (next < 0) bgm(this.wild ? "victory_wild" : "victory");
       if (P.m.tfSave) { this.untf(P.m); this.spr.P.set(P.m.k, P.m.shiny); }
-      await this.giveExp(E.m);
+      if (!this.o.noExp) await this.giveExp(E.m);       // v2.52 배틀누각: 경험치 없음
       if (next < 0) return "win";
       if (P.m.hp > 0) {
         const nm = MON[this.foe[next].k].n;
-        if (Save.opt.style === 0 && G.party.filter(m => m.hp > 0).length > 1) {
+        if (Save.opt.style === 0 && !this.o.setStyle && G.party.filter(m => m.hp > 0).length > 1) {   // v2.52 배틀누각은 실제 배틀타워처럼 늘 '토너먼트'(교체 묻지 않음)
           const c = await ask(`${this.o.trainer.cls} ${J(this.o.trainer.name, "은")} ${J(nm, "을")}\n내보내려 한다. 남켓몬을 바꾸겠습니까?`);
           if (c === 0) { const i = await openParty("battle_switch"); if (i != null && i >= 0 && i !== this.pi && G.party[i].hp > 0) await this.switchIn("P", i); }
         }
@@ -1199,9 +1227,10 @@ class Battle {
     const P = this.w.P;
     if (it.xs) { await this.boost(P, it.xs, true); return; }                       // 부적: 능력 1단계
     if (it.crit) { if ((P.vol.crit || 0) >= 2) { await this.say("그러나 아무 일도 일어나지 않았다!"); return; }
-      P.vol.crit = (P.vol.crit || 0) + it.crit; sfx("stat_up"); await this.say(`${J(this.nm("P"), "은")}\n급소를 노리기 쉬워졌다!`); return; }
+      P.vol.crit = (P.vol.crit || 0) + it.crit; if (Save.opt.anim) await FX.play("aura", { side: "P" }, { side: "P" }, "격투"); sfx("stat_up"); await this.say(`${J(this.nm("P"), "은")}\n급소를 노리기 쉬워졌다!`); return; }
     if (it.mist) { if (P.vol.mist > 0) { await this.say("그러나 아무 일도 일어나지 않았다!"); return; }
-      P.vol.mist = 5; sfx("stat_up"); await this.say(`${J(this.nm("P"), "은")}\n수호부적의 기운에 둘러싸였다!`); return; }
+      P.vol.mist = 5; if (Save.opt.anim) await FX.play("shield", { side: "P" }, { side: "P" }, "얼음"); sfx("stat_up"); await this.say(`${J(this.nm("P"), "은")}\n수호부적의 기운에 둘러싸였다!`); return; }
+    if (P && P.m === m && Save.opt.anim && (it.heal || it.hpPct || it.cure || it.pp || it.full)) await FX.play("heal", { side: "P" }, { side: "P" }, "노말");   // v2.50 상처약·해독제 등: 실제 게임처럼 반짝임
     const res = applyItem(act.item, m, act.move);
     if (P && P.m === m) await this.hpWait("P");
     await this.say(res);
@@ -1272,8 +1301,8 @@ class Battle {
       const where = G.addMon(M);
       if (where === "box") {   // v1.8.1 실제 게임처럼: 어느 상자로 갔는지(지금 상자가 가득 차면 그 말도)
         const bx = G.boxes[G.lastBox], cur = G.boxes[G.boxCur];
-        if (G.lastBox !== G.boxCur) await this.say(`누군가의 PC의 '${cur.n}'이(가)\n가득 차 있다!`, { wait: true });
-        await this.say(`${J(mname(M), "은")} 누군가의 PC의\n'${bx.n}'(으)로 전송되었다!`, { wait: true }); }
+        if (G.lastBox !== G.boxCur) await this.say(`누군가의 PC의 '${cur.n}'${jp(cur.n, "이")}\n가득 차 있다!`, { wait: true });
+        await this.say(`${J(mname(M), "은")} 누군가의 PC의\n'${bx.n}'${jp(bx.n, "으로")} 전송되었다!`, { wait: true }); }
       return "caught";
     }
     b.fr = "burst"; sfx("ball_poof"); await frames(6); this.balls.splice(this.balls.indexOf(b), 1);
@@ -1303,7 +1332,7 @@ class Battle {
         if (prize) { G.money += prize; sfx("money"); await this.say(`${J(G.name, "은")} 상금으로\n${prize.toLocaleString()}원을 받았다!`, { wait: true }); }
       }
     }
-    if (this.coins && r !== "lose") { G.money += this.coins; sfx("money"); await this.say(`${J(G.name, "은")} 쏟아진 돈\n${this.coins.toLocaleString()}원을 주웠다!`, { wait: true }); }
+    if (this.coins && r !== "lose" && !this.o.noExp) { G.money += this.coins; sfx("money"); await this.say(`${J(G.name, "은")} 쏟아진 돈\n${this.coins.toLocaleString()}원을 주웠다!`, { wait: true }); }
     if (r === "lose") {
       if (this.o.canLose) { await this.say(this.o.loseText || "졌다…", { wait: true }); }
       else {
@@ -1322,6 +1351,15 @@ class Battle {
   }
 }
 
+// v2.52 배틀 상자 이름 옆 타입 칸(능력치 화면·기술 칸과 같은 타입 색, 글은 작은 글씨)
+function typeChipsW(T) { return T && T.length ? T.reduce((a, t) => a + Font.width(t, "g9") + 4, 0) + (T.length - 1) * 2 + 2 : 0; }
+function typeChips(T, x, y) {
+  let cx = Math.round(x);
+  for (const t of T) { const w = Font.width(t, "g9") + 4, c = TCOL[t] || "#888";
+    rect(cx + 1, y, w - 2, 12, "#2a2a32"); rect(cx, y + 1, w, 10, "#2a2a32");
+    rect(cx + 1, y + 1, w - 2, 10, c); rect(cx + 1, y + 1, w - 2, 1, "rgba(255,255,255,.35)");
+    Font.draw(g, t, cx + 2, y, { font: "g9", col: "#ffffff", sh: "rgba(0,0,0,.5)" }); cx += w + 2; }
+}
 // 레벨업 능력치 창 (+오른 값 → 총합)
 async function statWindow(old, now) {
   for (const mode of [0, 1]) {
@@ -1375,7 +1413,8 @@ function forgetMenu(m, newId) {
         // v2.37 기술 설명이 왼쪽 좁은 칸(폭 80, 세 줄)에서 거의 다 잘리던 것 → 아래 넓은 칸(요약 화면과 같은 폭 232, 세 줄)
         drawIcon(m.k, 33, 26); Font.draw(g, mname(m), 49, 60, { align: "center" }); MON[m.k].t.forEach((t, k, a) => typeBadge(t, a.length > 1 ? 10 + k * 40 : 30, 78));
         L.forEach((id, k) => { const y = 30 + k * 18 + (k === 4 ? 4 : 0); frame(98, y - 3, 150, 18 + 0, k === this.i ? 1 : 0); typeBadge(MV[id].t, 104, y + 1);
-          Font.draw(g, MV[id].n, 144, y); Font.draw(g, "PP" + MV[id].pp, 242, y, { align: "right", font: "g9" }); });
+          const pp = "PP" + MV[id].pp, sm = 144 + Font.width(MV[id].n) > 238 - Font.width(pp, "g9");   // v2.49 긴 기술 이름이 PP와 겹치던 것
+          Font.draw(g, MV[id].n, 144, y + (sm ? 2 : 0), sm ? { font: "g9" } : {}); Font.draw(g, pp, 242, y, { align: "right", font: "g9" }); });
         const d = MV[L[this.i]];
         frame(4, 126, 248, 62); Font.draw(g, `분류 ${{ P: "물리", S: "특수", X: "변화" }[d.c]}  위력 ${d.bp || "-"}  명중 ${d.acc > 100 ? "-" : d.acc}`, 12, 131, { font: "g9" });
         Font.wrap(d.d || "", 232, "g9").slice(0, 3).forEach((l, k) => Font.draw(g, l, 12, 145 + k * 12, { font: "g9" }));
@@ -1424,7 +1463,7 @@ async function whiteout() {
   G.healAll();
   World.load(h[0], h[1], h[2], h[3] || "up"); World.cam = World.camTarget();
   await fadeIn(16);
-  await say(/^center/.test(h[0]) ? "남켓몬은 모두 건강해졌어요.\f무리하지 마세요. 또 오세요!" : "엄마: 어머, 괜찮니?\f남켓몬들 푹 쉬었으니\n다시 힘내 보자!");
+  await say(/^(center|obang_lobby|bt_lobby)/.test(h[0]) ? "남켓몬은 모두 건강해졌어요.\f무리하지 마세요. 또 오세요!" : "엄마: 어머, 괜찮니?\f남켓몬들 푹 쉬었으니\n다시 힘내 보자!");
 }
 // ---- 트레이너 ----
 async function trainerSpotted(a) {
