@@ -20,7 +20,7 @@ class Modal { constructor() { this.promise = new Promise(r => this._r = r); } do
 const show = s => { Scenes.push(s); return s.promise; };
 
 // ---- 시작 메뉴 ----
-const MENU_HELP = { 도감: "남켓몬 도감을 펼쳐 본다.", 남켓몬: "함께 다니는 남켓몬을 본다.", 가방: "가방 속 물건을 확인한다.", 리포트: "지금까지의 모험을 기록한다.", 설정: "글자 속도·소리 등을 바꾼다.", 닫기: "메뉴를 닫는다.",
+const MENU_HELP = { 도감: "남켓몬 도감을 펼쳐 본다.", 남켓몬: "함께 다니는 남켓몬을 본다.", 가방: "가방 속 물건을 확인한다.", 리포트: "지금까지의 모험을 기록한다.", 수첩: "지금 해야 할 일과\n가야 할 곳을 확인한다.", 설정: "글자 속도·소리 등을 바꾼다.", 닫기: "메뉴를 닫는다.",
   달리기: "켜면 늘 달린다.\nX를 누르고 있으면 걷는다.", 타이틀: "타이틀 화면으로 간다.\n리포트를 먼저 쓰세요!", 카드: "트레이너 카드를 본다." };
 async function openStartMenu() {
   World.busy++;
@@ -30,10 +30,10 @@ async function openStartMenu() {
       const keys = [];
       if (G.flag("dex")) keys.push("도감");
       if (G.party.length) keys.push("남켓몬");
-      keys.push("가방", "카드");
+      keys.push("가방", "수첩", "카드");   // v2.54 모험 수첩(길잡이)
       if (G.flag("runshoes")) keys.push("달리기");
       keys.push("리포트", "설정", "타이틀", "닫기");
-      const items = keys.map(k => k === "카드" ? G.name : k === "달리기" ? { label: "늘 달리기", sub: Save.opt.autorun ? "켬" : "끔" } : k === "타이틀" ? "타이틀로" : k);
+      const items = keys.map(k => k === "수첩" ? "모험 수첩" : k === "카드" ? G.name : k === "달리기" ? { label: "늘 달리기", sub: Save.opt.autorun ? "켬" : "끔" } : k === "타이틀" ? "타이틀로" : k);
       let help = null; last = Math.min(last, keys.length - 1);
       const hb = new Overlay(() => { const lab = keys[help ?? last]; frame(2, 150, 148, 40); Font.wrap(MENU_HELP[lab] || "", 132, "g9").slice(0, 2).forEach((l, j) => Font.draw(g, l, 10, 156 + j * 13, { font: "g9" })); });
       Scenes.push(hb);
@@ -45,6 +45,7 @@ async function openStartMenu() {
       else if (k === "남켓몬") await openParty("field");
       else if (k === "가방") await openBag("field");
       if (typeof FIELD_PENDING !== "undefined" && FIELD_PENDING) break;          // v2.0 풀베기·낚싯대·징: 메뉴를 닫고 바로
+      else if (k === "수첩") await show(new GoalBook());
       else if (k === "카드") await show(new TrainerCard());
       else if (k === "달리기") { Save.opt.autorun = Save.opt.autorun ? 0 : 1; Save.saveOpt(); sfx("select");
         await say(Save.opt.autorun ? "늘 달리기를 켰다!\nX를 누르고 있으면 걸을 수 있다." : "늘 달리기를 껐다.\nX를 누르고 있으면 달릴 수 있다."); }

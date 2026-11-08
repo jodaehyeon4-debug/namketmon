@@ -609,7 +609,7 @@ class Battle {
     const wxm = t => wxNow === "rain" ? (t === "물" ? 1.5 : t === "불꽃" ? 0.5 : 1) : wxNow === "sun" ? (t === "불꽃" ? 1.5 : t === "물" ? 0.5 : 1) : 1;
     let best = null, bs = -1;
     for (const mv of usable) { const M = this.moveFor(w, mv.id); const sure = (wxNow === "rain" && ["thunder", "hurricane"].includes(mv.id)) || (wxNow === "hail" && mv.id === "blizzard");
-      let sc = M.c === "X" ? 18 + rnd(20) : M.bp * this.typeMul(M.t, d) * wxm(M.t) * (w.m.k && MON[w.m.k].t.includes(M.t) ? 1.5 : 1) * ((sure || M.acc > 100 ? 100 : M.acc) / 100);
+      let sc = M.c === "X" ? 18 + rnd(20) : M.bp * this.typeMul(M.t, d, mv.id) * wxm(M.t) * (w.m.k && MON[w.m.k].t.includes(M.t) ? 1.5 : 1) * ((sure || M.acc > 100 ? 100 : M.acc) / 100);
       if (M.c === "X" && M.st && d.m.status) sc = 0; if (sc > bs) { bs = sc; best = mv.id; } }
     return best;
   }
@@ -657,7 +657,7 @@ class Battle {
     const r = await this.checkFaint(); if (r) return r === "cont" ? null : r;
     return await this.endTurn();
   }
-  typeMul(t, d) { return this.types(d).reduce((a, x) => a * (TC[t][x] ?? 1), 1); }
+  typeMul(t, d, id) { return this.types(d).reduce((a, x) => a * (id === "freezedry" && x === "물" ? 2 : (TC[t][x] ?? 1)), 1); }   // v2.55 프리즈드라이: 물 타입에도 효과가 굉장함(실제 게임처럼)
   async boost(w, b, selfMove, echo) {
     for (const [k0, v] of Object.entries(b || {})) {
       const k = k0;
@@ -789,7 +789,7 @@ class Battle {
     // 면역
     const im0 = { levitate: ["땅"], flashfire: ["불꽃"], waterabsorb: ["물"], voltabsorb: ["전기"], sapsipper: ["풀"], motordrive: ["전기"], lightningrod: ["전기"], stormdrain: ["물"], dryskin: ["물"] }[dab];
     const im = dab === "soundproof" && mv.snd ? [mv.t] : im0;
-    let mul = id === "struggle" ? 1 : this.typeMul(mv.t, d);
+    let mul = id === "struggle" ? 1 : this.typeMul(mv.t, d, id);
     if (mul === 0 && A.ab === "scrappy" && (mv.t === "노말" || mv.t === "격투")) mul = this.types(d).filter(t => t !== "고스트").reduce((p, x) => p * (TC[mv.t][x] ?? 1), 1);
     if (mv.t === "땅" && (d.vol.magnet > 0 || this.hi(d) === "balloon")) mul = 0;   // v2.41 방패연(풍선)
     if ((im && im.includes(mv.t)) || mul === 0) {
