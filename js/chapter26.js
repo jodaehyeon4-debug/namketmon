@@ -89,6 +89,7 @@ async function endingRun() {
   await say("까마귀와 까치 떼가 날아올라\n밤하늘에 다리를 놓았다.");
   await say("가람: 오작교는 견우와 직녀가\n건너는 다리지만,\f그 다리를 놓는 건\n작은 새들이래.\f……한 마리 한 마리는 작아도.");
   await say("가람: 나도 건너 볼게.\n사람 쪽으로.");
+  if (typeof gqEnding === "function") await gqEnding();   // v2.60 가람의 밤에 한 대답
   if (GR) { await walk(GR, "left"); await frames(10); }
   await say("가람: ……같이 걸어 줄래?");
   await frames(30);

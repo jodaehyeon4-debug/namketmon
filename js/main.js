@@ -1,6 +1,6 @@
 // ===== 시작: 불러오기 → 타이틀 → 새 게임/이어서 =====
 "use strict";
-const VERSION = "플레이 버전 v2.59";
+const VERSION = "플레이 버전 v2.60";
 async function boot(hotData) {
   Save.loadOpt();
   const loading = { opaque: true, p: 0, draw() { rect(0, 0, SW, SH, "#101018"); rect(48, 94, 160, 6, "#2a2a3a"); rect(48, 94, Math.round(160 * this.p), 6, "#d04a3a"); } };

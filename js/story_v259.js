@@ -218,6 +218,7 @@ async function ysByeoldol() {
   await say("윤슬 박사: 기념관 해설사님이\n걱정을 많이 하시던데……\f한번 가 봐 줄래요?");
   if (!jpHas("jjy_card")) await say("윤슬 박사: 기념관에서 주는\n'4월의 엽서'도 정표예요.\f비색마을에 가는 김에\n꼭 들러 봐요.");
   await say("윤슬 박사: 나는 연구소에 가서\n오작 전설을 더 찾아볼게요.\f별돌, 잘 부탁해요!");
+  if (typeof fgYsHint === "function") await fgYsHint();   // v2.60 잊힌 자리(운해룡 복선)
   G.flag("ys_byeoldol", true);
   await jpLeave(Y, Y.x, Math.max(30, Y.y - 6));
   zoneBgm();

@@ -252,6 +252,7 @@ async function cxReveal() {
   await say("횃불 사이로 사람들이 쏟아져 나왔다.\f관장 선생님들, 한결, 여울,\n솔뫼, 마을 사람들까지……");
   cxFx("chuldu", 70);
   if (typeof cxRingLine === "function") await cxRingLine();   // v2.59 정표 옥가락지(춘향전의 어사처럼)
+  if (typeof cxChilro === "function") await cxChilro();   // v2.60 칠로 넷 · 풍물패가 길을 엶
   const JB = act("cx_jb"), HW = act("cx_hwang");
   if (JB) { await cxWalk(JB, P.x - 1, P.y + 1); face(JB, P); }
   await say("조박사: 잘했어!\n선생님이 다 봤다.");
@@ -312,6 +313,7 @@ async function cxUnhae() {
   cxFx("unhae", 120);
   await say("운해룡은 쓰러지지 않는다.\f텅 빈 몸속에서 별빛만\n흔들리고 있다……");
   if (r !== "win") await cxHeal("조박사: 버텨! 혼자가 아니야!\f……남켓몬들이 다시 일어섰다!");
+  if (typeof cxForgot === "function") await cxForgot();   // v2.60 운해룡의 빈 몸속에 비친 잊힌 자리
   if (typeof cxStars === "function") await cxStars();   // v2.59 정표 여섯이 운해룡의 빈 몸을 채움
   // 별돌
   await say("그때, 가방 속 별돌이\n뜨겁게 빛나기 시작했다!");
@@ -335,6 +337,7 @@ async function cxUnhae() {
   sfx("chime");
   await say("그 순간, 절터의 주춧돌 위로\n금빛 기둥이 하나둘 솟아올랐다.");
   await say("기와지붕, 처마, 풍경 소리……\f불에 타 사라졌던 옛 만복사가\n빛으로 떠올랐다!");
+  if (typeof cxDaemokTemple === "function") await cxDaemokTemple();   // v2.60 대목 어른
   await say("할아버지 목소리가 떠올랐다.\f'집은 불타도 주춧돌은 남는 법이란다.\n사람도 그래.'");
   await frames(40);
   await say("빛의 절은 천천히 흩어져\n밤하늘의 별이 되었다.");
@@ -369,6 +372,7 @@ async function cxEnding() {
   await say("구름이 걷힌 절터에\n고요한 달빛이 내려앉았다.");
   if (D) face(D, P);
   await say("변도진: ……'모두에게 복을'.\f내가 바란 건 나 혼자의\n복이었나.");
+  if (typeof cxByeonPast === "function") await cxByeonPast(D);   // v2.60 한지 어른 — 박 밭 끝 초가집 도진이
   await say("교장 선생님: 남은 일은 어른들이\n하겠소.\f매립한 강, 사들인 땅,\n모두 마을 사람들과 함께 바로잡읍시다.");
   await say("변도진은 아무 말 없이\n요원들과 함께 절터를 떠났다.");
   if (D) D.hidden = true;
@@ -378,6 +382,7 @@ async function cxEnding() {
   await say("가람: ……고마워.\n네 남켓몬들, 좋은 소리를 내더라.");
   if (GR) { sfx("exit"); await fadeOut(8); GR.hidden = true; await fadeIn(8); }
   await say("하얀 나비 한 마리가\n가람이 떠난 쪽으로 날아갔다.");
+  if (typeof gqHint === "function") await gqHint();   // v2.60 가람의 밤(광한루원 오작교)
   const Y = act("cx_yeoul"), HG = act("cx_hg"), SM = act("cx_solmoe"), SO = act("cx_sori"), BR = act("cx_boreum");
   await say("여울: 내일부터 한결이랑\n요천 청소하기로 했어.\f강은 흘러야 하니까.");
   await say("한결: 야! 너 진짜 멋있었어!\f……다음엔 내가 마패 들 거야!\n아, 몰라!");
@@ -386,6 +391,7 @@ async function cxEnding() {
   await say("소리 어른: 보름아,\n한 소리 같이 하자꾸나.");
   await say("보름: 네, 할아버지!\f……얼씨구!");
   if (typeof cxEndFan2 === "function") await cxEndFan2();
+  if (typeof cxEndPungmul === "function") await cxEndPungmul();   // v2.60 상쇠 어른의 판
   if (JB) { face(JB, P); }
   await say("조박사: 마패, 잘 썼어?\f이제 선생님 거 돌려줘야지.\n……음 그건 안 돼, 라고 할 줄 알았지?");
   await say("조박사: 농담이야.\f그 마패는 오늘 밤만큼은\n네 거였어.");
