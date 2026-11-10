@@ -150,11 +150,12 @@ const FX = (() => {
       const a = D[1] * clamp(t / .15) * clamp((1 - t) / .2); if (!best || a > best.a) best = { c: D[0], a }; } return best; }
   return {
     // 기술 연출. 맞는 순간에 resolve(그 뒤에도 연출은 끝까지 그린다)
-    play(name, a, d, type) {
+    play(name, a, d, type, mv) {                           // v2.65 mv = 기술(위력에 따라 그림 크기 k: 약한 기술은 작게, 센 기술은 크게)
       const tp = T[name] || T.star; if (!Save.opt.anim) return Promise.resolve();
       const p = FXP[type] || FXP["노말"], A = pos(a.side), Dd = pos(d.side);
-      return new Promise(res => { let hit = false; const job = { tp, name, ty: type, dir: a.side === "E" ? -1 : 1, a: A, d: tp.self ? A : Dd, p, start: performance.now(), dur: tp.dur, done: () => { if (!hit) res(); } };
-        jobs.push(job); if (tp.start) tp.start(); kick(); if (tp.snd && typeof sfx === "function") sfx("fx_" + tp.snd);   // v2.50 템플릿마다 효과음
+      return new Promise(res => { let hit = false; const job = { tp, name, ty: type, dir: a.side === "E" ? -1 : 1, a: A, d: tp.self ? A : Dd, p, start: performance.now(), dur: tp.dur, done: () => { if (!hit) res(); },
+          k: mv && mv.bp ? (mv.bp >= 110 ? 1.45 : mv.bp >= 90 ? 1.25 : mv.bp >= 70 ? 1.1 : mv.bp <= 45 ? 0.85 : 1) : 1 };
+        jobs.push(job); if (tp.start) tp.start(job); kick(); if (tp.snd && typeof sfx === "function") sfx("fx_" + tp.snd);   // v2.50 템플릿마다 효과음
         setTimeout(() => { hit = true; res(); }, tp.dur*tp.hit*slow); });
     },
     setWeather(w) { weather = w; kick(); }, get weather() { return weather; }, dimNow, get busy() { return jobs.length; },

@@ -966,7 +966,7 @@ class Battle {
     const kind = mv.c === "P" ? "phys" : "spec";
     const p1 = this.spr[a.side].play(kind);
     await frames(mv.c === "P" ? 14 : 18);
-    await FX.play(mv.fx || "star", { side: a.side }, { side: d.side }, mv.t);
+    await FX.play(mv.fx || "star", { side: a.side }, { side: d.side }, mv.t, mv);   // v2.65 위력에 따라 그림 크기
     p1.then(() => {});
   }
   rawDmg(a, d, bp, cat, conf) {

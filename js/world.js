@@ -266,7 +266,9 @@ function buildMap(id) {
     (pn(x + 1, y - 1) ? 16 : 0) | (pn(x + 1, y + 1) ? 32 : 0) | (pn(x - 1, y + 1) ? 64 : 0) | (pn(x - 1, y - 1) ? 128 : 0);
   // v2.24 숲 그늘: 사방이 나무인 칸(나무 덩어리 안쪽)은 바닥을 어두운 숲 그늘로 — 나무가 빽빽하게 겹친 느낌
   const WOOD = "TPV";
-  const woods = (x, y) => T.forest !== undefined && WOOD.includes(at(x, y - 1)) && WOOD.includes(at(x + 1, y)) && WOOD.includes(at(x, y + 1)) && WOOD.includes(at(x - 1, y)) ? T.forest : T.grass;
+  // v2.63 숲 그늘 바닥은 여덟 방향이 모두 나무인 칸만(숲 가장자리에서 어두운 네모가 잔디 위로 삐져나와 보이던 것)
+  const wd = (x, y) => WOOD.includes(at(x, y));
+  const woods = (x, y) => T.forest !== undefined && wd(x, y - 1) && wd(x + 1, y) && wd(x, y + 1) && wd(x - 1, y) && wd(x - 1, y - 1) && wd(x + 1, y - 1) && wd(x - 1, y + 1) && wd(x + 1, y + 1) ? T.forest : T.grass;
   function ground(c, x, y) {
     if (def.indoor) {
       switch (c) {
@@ -297,7 +299,7 @@ function buildMap(id) {
         const HL = ts.js.auto.hill; if (!HL) return { t: T.grass };
         const hk = (X, Y) => "%/".includes(at(clamp(X, 0, w - 1), clamp(Y, 0, h - 1)));
         const m8 = (hk(x, y - 1) ? 1 : 0) | (hk(x + 1, y) ? 2 : 0) | (hk(x, y + 1) ? 4 : 0) | (hk(x - 1, y) ? 8 : 0) | (hk(x + 1, y - 1) ? 16 : 0) | (hk(x + 1, y + 1) ? 32 : 0) | (hk(x - 1, y + 1) ? 64 : 0) | (hk(x - 1, y - 1) ? 128 : 0);
-        if (m8 === 255) return { t: T.hilltop };
+        if (m8 === 255) { const v = hash2(x, y) % 9; return { t: T[v === 0 ? "grass2" : v === 1 ? "grass3" : "grass"] }; }   // v2.63 언덕 위도 들판과 같은 잔디
         return (m8 & 15) === 15 ? { t: HL[m8] } : { t: HL[m8], solid: true }; }
       case "/": { const SS = ts.js.auto.stairs; if (!SS) return { t: T.grass };   // v2.24 돌계단(언덕 남쪽 비탈)
         return { t: SS[(at(x + 1, y) === "/" ? 1 : 0) | (at(x - 1, y) === "/" ? 2 : 0)] }; }
@@ -388,7 +390,7 @@ function buildMap(id) {
         const IN = ts.js.auto.hillIn, add = [];
         [16, 32, 64, 128].forEach((bit, k) => { if (!(m8 & bit)) add.push(IN[k]); });
         M.gr[y][x] = Object.assign({}, M.gr[y][x], { ov2: (M.gr[y][x].ov2 || []).concat(add) }); }
-      if (c === "." && M.gr[y][x].t != null && T.hilltop !== undefined && m8 === 255) M.gr[y][x] = Object.assign({}, M.gr[y][x], { t: T.hilltop });
+      // v2.63: 언덕 위 맨 잔디를 밝은 잔디로 바꾸지 않음(정자·불상 터가 둘레와 다른 빛으로 네모나게 보이던 것)
     }
     M.lv = lv;
   }

@@ -259,7 +259,10 @@ const Audio2 = (() => {
   function ensure() {
     if (ac) return;
     ac = new (window.AudioContext || window.webkitAudioContext)();
-    master = ac.createGain(); master.connect(ac.destination);
+    master = ac.createGain();
+    // v2.65 곡마다 음량을 올려 맞추므로(작은 스피커 기준) 효과음과 겹칠 때 찢어지지 않게 끝에 리미터를 둠
+    try { const lim = ac.createDynamicsCompressor(); lim.threshold.value = -2; lim.knee.value = 0; lim.ratio.value = 20; lim.attack.value = 0.002; lim.release.value = 0.15; master.connect(lim); lim.connect(ac.destination); }
+    catch (e) { master.connect(ac.destination); }
     musG = ac.createGain(); musG.connect(master); sfxG = ac.createGain(); sfxG.connect(master);
     vol();
   }
@@ -283,8 +286,13 @@ const Audio2 = (() => {
     const meta = L[name];
     const s = ac.createBufferSource(), gg = ac.createGain(); s.buffer = b;
     if (meta.loop) { s.loop = true; s.loopStart = meta.loopStart || 0; s.loopEnd = Math.min(meta.loopEnd || b.duration, b.duration); }
-    gg.gain.value = 0; gg.gain.setTargetAtTime(duck, ac.currentTime, 0.04); s.connect(gg).connect(musG); s.start();
-    cur = { s, g: gg, name };
+    const tg = meta.gain || 1;                             // v2.65 곡별 음량 보정(bgm.json gain) · 저음 덜기(shelf dB, 160Hz 아래)
+    gg.gain.value = 0; gg.gain.setTargetAtTime(duck * tg, ac.currentTime, 0.04); chain(s, meta).connect(gg).connect(musG); s.start();
+    cur = { s, g: gg, name, tg };
+  }
+  function chain(s, meta) {
+    if (!meta.shelf) return s;
+    try { const f = ac.createBiquadFilter(); f.type = "lowshelf"; f.frequency.value = 160; f.gain.value = meta.shelf; s.connect(f); return f; } catch (e) { return s; }
   }
   // 짧은 곡: 배경 음악을 멈췄다가(포켓몬처럼) 끝나면 다시
   async function jingle(name) {
@@ -292,9 +300,9 @@ const Audio2 = (() => {
     const b = await get(name); if (!b) return;
     const meta = L[name]; const len = (meta.loopEnd || b.duration);
     if (cur) cur.g.gain.setTargetAtTime(0, ac.currentTime, 0.03);
-    const s = ac.createBufferSource(), gg = ac.createGain(); s.buffer = b; gg.gain.value = 1; s.connect(gg).connect(musG); s.start();
+    const s = ac.createBufferSource(), gg = ac.createGain(); s.buffer = b; gg.gain.value = meta.gain || 1; chain(s, meta).connect(gg).connect(musG); s.start();
     await wait(len * 1000 + 150);
-    if (cur) cur.g.gain.setTargetAtTime(duck, ac.currentTime, 0.25);
+    if (cur) cur.g.gain.setTargetAtTime(duck * (cur.tg || 1), ac.currentTime, 0.25);
   }
   // ---- 효과음 합성 ----
   function tone(type, f0, f1, dur, v = 0.3, t0 = 0, out = sfxG) {
