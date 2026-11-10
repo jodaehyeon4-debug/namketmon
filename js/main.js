@@ -1,6 +1,6 @@
 // ===== 시작: 불러오기 → 타이틀 → 새 게임/이어서 =====
 "use strict";
-const VERSION = "플레이 버전 v2.60";
+const VERSION = "플레이 버전 v2.62";
 async function boot(hotData) {
   Save.loadOpt();
   const loading = { opaque: true, p: 0, draw() { rect(0, 0, SW, SH, "#101018"); rect(48, 94, 160, 6, "#2a2a3a"); rect(48, 94, Math.round(160 * this.p), 6, "#d04a3a"); } };
@@ -55,7 +55,7 @@ class Title {
   }
   draw() {
     const t = this.t;
-    const sky = g.createLinearGradient(0, 0, 0, SH); sky.addColorStop(0, "#1e2a58"); sky.addColorStop(0.55, "#c86a5a"); sky.addColorStop(1, "#f0c890"); g.fillStyle = sky; g.fillRect(0, 0, SW, SH);
+    if (typeof bandSky === "function") bandSky([[0, "#1e2a58"], [0.55, "#c86a5a"], [1, "#f0c890"]], SH); else { const sky = g.createLinearGradient(0, 0, 0, SH); sky.addColorStop(0, "#1e2a58"); sky.addColorStop(0.55, "#c86a5a"); sky.addColorStop(1, "#f0c890"); g.fillStyle = sky; g.fillRect(0, 0, SW, SH); }
     // 지리산 능선 실루엣
     for (const [col, base, amp, f] of [["#3a3a6a", 120, 18, 0.03], ["#2a2a4a", 138, 14, 0.05], ["#1a1a30", 156, 10, 0.08]]) {
       g.fillStyle = col; g.beginPath(); g.moveTo(0, SH);

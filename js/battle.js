@@ -1556,7 +1556,7 @@ class EvoScene {
     Screen.flash = 0; this.white = 0; return true;
   }
   draw() {
-    const gr = g.createLinearGradient(0, 0, 0, 144); gr.addColorStop(0, "#1a2a5a"); gr.addColorStop(1, "#4a6aa8"); g.fillStyle = gr; g.fillRect(0, 0, SW, SH);
+    if (typeof bandSky === "function") bandSky([[0, "#1a2a5a"], [1, "#4a6aa8"]], SH); else { const gr = g.createLinearGradient(0, 0, 0, 144); gr.addColorStop(0, "#1a2a5a"); gr.addColorStop(1, "#4a6aa8"); g.fillStyle = gr; g.fillRect(0, 0, SW, SH); }
     for (let i = 0; i < 24; i++) { const a = i / 24 * 6.283 + this.t / 90, r = 40 + (i % 3) * 20 + Math.sin(this.t / 20 + i) * 6; rect(128 + Math.cos(a) * r, 70 + Math.sin(a) * r * 0.6, 2, 2, i % 2 ? "#ffe8a0" : "#a8d8ff"); }
     const showB = this.mix > 0.5;
     const key = this.cur === this.b ? this.b : showB ? this.b : this.a;

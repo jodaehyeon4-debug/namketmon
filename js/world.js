@@ -504,8 +504,8 @@ class Actor {
     Object.assign(this, { x: 0, y: 0, dir: "down", spr: "man", p: 0, mx: 0, my: 0, moving: false, speed: 1, step: 0, anim: 0, jump: 0, hidden: false, move: "still", wt: 60 + rnd(120), home: null, emo: null, emoT: 0 }, o);
     this.home = this.home || [this.x, this.y];
   }
-  get px() { return Math.round(this.x * TS - (this.moving ? (TS - this.p) * this.mx : 0) * (this.jump ? 2 : 1)); }
-  get py() { return Math.round(this.y * TS - (this.moving ? (TS - this.p) * this.my : 0) * (this.jump ? 2 : 1)); }
+  get px() { return R2(this.x * TS - (this.moving ? (TS - this.p) * this.mx : 0) * (this.jump ? 2 : 1)); }
+  get py() { return R2(this.y * TS - (this.moving ? (TS - this.p) * this.my : 0) * (this.jump ? 2 : 1)); }
   frameIdx() {
     const base = { down: 0, up: 3, left: 6, right: 6 }[this.dir];
     if (this.moving && this.p < 8 && !this.jump && !this.sliding) return base + 1 + (this.step & 1);
@@ -714,7 +714,7 @@ const World = {
     const P = this.player; let cx = P.px - 120, cy = P.py - 88 + (this.camDY || 0);   // camDY: 연출용 카메라 위아래 이동(v2.5)
     if (this.def.indoor) { const W = this.M.w * TS, H = this.M.h * TS;
       cx = W <= SW ? (W - SW) / 2 : clamp(cx, 0, W - SW); cy = H <= SH ? (H - SH) / 2 : clamp(cy, 0, H - SH); }
-    return [Math.round(cx), Math.round(cy)];
+    return [R2(cx), R2(cy)];
   },
   draw() {
     const M = this.M, P = this.player;
@@ -729,7 +729,7 @@ const World = {
         if (M.outdoor) {
           // v2.1 실제 게임처럼: 맵 가장자리 출구(이웃 맵으로 이어지는 길)는 바깥으로도 길이 이어져 보이게
           const ex = clamp(x, 0, M.w - 1), ey = clamp(y, 0, M.h - 1), ec = M.warps[ex + "," + ey] && !M.solid[ey][ex] ? M.gr[ey][ex] : null;
-          if (ec && (x === ex || y === ey)) { ti(T.grass, sx, sy); if (ec.auto) ti(ec.auto === "water" ? ts.js.auto.water[wf][ec.m] : ec.pv !== undefined ? ec.pv : ts.js.auto.path[ec.m], sx, sy); else if (!ec.anim) ti(ec.t, sx, sy); }
+          if (ec && (x === ex || y === ey)) { ti(T.grass, sx, sy); if (ec.auto) ti(ec.auto === "water" ? ts.js.auto.water[wf][15] : ec.pv !== undefined ? ec.pv : ts.js.auto.path[ec.m], sx, sy); else if (!ec.anim) ti(ec.t, sx, sy); }
           else if (ts.js.auto.bam && M.bamC(x, y)) { const b = bamTiles(ts.js.auto.bam, x, y, M.bamC); ti(T.grass, sx, sy); ti(b.ob, sx, sy); for (const i of b.ov) ti(i, sx, sy); }   // v2.23 대숲은 지도 밖으로도 이어짐
           else { ti(T.grass, sx, sy); ti(M.borderTile ? M.borderTile(x, y) : ST[M.border || "tree"].b[((y % 2) + 2) % 2][((x % 2) + 2) % 2], sx, sy); }
           if (ts.js.auto.bam && !ec && M.bamC(x, y + 1) && !M.bamC(x, y)) for (const i of bamTiles(ts.js.auto.bam, x, y + 1, M.bamC).up) ti(i, sx, sy);
@@ -738,7 +738,7 @@ const World = {
       }
       const c = M.gr[y][x];
       if (c) {
-        if (c.auto) ti(c.auto === "water" ? ts.js.auto.water[wf][c.m] : c.pv !== undefined ? c.pv : ts.js.auto.path[c.m], sx, sy);
+        if (c.auto) ti(c.auto === "water" ? (c.sandy && ts.js.auto.waterS ? ts.js.auto.waterS : ts.js.auto.water)[wf][c.m] : c.pv !== undefined ? c.pv : ts.js.auto.path[c.m], sx, sy);   // v2.62 모래와 닿은 물은 모래 물가
         else if (c.anim) { const A = ts.js.anim[c.anim]; ti(A.f[Math.floor(now / A.ms) % A.f.length], sx, sy); }
         else ti(c.t, sx, sy);
         if (c.ov2) for (const o of c.ov2) ti(o, sx, sy);
@@ -777,7 +777,7 @@ const World = {
     // 낮·밤
     if (M.outdoor && !this.def.noTint) {
       const tod = timeOfDay();
-      if (tod === "저녁" || tod === "밤") { g.globalCompositeOperation = "multiply"; g.fillStyle = tod === "저녁" ? "#ffd2a8" : "#6a78b8"; g.fillRect(0, 0, SW, SH); g.globalCompositeOperation = "source-over"; }
+      if (tod === "저녁" || tod === "밤") { g.globalCompositeOperation = "multiply"; g.fillStyle = tod === "저녁" ? "#ffd2a8" : "#7684c6"; g.fillRect(0, 0, SW, SH); g.globalCompositeOperation = "source-over"; }
       if (this.weather) drawWeather(g, this.weather, now, SW, SH, true);
     }
     // 지역 이름 팻말 (4세대처럼 위에서 내려온다)

@@ -87,7 +87,7 @@ class Intro {
     });
   }
   dawn(t) {                                                         // 지리산 새벽 운해: 해가 뜨고 구름바다가 흐름
-    const sky = g.createLinearGradient(0, 0, 0, SH); sky.addColorStop(0, "#1a2050"); sky.addColorStop(0.5, "#b05a70"); sky.addColorStop(0.8, "#f4b070"); g.fillStyle = sky; g.fillRect(0, 0, SW, SH);
+    if (typeof bandSky === "function") bandSky([[0, "#1a2050"], [0.5, "#b05a70"], [0.8, "#f4b070"]], SH); else { const sky = g.createLinearGradient(0, 0, 0, SH); sky.addColorStop(0, "#1a2050"); sky.addColorStop(0.5, "#b05a70"); sky.addColorStop(0.8, "#f4b070"); g.fillStyle = sky; g.fillRect(0, 0, SW, SH); }
     const sy = 120 - Math.min(40, t * 0.25); g.fillStyle = "#fff0b8"; g.beginPath(); g.arc(170, sy, 14, 0, Math.PI * 2); g.fill();
     g.globalAlpha = 0.25; g.beginPath(); g.arc(170, sy, 26, 0, Math.PI * 2); g.fill(); g.globalAlpha = 1;
     this.ridges([["#5a4a7a", 96, 22, 0.022, 0.3], ["#3e3460", 112, 18, 0.034, 0.6]], t, 0);
@@ -100,7 +100,7 @@ class Intro {
     for (let i = 0; i < 5; i++) { const x = ((t * 1.2 + i * 60) % (SW + 40)) - 20, y = 40 + i * 9 + Math.sin(t / 10 + i) * 2, w = (t >> 2) % 2; rect(x, y, 4, 1, "#2a2440"); rect(x - 1 - w, y - 1 + w, 2, 1, "#2a2440"); rect(x + 3 + w, y - 1 + w, 2, 1, "#2a2440"); }
   }
   field(t) {                                                        // 들판을 달리는 스타팅 셋
-    const sky = g.createLinearGradient(0, 0, 0, SH); sky.addColorStop(0, "#5aa0e0"); sky.addColorStop(0.6, "#bfe4f4"); g.fillStyle = sky; g.fillRect(0, 0, SW, SH);
+    if (typeof bandSky === "function") bandSky([[0, "#5aa0e0"], [0.6, "#bfe4f4"]], SH); else { const sky = g.createLinearGradient(0, 0, 0, SH); sky.addColorStop(0, "#5aa0e0"); sky.addColorStop(0.6, "#bfe4f4"); g.fillStyle = sky; g.fillRect(0, 0, SW, SH); }
     this.ridges([["#7a9ac0", 92, 16, 0.02, 0.4], ["#5a8a6a", 108, 12, 0.03, 1.2]], t, 0);
     rect(0, 128, SW, SH - 128, "#78b84a"); for (let i = 0; i < 40; i++) { const x = ((i * 41 - t * 4) % (SW + 20) + SW + 20) % (SW + 20) - 10, y = 132 + (i * 13) % 56; rect(x, y, 2, 1, "#5a9a3a"); rect(x + 1, y - 1, 1, 1, "#9ad86a"); }
     STARTERS.forEach((k, i) => {

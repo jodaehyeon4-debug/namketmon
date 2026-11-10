@@ -9,6 +9,7 @@ cv.width = SW * DPR; cv.height = SH * DPR; g.imageSmoothingEnabled = false;
 // 트레이너 그림: 한 장이 80×80(보통) 또는 160×160(2배 촘촘). 높이로 알아서 맞춤
 function trImg(im, f, dx, dy, dw = 80, dh = 80) { const s = im.height / 80, n = Math.max(1, Math.round(im.width / (80 * s))); g.drawImage(im, (f % n) * 80 * s, 0, 80 * s, 80 * s, dx, dy, dw, dh); }
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const R2 = v => Math.round(v * 2) / 2;   // v2.62 화면 속 픽셀(2배 촘촘) 단위로 맞춤 — 달릴 때 3·3·2칸씩 덜컥거리던 화면 흐름을 고르게
 const rnd = n => Math.floor(Math.random() * n);
 const pick = a => a[rnd(a.length)];
 const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -241,13 +242,13 @@ function downArrow(x, y) { const b = (FRAME >> 4) & 1; const c = "#d04030"; for 
 // v2.19 촘촘한 그림(sw×sh)을 화면 자리(dw×dh)에
 function spriteS(im, sx, sy, sw, sh, dx, dy, dw, dh, flip = false) {
   if (!im) return;
-  if (!flip) { g.drawImage(im, sx, sy, sw, sh, Math.round(dx), Math.round(dy), dw, dh); return; }
-  g.save(); g.translate(Math.round(dx) + dw, Math.round(dy)); g.scale(-1, 1); g.drawImage(im, sx, sy, sw, sh, 0, 0, dw, dh); g.restore();
+  if (!flip) { g.drawImage(im, sx, sy, sw, sh, R2(dx), R2(dy), dw, dh); return; }
+  g.save(); g.translate(R2(dx) + dw, R2(dy)); g.scale(-1, 1); g.drawImage(im, sx, sy, sw, sh, 0, 0, dw, dh); g.restore();
 }
 function sprite(im, sx, sy, w, h, dx, dy, flip = false) {
   if (!im) return;
-  if (!flip) { g.drawImage(im, sx, sy, w, h, Math.round(dx), Math.round(dy), w, h); return; }
-  g.save(); g.translate(Math.round(dx) + w, Math.round(dy)); g.scale(-1, 1); g.drawImage(im, sx, sy, w, h, 0, 0, w, h); g.restore();
+  if (!flip) { g.drawImage(im, sx, sy, w, h, R2(dx), R2(dy), w, h); return; }
+  g.save(); g.translate(R2(dx) + w, R2(dy)); g.scale(-1, 1); g.drawImage(im, sx, sy, w, h, 0, 0, w, h); g.restore();
 }
 
 // ---- 소리: 배경 음악(이음매 없는 반복) + 효과음(합성) + 울음소리(종마다 다른 합성) ----

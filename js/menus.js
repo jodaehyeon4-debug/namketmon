@@ -34,10 +34,11 @@ async function openStartMenu() {
       if (G.flag("runshoes")) keys.push("달리기");
       keys.push("리포트", "설정", "타이틀", "닫기");
       const items = keys.map(k => k === "수첩" ? "모험 수첩" : k === "카드" ? G.name : k === "달리기" ? { label: "늘 달리기", sub: Save.opt.autorun ? "켬" : "끔" } : k === "타이틀" ? "타이틀로" : k);
+      if (typeof MENU_ICON !== "undefined") for (let i = 0; i < items.length; i++) { const it = typeof items[i] === "string" ? { label: items[i] } : items[i]; it.icon = MENU_ICON[keys[i]]; items[i] = it; }   // v2.62 메뉴 아이콘
       let help = null; last = Math.min(last, keys.length - 1);
-      const hb = new Overlay(() => { const lab = keys[help ?? last]; frame(2, 150, 148, 40); Font.wrap(MENU_HELP[lab] || "", 132, "g9").slice(0, 2).forEach((l, j) => Font.draw(g, l, 10, 156 + j * 13, { font: "g9" })); });
+      const hb = new Overlay(() => { const lab = keys[help ?? last]; frame(2, 150, 136, 40); Font.wrap(MENU_HELP[lab] || "", 120, "g9").slice(0, 2).forEach((l, j) => Font.draw(g, l, 10, 156 + j * 13, { font: "g9" })); });
       Scenes.push(hb);
-      const v = await menu({ items, x: 154, y: 2, w: 100, initial: last, onMove: i => help = i });
+      const v = await menu({ items, x: 140, y: 2, w: 114, initial: last, onMove: i => help = i });
       Scenes.pop(hb);
       if (v < 0 || keys[v] === "닫기") break;
       last = v; const k = keys[v];
@@ -279,7 +280,8 @@ class Bag extends Modal {
     const L = this.list();
     for (let r = 0; r < 7; r++) { const k = this.top + r, id = L[k]; if (!id) break; const y = 10 + r * 18;
       if (id === "__close") Font.draw(g, this.mode === "field" ? "가방을 닫는다" : "돌아가기", 122, y);
-      else { Font.draw(g, ITEMS[id].n, 122, y); if (ITEMS[id].p !== "key") Font.draw(g, "×" + String(G.bag[id]).padStart(2, " "), 248, y, { align: "right" });
+      else { { const it_ = ITEMS[id], ii = JSN.items && it_ ? JSN.items.t[it_.ic] : undefined; if (ii !== undefined) g.drawImage(IMG.items, (ii % 16) * 24, Math.floor(ii / 16) * 24, 24, 24, 120, y + 2, 12, 12); }   // v2.62 목록 줄 앞 아이콘
+        Font.draw(g, ITEMS[id].n, 135, y, { fit: 88 }); if (ITEMS[id].p !== "key") Font.draw(g, "×" + String(G.bag[id]).padStart(2, " "), 248, y, { align: "right" });
         if (id === "expshare") Font.draw(g, G.flag("expshare_on") ? "켜짐" : "꺼짐", 248, y, { align: "right", font: "g9", col: G.flag("expshare_on") ? TXT.blue : TXT.gray, sh: null }); }
       if (k === this.i) cursor(110, y + 3); }
     if (this.top > 0) { for (let i = 0; i < 4; i++) rect(176 + i, 6 + i - b, 7 - i * 2, 1, "#d04030"); }
