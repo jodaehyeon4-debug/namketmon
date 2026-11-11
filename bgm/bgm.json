@@ -14,16 +14,16 @@
   "loopEnd": 62.6087,
   "loop": true,
   "desc": "주인공의 고향 마을. 포근하고 느긋한 아침",
-  "gain": 0.966
+  "gain": 1.023
  },
  "route": {
   "file": "route.mp3",
   "title": "1번도로",
-  "loopStart": 0.0,
-  "loopEnd": 45.0,
+  "loopStart": 4.0,
+  "loopEnd": 52.0,
   "loop": true,
   "desc": "1번도로·요천 둔치. 처음 집을 나서는 길",
-  "gain": 1.303
+  "gain": 1.135
  },
  "battle_wild": {
   "file": "battle_wild.mp3",
@@ -80,10 +80,10 @@
   "file": "city.mp3",
   "title": "다홍시티",
   "loopStart": 0.0,
-  "loopEnd": 55.6522,
+  "loopEnd": 61.9355,
   "loop": true,
   "desc": "시내·광한루원. 사람이 북적이는 큰 도시",
-  "gain": 1.396
+  "gain": 1.23
  },
  "center": {
   "file": "center.mp3",
@@ -250,7 +250,7 @@
   "file": "jjok.mp3",
   "title": "쪽빛마을",
   "loopStart": 0.0,
-  "loopEnd": 45.7143,
+  "loopEnd": 48.0,
   "loop": true,
   "desc": "쪽빛마을·사매 들판. 바람이 지나가는 작은 마을",
   "gain": 1.047
@@ -277,16 +277,16 @@
   "file": "galmae.mp3",
   "title": "갈매마을",
   "loopStart": 0.0,
-  "loopEnd": 49.6552,
+  "loopEnd": 51.4286,
   "loop": true,
   "desc": "갈매마을·덕과 아카데미. 학교 종소리가 들리는 마을",
-  "gain": 1.496
+  "gain": 1.38
  },
  "bisaek": {
   "file": "bisaek.mp3",
   "title": "비색마을",
   "loopStart": 0.0,
-  "loopEnd": 45.7143,
+  "loopEnd": 48.0,
   "loop": true,
   "desc": "비색마을·금지. 요천이 섬진강을 만나는 물가 마을",
   "gain": 1.109
@@ -304,19 +304,19 @@
   "file": "songhwa.mp3",
   "title": "송화마을",
   "loopStart": 0.0,
-  "loopEnd": 55.3846,
+  "loopEnd": 57.6,
   "loop": true,
   "desc": "송화마을·송동. 솔숲 사이로 봄바람이 부는 마을",
-  "gain": 1.514
+  "gain": 1.148
  },
  "juhong": {
   "file": "juhong.mp3",
   "title": "주홍마을",
   "loopStart": 0.0,
-  "loopEnd": 53.3333,
+  "loopEnd": 55.3846,
   "loop": true,
   "desc": "주홍마을·주천. 지리산 자락, 구룡계곡 물소리가 들리는 마을",
-  "gain": 1.549
+  "gain": 1.245
  },
  "gym4": {
   "file": "gym4.mp3",
@@ -331,10 +331,10 @@
   "file": "gamcheong.mp3",
   "title": "감청마을",
   "loopStart": 0.0,
-  "loopEnd": 65.4545,
+  "loopEnd": 68.5714,
   "loop": true,
   "desc": "감청마을·산곡동. 교룡산 아래 짙은 남색 저녁의 마을",
-  "gain": 1.109
+  "gain": 1.012
  },
  "gym5": {
   "file": "gym5.mp3",
@@ -359,10 +359,10 @@
   "file": "ssukbit.mp3",
   "title": "쑥빛시티",
   "loopStart": 0.0,
-  "loopEnd": 48.0,
+  "loopEnd": 49.6552,
   "loop": true,
   "desc": "쑥빛시티·운봉. 높은 고원에 펼쳐진 넓은 도시",
-  "gain": 1.514
+  "gain": 1.096
  },
  "gym6": {
   "file": "gym6.mp3",
@@ -377,10 +377,10 @@
   "file": "inwol.mp3",
   "title": "인월장터",
   "loopStart": 0.0,
-  "loopEnd": 50.5263,
+  "loopEnd": 53.3333,
   "loop": true,
   "desc": "인월장터. 람천과 풍천이 만나는 길목의 시끌벅적한 장터",
-  "gain": 1.175
+  "gain": 1.059
  },
  "misaek": {
   "file": "misaek.mp3",
@@ -389,7 +389,7 @@
   "loopEnd": 65.4545,
   "loop": true,
   "desc": "미색마을·아영 흥부마을. 박이 열린 초가와 제비 둥지",
-  "gain": 0.902
+  "gain": 1.0
  },
  "jaedan": {
   "file": "jaedan.mp3",
@@ -408,7 +408,7 @@
   "loopEnd": 68.5714,
   "loop": true,
   "desc": "월백마을·산내. 지리산 깊은 골짜기, 들판 가운데 오래된 절",
-  "gain": 1.084
+  "gain": 0.891
  },
  "banya": {
   "file": "banya.mp3",
@@ -432,10 +432,10 @@
   "file": "route13.mp3",
   "title": "13번도로",
   "loopStart": 0.0,
-  "loopEnd": 53.3333,
+  "loopEnd": 52.6027,
   "loop": true,
   "desc": "13번도로. 이백 들판에서 여원치 고개를 넘어 운봉으로 가는 길",
-  "gain": 1.349
+  "gain": 1.259
  },
  "baraebong": {
   "file": "baraebong.mp3",
@@ -466,11 +466,12 @@
  "champroad": {
   "file": "champroad.mp3",
   "title": "만행산 (챔피언로드)",
-  "loopStart": 3.2,
-  "loopEnd": 54.4,
+  "loopStart": 3.0769,
+  "loopEnd": 52.3077,
   "loop": true,
   "desc": "17번도로 홍살문 너머 만행산. 숲길과 바위굴을 지나 오방고원으로",
-  "gain": 1.288
+  "gain": 1.396,
+  "shelf": -1.8
  },
  "obang": {
   "file": "obang.mp3",
@@ -521,136 +522,136 @@
  "route2": {
   "file": "route2.mp3",
   "title": "2번도로",
-  "loopStart": 0.0,
-  "loopEnd": 45.7143,
+  "loopStart": 8.2759,
+  "loopEnd": 57.931,
   "loop": true,
   "desc": "2번도로. 오리정을 지나 사매 들판으로 이어지는 논두렁길",
-  "gain": 1.259
+  "gain": 1.303
  },
  "route3": {
   "file": "route3.mp3",
   "title": "3번도로",
   "loopStart": 0.0,
-  "loopEnd": 48.0,
+  "loopEnd": 45.7143,
   "loop": true,
   "desc": "3번도로. 사매 들판에서 덕과로 올라가는 넓은 논길, 옹기 가마",
-  "gain": 1.479
+  "gain": 1.288
  },
  "route4": {
   "file": "route4.mp3",
   "title": "4번도로",
   "loopStart": 0.0,
-  "loopEnd": 43.6364,
+  "loopEnd": 41.7391,
   "loop": true,
   "desc": "4번도로. 덕과에서 대산 쪽으로 들판과 낮은 언덕을 지나는 길",
-  "gain": 1.334
+  "gain": 1.012
  },
  "route5": {
   "file": "route5.mp3",
   "title": "5번도로",
-  "loopStart": 3.2877,
-  "loopEnd": 55.8904,
+  "loopStart": 3.3333,
+  "loopEnd": 56.6667,
   "loop": true,
   "desc": "5번도로. 주생 들판을 지나 요천이 섬진강을 만나는 금지로 내려가는 들길",
-  "gain": 1.585
+  "gain": 1.318
  },
  "route6": {
   "file": "route6.mp3",
   "title": "6번도로",
   "loopStart": 0.0,
-  "loopEnd": 60.0,
+  "loopEnd": 62.6087,
   "loop": true,
   "desc": "6번도로. 섬진강을 거슬러 대강으로 가는 강변 낚시 길",
-  "gain": 1.514
+  "gain": 1.047
  },
  "route7": {
   "file": "route7.mp3",
   "title": "7번도로",
   "loopStart": 0.0,
-  "loopEnd": 51.4286,
+  "loopEnd": 53.3333,
   "loop": true,
   "desc": "7번도로. 요천대교를 건너 송동으로 이어지는 솔숲 길",
-  "gain": 1.216
+  "gain": 1.189
  },
  "route8": {
   "file": "route8.mp3",
   "title": "8번도로",
-  "loopStart": 0.0,
-  "loopEnd": 54.8571,
+  "loopStart": 3.871,
+  "loopEnd": 50.3226,
   "loop": true,
   "desc": "8번도로. 송동에서 요천을 따라 시내 남쪽으로 돌아가는 둑길, 과수원",
-  "gain": 1.161
+  "gain": 1.148
  },
  "route9": {
   "file": "route9.mp3",
   "title": "9번도로",
   "loopStart": 0.0,
-  "loopEnd": 46.4516,
+  "loopEnd": 48.0,
   "loop": true,
   "desc": "9번도로·교룡산성. 시내를 벗어나 교룡산으로 올라가는 오르막길",
-  "gain": 1.429
+  "gain": 1.396
  },
  "route10": {
   "file": "route10.mp3",
   "title": "10번도로",
   "loopStart": 0.0,
-  "loopEnd": 49.2308,
+  "loopEnd": 50.5263,
   "loop": true,
   "desc": "10번도로. 시내 남동쪽 들길을 지나 지리산 자락으로 들어가는 고갯길",
-  "gain": 1.514
+  "gain": 1.084
  },
  "route11": {
   "file": "route11.mp3",
   "title": "11번도로",
   "loopStart": 0.0,
-  "loopEnd": 43.6364,
+  "loopEnd": 45.7143,
   "loop": true,
   "desc": "11번도로. 송동에서 수지를 지나 주천으로 넘어가는 남쪽 고갯길",
-  "gain": 1.148
+  "gain": 0.966
  },
  "route12": {
   "file": "route12.mp3",
   "title": "12번도로",
   "loopStart": 0.0,
-  "loopEnd": 59.0769,
+  "loopEnd": 55.6522,
   "loop": true,
   "desc": "12번도로. 지리산 둘레길을 따라 운봉 고원으로 올라가는 산길",
-  "gain": 1.303
+  "gain": 1.318
  },
  "route14": {
   "file": "route14.mp3",
   "title": "14번도로",
   "loopStart": 0.0,
-  "loopEnd": 46.8293,
+  "loopEnd": 48.0,
   "loop": true,
   "desc": "14번도로. 람천을 따라 인월장터를 지나 흥부마을로 가는 길",
-  "gain": 1.189
+  "gain": 1.109
  },
  "route15": {
   "file": "route15.mp3",
   "title": "15번도로",
-  "loopStart": 0.0,
-  "loopEnd": 50.5263,
+  "loopStart": 5.0,
+  "loopEnd": 65.0,
   "loop": true,
   "desc": "15번도로. 인월에서 산내로, 지리산 깊은 골짜기에 들어가는 길",
-  "gain": 1.047
+  "gain": 1.189
  },
  "route16": {
   "file": "route16.mp3",
   "title": "16번도로",
   "loopStart": 0.0,
-  "loopEnd": 48.8136,
+  "loopEnd": 51.4286,
   "loop": true,
   "desc": "16번도로. 산동과 보절의 산길과 들길을 지나 덕과로 돌아오는 긴 길",
-  "gain": 1.288
+  "gain": 1.122
  },
  "cave": {
   "file": "cave.mp3",
   "title": "굴 속",
   "loopStart": 0.0,
-  "loopEnd": 40.0,
+  "loopEnd": 45.7143,
   "loop": true,
   "desc": "뱀사골 얼음굴·운봉 바람굴. 물방울 소리가 울리는 어두운 굴",
-  "gain": 0.966
+  "gain": 1.059
  }
 }
