@@ -1,6 +1,6 @@
 // ===== 시작: 불러오기 → 타이틀 → 새 게임/이어서 =====
 "use strict";
-const VERSION = "플레이 버전 v2.68";
+const VERSION = "플레이 버전 v2.71";
 async function boot(hotData) {
   Save.loadOpt();
   const loading = { opaque: true, p: 0, draw() { rect(0, 0, SW, SH, "#101018"); rect(48, 94, 160, 6, "#2a2a3a"); rect(48, 94, Math.round(160 * this.p), 6, "#d04a3a"); } };
@@ -15,7 +15,15 @@ async function boot(hotData) {
     ["leaders_field", "img/leaders_field.json"], ["badges", "img/badges.json"]];
   const jobs = [...imgs.map(([n, s]) => loadImg(n, s)), ...jsons.map(([n, s]) => loadJSON(n, s)), Font.load("g11"), Font.load("g9"), Font.load("g7"), Audio2.init()];
   let done = 0; jobs.forEach(p => p.then(() => { done++; loading.p = done / jobs.length; }));
-  await Promise.all(jobs);
+  try { await Promise.all(jobs); }
+  catch (e) {     // v2.71 꼭 있어야 하는 자료를 끝내 못 받았을 때: 멈춘 채 두지 않고 알려 주고, 누르면 다시 받음
+    nkErr("boot", e);
+    loading.draw = function () { rect(0, 0, SW, SH, "#101018"); Font.draw && Font.F && Font.F.g11 ? Font.draw(g, "게임 자료를 다 받지 못했어요.", 128, 72, { align: "center", col: "#f8f8f8", sh: "#303040" }) : 0;
+      if (Font.F && Font.F.g11) { Font.draw(g, "인터넷을 확인하고", 128, 92, { align: "center", col: "#c8c8e8", sh: "#303040" }); Font.draw(g, "화면을 누르거나 Z를 눌러 주세요.", 128, 108, { align: "center", col: "#c8c8e8", sh: "#303040" }); }
+      else { rect(48, 94, 160, 6, "#d04a3a"); } };
+    const again = () => location.reload(); addEventListener("keydown", again, { once: true }); addEventListener("pointerdown", again, { once: true });
+    return;
+  }
   tsInit();
   for (const k of STARTERS) battleSheet(k);
   Scenes.pop(loading);
@@ -42,11 +50,13 @@ class Title {
   async go() {
     const items = [];
     const has = Save.has(); if (has) items.push("이어서 하기"); items.push("처음부터", "설정");
+    if (window.NKSafe && NKSafe.count()) items.push("오류 기록");     // v2.71 오류가 기록된 적이 있을 때만 보임
     while (true) {
       const v = await menu({ items, x: 64, y: 108, w: 128, cancel: true });
       if (v < 0) { this.state = "press"; return; }
       const k = items[v];
       if (k === "설정") { await show(new Options()); continue; }
+      if (k === "오류 기록") { await NKSafe.showLog(); if (!NKSafe.count()) items.splice(items.indexOf("오류 기록"), 1); continue; }
       if (k === "처음부터" && has && !(await yes("새로 시작하면 지금 리포트는\n다음에 저장할 때 지워집니다. 괜찮나요?"))) continue;
       await fadeOut(20); Scenes.pop(this); Audio2.stop();
       if (k === "이어서 하기") { const d = Save.read(); if (d) { loadData(d); await enterWorld(); return; } }

@@ -392,7 +392,7 @@
     await say(["엄마: 네 운동화,\n또 다 닳았더라.\f……그만큼 많이\n걸었다는 거지?", "엄마: 내일 요천 청소한다며?\n장화는 현관에 내놨어.", "엄마: 책상 위 관찰 일지,\n조금 읽었어.\f……별걸 다 적어 놨더라.", "엄마: 오늘은 엄마가 들을게.\f여행 이야기,\n처음부터 다 해 줘."][w]);
   });
 
-  window.STORY_V264 = { WAYS, QS, way, future, birds, brFull, BR_NEED, EOSA, keys: () => [...RW.keys(), ...AFT.keys(), ...BEF.keys(), ...SUB.map(s => s[0])],
+  window.STORY_V264 = { WAYS, QS, way, future, birds, brFull, BR_NEED, EOSA, resolve: k => { let t = RW.has(k) ? RW.get(k) : k; if (typeof t === "function") t = t(); return t; }, keys: () => [...RW.keys(), ...AFT.keys(), ...BEF.keys(), ...SUB.map(s => s[0])],
     texts: () => { const o = []; const add = v => { if (typeof v === "string") o.push(v); };
       for (const v of RW.values()) add(v); for (const s of SUB) add(s[1]);
       for (const q of QS) { add(q.q); q.re.forEach(add); q.opts.forEach(x => { add(x[0]); add(q.back(x[0])); }); }

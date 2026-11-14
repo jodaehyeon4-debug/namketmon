@@ -62,7 +62,7 @@
       typeChips(T, x + 10 + nw + (m.gender ? 12 : 0), y + 2);
       if (this.wild && G.caught[m.k]) sprite(IMG.misc, JSN.misc.t.ball_icon * 16, 0, 16, 16, x - 7, y - 7);   // 잡아 본 남켓몬: 이름표 모서리에 볼
       if (m.status) statusBadge(m.status, x + 5, y + 18);
-      hpBar(x + 36, y + 20, 56, b.hp / m.st[0]);
+      hpBar(x + 36, y + 20, m.lv >= 100 ? 51 : 56, b.hp / m.st[0]);   // v2.70 레벨 100이면 "Lv100"이 막대 끝에 닿아서 막대를 조금 줄임
       Font.draw(g, "Lv" + m.lv, x + 135, y + 17, { font: "g9", align: "right" });
     } else {
       const x = Math.round(114 + b.off), y = 96;

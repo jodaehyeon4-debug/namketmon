@@ -82,13 +82,47 @@ const Input = (() => {
 
 // ---- 불러오기 ----
 const IMG = {}, JSN = {};
-function loadImg(name, src) { return new Promise((res) => { const im = new Image(); im.onload = () => { IMG[name] = im; res(im); }; im.onerror = () => { console.warn("img fail", src); res(null); }; im.src = src; }); }
-async function loadJSON(name, src) { const r = await fetch(src); JSN[name] = await r.json(); return JSN[name]; }
-const lazyImg = {};
-function battleSheet(k) {   // 배틀 시트는 필요할 때 불러온다
-  if (lazyImg[k]) return lazyImg[k];
-  const im = new Image(); im.src = "battle/" + k + ".png"; lazyImg[k] = im; return im;
+// v2.71 한 번의 오류로 게임이 굳지 않게 — 오류는 여기로 모아 기록만 하고 계속 진행(js/safe_v271.js가 받아 적음)
+function nkErr(where, e) { try { if (window.NKSafe) window.NKSafe.report(where, e); else console.error(where, e); } catch (x) {} }
+// 깨진 그림(내려받기 실패)·아직 안 온 그림을 그리려 하면 브라우저가 오류를 던져 화면 그리기가 통째로 끊겼다 → 그런 그림은 조용히 건너뜀
+(() => { const P = CanvasRenderingContext2D.prototype, d0 = P.drawImage;
+  P.drawImage = function (im) {
+    if (!im) return;
+    if (im instanceof HTMLImageElement) { if (!im.complete || !im.naturalWidth) return; }
+    else if (im instanceof HTMLCanvasElement) { if (!im.width || !im.height) return; }
+    return d0.apply(this, arguments); }; })();
+// 그림·자료 불러오기: 실패하면 조금 기다렸다가 다시(세 번까지) — 느린 와이파이에서 한 번 끊겨도 시작 화면에서 멈추지 않게
+function loadImg(name, src, tries = 4) { return new Promise((res) => { let n = 0;
+  const go = () => { const im = new Image(); im.onload = () => { IMG[name] = im; res(im); };
+    im.onerror = () => { if (++n < tries) setTimeout(go, 500 * n * n); else { nkErr("img:" + src, new Error("그림을 불러오지 못함")); res(null); } };
+    im.src = src + (n ? "?r=" + n : ""); };
+  go(); }); }
+async function loadJSON(name, src, tries = 4) {
+  for (let n = 0; ; n++) {
+    try { const r = await fetch(src + (n ? "?r=" + n : "")); if (!r.ok) throw new Error("HTTP " + r.status); JSN[name] = await r.json(); return JSN[name]; }
+    catch (e) { if (n + 1 >= tries) { nkErr("json:" + src, e); throw e; } await new Promise(r => setTimeout(r, 500 * (n + 1) * (n + 1))); }
+  }
 }
+// 배틀 시트(2304×960, 한 장 8.8MB로 풀림)는 필요할 때 불러온다. v2.71: 실패하면 다시 시도 · 오래 안 쓴 것은 내려놓음(태블릿 메모리)
+const lazyImg = {}, lazyUse = {}; let lazyClock = 0; const SHEET_KEEP = 28;
+const imgOk = im => !!(im && im.complete && im.naturalWidth > 0);
+function battleSheet(k) {
+  lazyUse[k] = ++lazyClock;
+  let im = lazyImg[k];
+  if (im) {
+    if (im.nkBad && performance.now() - im.nkBadAt > 6000) { im.nkBad = false; im.nkTry = 0; im.src = "battle/" + k + ".png?r=" + Date.now().toString(36); }   // 한참 뒤 다시 찾으면 처음부터 다시 시도
+    return im;
+  }
+  im = new Image(); im.nkTry = 0; im.nkKey = k;
+  im.onerror = () => { if (++im.nkTry <= 3) setTimeout(() => { im.src = "battle/" + k + ".png?r=" + im.nkTry; }, 400 * im.nkTry * im.nkTry);
+    else { im.nkBad = true; im.nkBadAt = performance.now(); nkErr("sheet:" + k, new Error("배틀 그림을 불러오지 못함")); } };
+  im.src = "battle/" + k + ".png"; lazyImg[k] = im;
+  const ks = Object.keys(lazyImg);
+  if (ks.length > SHEET_KEEP) { ks.sort((a, b) => lazyUse[a] - lazyUse[b]); for (const o of ks.slice(0, ks.length - SHEET_KEEP)) { delete lazyImg[o]; delete lazyUse[o]; } }
+  return im;
+}
+// 그림이 올 때까지 기다림(게임 시간으로 ms까지). 끝내 안 오면 false — 기다리다 멈추는 일은 없음
+async function sheetReady(im, ms = 2500) { for (let t = 0; t < ms && !imgOk(im) && !(im && im.nkBad); t += 50) await wait(50); return imgOk(im); }
 
 // ---- 시간 ----
 let FRAME = 0;
@@ -114,7 +148,7 @@ function tick() {
   FRAME++;
   tickTimers();
   const top = Scenes.top();
-  for (const s of Scenes.st) if (s.update) s.update(s === top);
+  for (const s of Scenes.st) if (s.update) { try { s.update(s === top); } catch (e) { nkErr("update:" + (s.kind || (s.constructor && s.constructor.name) || "?"), e); } }   // v2.71 한 장면의 오류가 다른 장면·입력을 막지 않게
   Input.end();
   Audio2.tick();
 }
@@ -123,18 +157,22 @@ function draw() {
   g.fillStyle = "#000"; g.fillRect(0, 0, SW, SH);
   let from = 0;
   for (let i = Scenes.st.length - 1; i >= 0; i--) if (Scenes.st[i].opaque) { from = i; break; }
-  for (let i = from; i < Scenes.st.length; i++) Scenes.st[i].draw && Scenes.st[i].draw(g);
+  for (let i = from; i < Scenes.st.length; i++) { const s = Scenes.st[i]; if (!s.draw) continue;
+    try { s.draw(g); }
+    catch (e) { nkErr("draw:" + (s.kind || (s.constructor && s.constructor.name) || "?"), e);      // v2.71 그리다 오류가 나면 그 장면만 건너뛰고 캔버스 상태를 되돌림
+      for (let k = 0; k < 12; k++) g.restore(); g.setTransform(DPR, 0, 0, DPR, 0, 0); g.globalAlpha = 1; g.globalCompositeOperation = "source-over"; g.imageSmoothingEnabled = false; } }
   if (Screen.flash > 0) { g.globalAlpha = Screen.flash; g.fillStyle = Screen.flashCol; g.fillRect(0, 0, SW, SH); g.globalAlpha = 1; }
   if (Screen.fade > 0) { g.globalAlpha = Screen.fade; g.fillStyle = Screen.fadeCol; g.fillRect(0, 0, SW, SH); g.globalAlpha = 1; }
 }
 let acc = 0, last = 0;
 function loop(t) {
+  requestAnimationFrame(loop);            // v2.71 다음 프레임을 먼저 예약 — 전에는 아래에서 오류가 한 번 나면 예약이 안 되어 게임이 그대로 굳었다
   if (!last) last = t;
   acc += Math.min(120, t - last); last = t;
   const step = 1000 / 60; let n = 0;
-  while (acc >= step && n < 6) { tick(); acc -= step; n++; }
-  draw();
-  requestAnimationFrame(loop);
+  while (acc >= step && n < 6) { try { tick(); } catch (e) { nkErr("tick", e); } acc -= step; n++; }
+  if (n >= 6 && acc > step * 6) acc = 0;  // 한참 밀렸으면(탭을 떠났다 돌아옴) 따라잡으려 들지 않음
+  try { draw(); } catch (e) { nkErr("draw", e); }
 }
 
 // ---- 글꼴 (Galmuri 비트맵, SIL OFL) ----
@@ -267,12 +305,39 @@ const Audio2 = (() => {
     vol();
   }
   function vol() { if (!ac) return; musG.gain.value = Save.opt.music * 0.55; sfxG.gain.value = Save.opt.sfx * 0.5; }
-  function unlock() { ensure(); if (ac.state !== "running") ac.resume(); if (!unlocked) { unlocked = true; if (wantName) play(wantName); } }
-  async function get(name) {
-    if (buf[name]) return buf[name];
-    const meta = L[name]; if (!meta) return null;
-    const r = await fetch("bgm/" + meta.file); const ab = await r.arrayBuffer();
-    return buf[name] = await ac.decodeAudioData(ab);
+  function unlock() { ensure(); if (ac.state !== "running") { try { const p = ac.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
+    if (!unlocked) { unlocked = true; if (wantName) play(wantName);
+      setTimeout(async () => { for (const n of Object.keys(L)) if (L[n] && L[n].loop === false) await get(n); }, 2500); } }   // v2.71 짧은 곡(레벨 업·획득…)은 미리 받아 둠 — 그 순간에 인터넷을 기다리지 않게
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && ac && unlocked && ac.state !== "running") { try { const p = ac.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) {} } });   // 화면을 껐다 켜거나 다른 탭에 다녀오면 소리를 다시 깨움
+
+  // v2.71 소리 불러오기를 튼튼하게: ① 같은 곡을 겹쳐 내려받지 않음 ② 내려받기·풀기에 시간 제한과 다시 시도 — 실패해도 게임은 계속
+  //   ③ 풀어 둔 소리는 최근 것만 둠. 전에는 들은 곡을 모두 풀어 둔 채 쌓아서(73곡 = 48분 = 약 1.1GB) 오래 하면 태블릿 메모리가 바닥났다.
+  //      내려받은 mp3(작음, 다 합쳐 46MB)는 그대로 두므로 다시 틀 때 인터넷을 다시 타지 않는다
+  const raw = {}, pend = {}, use = {}; let clock = 0; const BUF_SEC = 200;            // 풀어 둔 소리 길이 합 상한(초): 48kHz 스테레오로 약 77MB
+  const timeout = (p, ms) => new Promise((res, rej) => { const t = setTimeout(() => rej(new Error("시간 초과")), ms); p.then(v => { clearTimeout(t); res(v); }, e => { clearTimeout(t); rej(e); }); });
+  function trim(keep) {
+    const ks = Object.keys(buf); let tot = 0; for (const k of ks) tot += buf[k].duration;
+    if (tot <= BUF_SEC) return;
+    ks.sort((a, b) => (use[a] || 0) - (use[b] || 0));
+    for (const k of ks) { if (tot <= BUF_SEC) break; if (k === keep || k === curName || k === wantName || buf[k].duration < 8) continue; tot -= buf[k].duration; delete buf[k]; }
+  }
+  function get(name) {
+    use[name] = ++clock;
+    if (buf[name]) return Promise.resolve(buf[name]);
+    const meta = L[name]; if (!meta || !ac) return Promise.resolve(null);
+    if (pend[name]) return pend[name];
+    return pend[name] = (async () => {
+      try {
+        if (!raw[name]) { let ab = null;
+          for (let n = 0; n < 3 && !ab; n++) {
+            try { const r = await timeout(fetch("bgm/" + meta.file + (n ? "?r=" + n : "")), 12000); if (!r.ok) throw new Error("HTTP " + r.status); ab = await timeout(r.arrayBuffer(), 25000); }
+            catch (e) { if (n === 2) throw e; await new Promise(r => setTimeout(r, 700 * (n + 1))); } }
+          raw[name] = ab; }
+        const b = await timeout(ac.decodeAudioData(raw[name].slice(0)), 20000);
+        buf[name] = b; trim(name); return b;
+      } catch (e) { nkErr("bgm:" + name, e); return null; }
+      finally { delete pend[name]; }
+    })();
   }
   function stop(fade = 0.5) { if (!cur) return; const c = cur; cur = null; curName = null; try { c.g.gain.setTargetAtTime(0, ac.currentTime, fade / 4); c.s.stop(ac.currentTime + fade); } catch (e) {} }
   async function play(name, { fade = 0.4, force = false } = {}) {
@@ -281,14 +346,18 @@ const Audio2 = (() => {
     if (!ac || !unlocked) return;
     if (curName === name && !force) return;
     curName = name;
-    const b = await get(name); if (!b || wantName !== name) return;
-    if (cur) { const c = cur; try { c.g.gain.setTargetAtTime(0, ac.currentTime, fade / 4); c.s.stop(ac.currentTime + fade); } catch (e) {} }
-    const meta = L[name];
-    const s = ac.createBufferSource(), gg = ac.createGain(); s.buffer = b;
-    if (meta.loop) { s.loop = true; s.loopStart = meta.loopStart || 0; s.loopEnd = Math.min(meta.loopEnd || b.duration, b.duration); }
-    const tg = meta.gain || 1;                             // v2.65 곡별 음량 보정(bgm.json gain) · 저음 덜기(shelf dB, 160Hz 아래)
-    gg.gain.value = 0; gg.gain.setTargetAtTime(duck * tg, ac.currentTime, 0.04); chain(s, meta).connect(gg).connect(musG); s.start();
-    cur = { s, g: gg, name, tg };
+    const b = await get(name);
+    if (!b) { if (curName === name) curName = cur ? cur.name : null; return; }      // 못 불러왔으면 지금 곡을 그대로 두고, 다음에 다시 시도할 수 있게
+    if (wantName !== name) return;
+    try {
+      if (cur) { const c = cur; try { c.g.gain.setTargetAtTime(0, ac.currentTime, fade / 4); c.s.stop(ac.currentTime + fade); } catch (e) {} }
+      const meta = L[name];
+      const s = ac.createBufferSource(), gg = ac.createGain(); s.buffer = b;
+      if (meta.loop) { s.loop = true; s.loopStart = meta.loopStart || 0; s.loopEnd = Math.min(meta.loopEnd || b.duration, b.duration); }
+      const tg = meta.gain || 1;                             // v2.65 곡별 음량 보정(bgm.json gain) · 저음 덜기(shelf dB, 160Hz 아래)
+      gg.gain.value = 0; gg.gain.setTargetAtTime(duck * tg, ac.currentTime, 0.04); chain(s, meta).connect(gg).connect(musG); s.start();
+      cur = { s, g: gg, name, tg };
+    } catch (e) { nkErr("play:" + name, e); if (curName === name) curName = cur ? cur.name : null; }
   }
   function chain(s, meta) {
     if (!meta.shelf) return s;
@@ -297,12 +366,16 @@ const Audio2 = (() => {
   // 짧은 곡: 배경 음악을 멈췄다가(포켓몬처럼) 끝나면 다시
   async function jingle(name) {
     if (!ac || !unlocked || !L[name]) { await wait(900); return; }
-    const b = await get(name); if (!b) return;
+    // v2.71 소리가 2.5초 안에 준비되지 않거나 틀다 오류가 나도 게임은 0.9초만 쉬고 계속(전에는 내려받기가 끝날 때까지, 실패하면 영영 기다렸다)
+    let b = null; try { b = await Promise.race([get(name), new Promise(r => setTimeout(() => r(null), 2500))]); } catch (e) { b = null; }
+    if (!b) { await wait(900); return; }
     const meta = L[name]; const len = (meta.loopEnd || b.duration);
-    if (cur) cur.g.gain.setTargetAtTime(0, ac.currentTime, 0.03);
-    const s = ac.createBufferSource(), gg = ac.createGain(); s.buffer = b; gg.gain.value = meta.gain || 1; chain(s, meta).connect(gg).connect(musG); s.start();
+    try {
+      if (cur) cur.g.gain.setTargetAtTime(0, ac.currentTime, 0.03);
+      const s = ac.createBufferSource(), gg = ac.createGain(); s.buffer = b; gg.gain.value = meta.gain || 1; chain(s, meta).connect(gg).connect(musG); s.start();
+    } catch (e) { nkErr("jingle:" + name, e); await wait(900); return; }
     await wait(len * 1000 + 150);
-    if (cur) cur.g.gain.setTargetAtTime(duck * (cur.tg || 1), ac.currentTime, 0.25);
+    try { if (cur) cur.g.gain.setTargetAtTime(duck * (cur.tg || 1), ac.currentTime, 0.25); } catch (e) {}
   }
   // ---- 효과음 합성 ----
   function tone(type, f0, f1, dur, v = 0.3, t0 = 0, out = sfxG) {
@@ -434,7 +507,8 @@ const Audio2 = (() => {
     if (r(2) > .5) noise(total * 0.6, 0.05, 0, 1500, 6000);
     return total * 1000 + 80;
   }
-  return { init, unlock, play, stop, jingle, sfx, cry, vol, tick() {}, get cur() { return curName; }, get ready() { return unlocked; }, list: () => L };
+  return { init, unlock, play, stop, jingle, sfx, cry, vol, tick() {}, get cur() { return curName; }, get ready() { return unlocked; }, list: () => L,
+    mem: () => ({ n: Object.keys(buf).length, sec: Math.round(Object.values(buf).reduce((t, b) => t + b.duration, 0)), raw: Object.keys(raw).length, pend: Object.keys(pend).length, names: Object.keys(buf) }) };
 })();
 const bgm = n => Audio2.play(n), sfx = n => Audio2.sfx(n);
 
