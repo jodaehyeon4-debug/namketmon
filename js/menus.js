@@ -90,7 +90,7 @@ class PartyScreen extends Modal {
       if (this.mode === "item" || this.mode === "tm" || this.mode === "evo") { this.done(i); return; }
       let items;
       if (this.mode.startsWith("battle")) items = ["교체한다", "능력치를 보다", "그만두다"];
-      else items = ["능력치를 보다", "순서 바꾸기", "도구", "그만두다"];
+      else items = ["능력치를 보다", "순서 바꾸기", "도구"].concat(this.mode === "field" && typeof MOVES_V274 !== "undefined" ? ["기술 떠올리기"] : [], ["그만두다"]);   // v2.74 기술 떠올리기
       const fm = this.mode === "field" && typeof FIELD_MOVES !== "undefined" ? m.moves.filter(x => FIELD_MOVES[x.id]).map(x => x.id) : [];
       if (fm.length) items = fm.map(id => ({ label: MV[id].n, col: TXT.blue, fm: id })).concat(items);
       const v = await menu({ items, x: 150, y: Math.max(4, 90 - (items.length > 3 ? 16 * (items.length - 3) : 0)), w: 104 });
@@ -106,6 +106,7 @@ class PartyScreen extends Modal {
       if (k === "능력치를 보다") { const j = await show(new Summary(i)); this.i = j; }
       if (k === "순서 바꾸기") { this.swap = i; }
       if (k === "도구") await holdMenu(m);
+      if (k === "기술 떠올리기") await MOVES_V274.remindMenu(m);
     } finally { this.busy = false; }
   }
   draw() {
