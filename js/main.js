@@ -1,13 +1,13 @@
 // ===== 시작: 불러오기 → 타이틀 → 새 게임/이어서 =====
 "use strict";
-const VERSION = "플레이 버전 v2.72";
+const VERSION = "플레이 버전 v2.73";
 async function boot(hotData) {
   Save.loadOpt();
   const loading = { opaque: true, p: 0, draw() { rect(0, 0, SW, SH, "#101018"); rect(48, 94, 160, 6, "#2a2a3a"); rect(48, 94, Math.round(160 * this.p), 6, "#d04a3a"); } };
   Scenes.push(loading); fit(); requestAnimationFrame(loop);
   const imgs = [["tiles_out", "img/tiles_out.png"], ["tiles_in", "img/tiles_in.png"], ["chars", "img/chars.png"], ["misc", "img/misc.png"], ["balls", "img/balls.png"],
     ["bus", "img/bus.png"], ["icons", "img/icons.png"], ["items", "img/items.png"], ["townmap", "img/townmap.png"], ["pouch", "img/pouch.png"], ["player", "img/player.png"],
-    ["leaders_field", "img/leaders_field.png"], ["badges", "img/badges.png"]];
+    ["leaders_field", "img/leaders_field.png"], ["badges", "img/badges.png"], ["surf", "img/surf.png"]];
   for (const b of ["grass_day", "grass_eve", "grass_night", "indoor", "city", "water_day", "water_eve", "water_night", "cave", "nugak"]) imgs.push(["bg_" + b, `img/bg/${b}.png`]);
   for (const b of ["grass", "grass_eve", "grass_night", "indoor", "city", "water", "sand", "water_night", "sand_night", "cave", "nugak"]) for (const s of ["e", "p"]) imgs.push([`base_${b}_${s}`, `img/bg/base_${b}_${s}.png`]);
   for (const t of ["hangyeol", "boreum", "jobaksa", "yunseul", "kid_m", "kid_f", "bugboy", "grunt_m", "grunt_f", "player_m_back", "player_f_back", "player_m_front", "player_f_front", "gl_sinha", "seola", "igeul", "gl_chanhyang", "gl_miyeong", "garam", "ongi", "gl_mrhwang", "gl_suhyeon", "yeoul", "agent", "gl_gisu", "solmoe", "gl_yeosim", "hiker", "gl_heeju", "gl_yeongran", "gl_jobaksa2", "foreign_m", "foreign_f", "doryeong", "nangja", "simmani", "hwagong", "mb_doryeong", "mb_agassi", "nangdokga", "stationmaster", "eosa", "pansori", "traveler", "simmani_girl", "heungbu", "nolbu", "jebi", "nolbu_wife", "byeon", "sori", "haerang", "student"]) imgs.push(["tr_" + t, `img/trainers/${t}.png`]);

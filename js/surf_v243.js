@@ -119,10 +119,57 @@ async function useSurfFromMenu(m) {
     for (let j = 0; j < S.length; j++) { const r = S[j];
       for (let i = 0; i < r.length; i++) { const c = r[i]; if (c === ".") continue; rect(x + (flip ? r.length - 1 - i : i), y + j, 1, 1, SBP[c]); } }
   }
+  // v2.73 남생배 탈것 그림(img/surf.png, Argon 시안을 2배 촘촘 도트로 옮김): 한 칸 64×64(논리 32×32), 줄 down/up/left × 칸 가만히·젓기A·젓기B
+  //   오른쪽은 left를 뒤집음. 탈것 칸은 주인공 타일 가운데에 맞춤. sy = 주인공 그림을 위아래로 옮기는 값(앉는 자리), cl = 주인공 그림 위에서부터 보이는 높이(허리 위)
+  //   bot = 탈것 그림 맨 아래(타일 기준 y) · w = 물에 닿은 너비(반)
+  const ST = {
+    down: { ty: -9, sx: 0, sy: -5, cl: 17, bot: 15.5, w: 11 },      // (검토) 얼굴만 등딱지에 박혀 보이던 것 → 2 올리고 어깨·가슴까지 보이게
+    up:   { ty: -13, sx: 0, sy: 3, cl: 15, bot: 15.5, w: 10 },
+    left: { ty: -10, sx: 2, sy: -5, cl: 14, bot: 14.5, w: 13 },
+  };
+  function drawSurfRide(a, x, y, bob, flip) {
+    const k = flip ? "left" : a.dir, T = ST[k] || ST.down, row = { down: 0, up: 1, left: 2 }[k] || 0;
+    const fr = a.moving ? 1 + ((FRAME / 12 | 0) & 1) : 0;          // 움직이면 젓기 A·B를 번갈아(12프레임마다), 멈추면 가만히
+    spriteS(IMG.surf, fr * 64, row * 64, 64, 64, x - 8, y + T.ty + bob, 32, 32, flip);
+  }
+  // (검토) 물결 자국·물에 잠긴 띠·물거품은 물 타일 위에만 그림(물가에서 모래·풀 위로 번지지 않게)
+  function waterClip(a, cx, cy) {
+    const tx = Math.floor((a.px + 8) / TS), ty = Math.floor((a.py + 8) / TS);
+    g.beginPath();
+    for (let j = -2; j <= 2; j++) for (let i = -3; i <= 3; i++) if (waterAt(tx + i, ty + j)) g.rect((tx + i) * TS - cx, (ty + j) * TS - cy, TS, TS);
+    g.clip();
+  }
   const d0 = World.drawPlayer;
   World.drawPlayer = function (a, cx, cy) {
     if (!isSurfing() || a !== this.player) return d0.call(this, a, cx, cy);
     const t = FRAME / 20, bob = Math.round(Math.sin(t) * 1.4), x = a.px - cx, y = a.py - cy, side = a.dir === "left" || a.dir === "right";
+    if (IMG.surf) {
+      const flip = a.dir === "right", T = ST[flip ? "left" : a.dir] || ST.down, wl = y + T.bot - 1.5;   // 물 높이(고정)
+      // 물 위 물결 자국(움직일 때 뒤로). 아래로 갈 때는 자국이 탈것 뒤에 가려지므로 양옆 뒤로 퍼지는 짧은 자국으로(검토)
+      g.save(); waterClip(a, cx, cy);
+      if (a.moving) { const [dx, dy] = DIRS[a.dir]; for (let k = 1; k <= 3; k++) { g.globalAlpha = 0.85 - k * 0.22;
+        if (dy > 0) { const sx2 = T.w + 1 + k * 2, sy2 = wl - 3 - k * 4; rect(x + 8 - sx2 - 3, sy2, 3, 1, "#ffffff"); rect(x + 8 + sx2, sy2, 3, 1, "#ffffff"); }
+        else { const ox = x + 8 - dx * (T.w + k * 4), oy = wl + 1 - dy * (k * 4), w = 3 + k * 2; rect(ox - w, oy, w * 2, 1, "#ffffff"); }
+        g.globalAlpha = 1; } }
+      g.restore();
+      drawSurfRide(a, x, y, bob, flip);
+      // 탈것 아랫부분이 물에 잠긴 느낌(물빛을 얇게) + 둘레 하얀 물거품
+      g.save(); waterClip(a, cx, cy);
+      g.globalAlpha = 0.45; rect(x + 8 - T.w - 1, wl + 0.5, (T.w + 1) * 2, 2.5, "#3f8fd0"); g.globalAlpha = 1;
+      const fw = T.w + ((FRAME >> 3) & 1) * 0.5;
+      rect(x + 8 - fw - 1.5, wl, 3, 0.5, "#ffffff"); rect(x + 8 + fw - 1.5, wl, 3, 0.5, "#ffffff");
+      rect(x + 8 - fw - 0.5, wl + 0.5, 2.5, 0.5, "#d8f2ff"); rect(x + 8 + fw - 2, wl + 0.5, 2.5, 0.5, "#d8f2ff");
+      g.restore();
+      // 사람: 등딱지 위에 앉은 모습(허리 위만), 탈것과 함께 떠오르내림. 주인공 그림은 필드 그림 그대로
+      const sx = flip ? -T.sx : T.sx, sy = T.sy + bob, top = y - 8 + sy;
+      g.save(); g.beginPath(); g.rect(x - 4 + sx, top - 2, 24, T.cl + 2); g.clip();
+      // (검토) moving을 잠깐 꺼서 선 그림으로 그리는데, 그러면 px·py가 도착 칸으로 건너뛰어 움직이는 동안 사람이 탈것보다 앞서 나가 잘려 보였음 → 그 차이만큼 되돌림
+      const m0 = a.moving, p0 = a.p, px0 = a.px, py0 = a.py; a.moving = false;
+      d0.call(this, a, cx - sx + (a.px - px0), cy - sy + (a.py - py0));
+      a.moving = m0; a.p = p0; g.restore();
+      return;
+    }
+    // (그림이 없을 때) 예전 파란 파도타기 몸
     const by = y + (side ? 5 : 3) + bob, wl = y + 13;                  // 몸 위치(떠오르내림) · 물 높이(고정)
     // 물 위 물결 자국(움직일 때 뒤로)
     if (a.moving) { const [dx, dy] = DIRS[a.dir]; for (let k = 1; k <= 3; k++) { const ox = x + 8 - dx * (6 + k * 4), oy = wl + 1 - dy * (k * 4), w = 3 + k * 2;
@@ -134,8 +181,8 @@ async function useSurfFromMenu(m) {
     g.globalAlpha = 0.55; rect(x - 1, wl + 1, 18, 3, "#3f8fd0"); g.globalAlpha = 1;      // 물에 잠긴 아랫부분
     // 사람: 앉은 모습(허리 위만), 몸과 함께 떠오르내림
     g.save(); g.beginPath(); g.rect(x - 4, y - 16 + bob, 24, 21); g.clip();
-    const m0 = a.moving, p0 = a.p; a.moving = false;
-    d0.call(this, a, cx, cy + 3 - bob);
+    const m0 = a.moving, p0 = a.p, px0 = a.px, py0 = a.py; a.moving = false;
+    d0.call(this, a, cx + (a.px - px0), cy + 3 - bob + (a.py - py0));
     a.moving = m0; a.p = p0; g.restore();
   };
 })();
