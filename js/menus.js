@@ -21,7 +21,7 @@ const show = s => { Scenes.push(s); return s.promise; };
 
 // ---- 시작 메뉴 ----
 const MENU_HELP = { 도감: "남켓몬 도감을 펼쳐 본다.", 남켓몬: "함께 다니는 남켓몬을 본다.", 가방: "가방 속 물건을 확인한다.", 리포트: "지금까지의 모험을 기록한다.", 수첩: "지금 해야 할 일과\n가야 할 곳을 확인한다.", 설정: "글자 속도·소리 등을 바꾼다.", 닫기: "메뉴를 닫는다.",
-  달리기: "켜면 늘 달린다.\nX를 누르고 있으면 걷는다.", 타이틀: "타이틀 화면으로 간다.\n리포트를 먼저 쓰세요!", 카드: "트레이너 카드를 본다." };
+  달리기: "켜면 늘 달린다.\nX를 누르고 있으면 걷는다.", 타이틀: "타이틀 화면으로 간다.\n리포트를 먼저 쓰세요!", 카드: "트레이너 카드를 본다.", 타운맵: "용성지방 지도를 펼친다.\n하늘택시도 여기서 부른다." };
 async function openStartMenu() {
   World.busy++;
   let last = 0, toTitle = false;
@@ -30,7 +30,9 @@ async function openStartMenu() {
       const keys = [];
       if (G.flag("dex")) keys.push("도감");
       if (G.party.length) keys.push("남켓몬");
-      keys.push("가방", "수첩", "카드");   // v2.54 모험 수첩(길잡이)
+      keys.push("가방");
+      if (G.has && G.has("townmap")) keys.push("타운맵");   // v2.75 사용자: 가방을 거치지 않고 메뉴에서 바로(하늘택시도 여기서)
+      keys.push("수첩", "카드");   // v2.54 모험 수첩(길잡이)
       if (G.flag("runshoes")) keys.push("달리기");
       keys.push("리포트", "설정", "타이틀", "닫기");
       const items = keys.map(k => k === "수첩" ? "모험 수첩" : k === "카드" ? G.name : k === "달리기" ? { label: "늘 달리기", sub: Save.opt.autorun ? "켬" : "끔" } : k === "타이틀" ? "타이틀로" : k);
@@ -45,6 +47,7 @@ async function openStartMenu() {
       if (k === "도감") await openDex();
       else if (k === "남켓몬") await openParty("field");
       else if (k === "가방") await openBag("field");
+      else if (k === "타운맵") await fieldUse("townmap");
       if (typeof FIELD_PENDING !== "undefined" && FIELD_PENDING) break;          // v2.0 풀베기·낚싯대·징: 메뉴를 닫고 바로
       else if (k === "수첩") await show(new GoalBook());
       else if (k === "카드") await show(new TrainerCard());

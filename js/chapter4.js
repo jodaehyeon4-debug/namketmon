@@ -149,7 +149,7 @@ async function seomjinEvent() {
   await say("수현: 아, 수업 문 셋은\n꼭 거쳐서 와요. 약속!");
   G.flag("seomjin_done", true);
   const kid = act("gym3_door_kid"); if (kid) kid.hidden = true;
-  await walkPath(S, 26, 19); await walk(S, "up");      // v2.24 배움터 문 아래 S.hidden = true; sfx("door");
+  await walkPath(S, 26, 19); await walk(S, "up"); S.hidden = true; sfx("door");      // v2.24 배움터 문 아래 · v2.75 마무리 검토: 숨기는 줄이 주석 안에 들어가 있어 수현이 배움터 문(26,18) 위에 남아 문을 막던 것 고침
   zoneBgm();
 }
 
